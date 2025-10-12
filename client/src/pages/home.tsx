@@ -24,6 +24,41 @@ export default function NaijaWealthSim() {
   const [showAdSimulation, setShowAdSimulation] = useState(false);
   const [adCountdown, setAdCountdown] = useState(30);
 
+  const STORAGE_KEY = 'naijaWealthSim_gameState';
+
+  const saveGameState = () => {
+    const gameState = {
+      balance,
+      investments,
+      owned,
+      purchased,
+      level,
+      returnRate,
+      accountManager,
+      managerCost,
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(gameState));
+  };
+
+  const loadGameState = () => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const gameState = JSON.parse(saved);
+        setBalance(gameState.balance ?? 50000000);
+        setInvestments(gameState.investments ?? []);
+        setOwned(gameState.owned ?? []);
+        setPurchased(gameState.purchased ?? []);
+        setLevel(gameState.level ?? 1);
+        setReturnRate(gameState.returnRate ?? 0.30);
+        setAccountManager(gameState.accountManager ?? false);
+        setManagerCost(gameState.managerCost ?? 20000000);
+      }
+    } catch (error) {
+      console.error('Failed to load game state:', error);
+    }
+  };
+
   const items = [
     { id: 1, name: 'iPhone 15 Pro Max', price: 2500000, cat: 'Gadgets', img: '📱', m: 50000 },
     { id: 2, name: 'MacBook Pro M3', price: 4800000, cat: 'Gadgets', img: '💻', m: 80000 },
@@ -49,6 +84,14 @@ export default function NaijaWealthSim() {
   ];
 
   const categories = ['All', 'Gadgets', 'Cars', 'Houses', 'Jets', 'Yachts'];
+
+  useEffect(() => {
+    loadGameState();
+  }, []);
+
+  useEffect(() => {
+    saveGameState();
+  }, [balance, investments, owned, purchased, level, returnRate, accountManager, managerCost]);
 
   useEffect(() => {
     setMaintenance(owned.reduce((s, i) => s + i.m, 0));
@@ -205,6 +248,7 @@ export default function NaijaWealthSim() {
   };
 
   const handleRestart = () => {
+    localStorage.removeItem(STORAGE_KEY);
     setBalance(50000000);
     setInvestments([]);
     setOwned([]);
