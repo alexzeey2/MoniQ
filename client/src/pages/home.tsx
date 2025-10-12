@@ -1,5 +1,26 @@
 import { useState, useEffect } from 'react';
 import { Home, TrendingUp, ShoppingBag, User, ArrowLeft, Clock, AlertCircle, PieChart, Shield, ShieldOff, Zap, RotateCcw, Play } from 'lucide-react';
+import iphoneImg from '@assets/stock_images/iphone_15_pro_max_sm_ef695f2d.jpg';
+import macbookImg from '@assets/stock_images/macbook_pro_laptop_c_a898d7c6.jpg';
+import visionProImg from '@assets/stock_images/apple_vision_pro_hea_e5a1499e.jpg';
+import watchImg from '@assets/stock_images/luxury_watch_timepie_67f77a0b.jpg';
+import homeTheaterImg from '@assets/stock_images/home_theater_system_a51f0954.jpg';
+import mercedesImg from '@assets/stock_images/mercedes_g-wagon_suv_abe0eea4.jpg';
+import lamborghiniImg from '@assets/stock_images/lamborghini_urus_lux_23a2f584.jpg';
+import rollsRoyceImg from '@assets/stock_images/rolls_royce_luxury_c_0435db38.jpg';
+import bugattiImg from '@assets/stock_images/bugatti_chiron_super_2da275a8.jpg';
+import duplexImg from '@assets/stock_images/luxury_modern_duplex_5580753e.jpg';
+import penthouseImg from '@assets/stock_images/luxury_penthouse_apa_dc0dbccb.jpg';
+import villaImg from '@assets/stock_images/luxury_villa_mansion_14a13706.jpg';
+import privateIslandImg from '@assets/stock_images/private_tropical_isl_69d7fd70.jpg';
+import cessnaCitationImg from '@assets/stock_images/cessna_citation_priv_36358457.jpg';
+import bombardierImg from '@assets/stock_images/bombardier_global_pr_152d50ea.jpg';
+import gulfstreamImg from '@assets/stock_images/gulfstream_g650_priv_14596af7.jpg';
+import boeingJetImg from '@assets/stock_images/boeing_private_jet_l_3773be21.jpg';
+import sportYachtImg from '@assets/stock_images/sport_yacht_speedboa_20869f4c.jpg';
+import luxuryYachtImg from '@assets/stock_images/luxury_yacht_87cf592f.jpg';
+import megaYachtImg from '@assets/stock_images/mega_yacht_3dd56598.jpg';
+import superyachtImg from '@assets/stock_images/superyacht_4259c77a.jpg';
 
 export default function NaijaWealthSim() {
   const [screen, setScreen] = useState('home');
@@ -60,27 +81,27 @@ export default function NaijaWealthSim() {
   };
 
   const items = [
-    { id: 1, name: 'iPhone 15 Pro Max', price: 2500000, cat: 'Gadgets', img: '📱', m: 50000 },
-    { id: 2, name: 'MacBook Pro M3', price: 4800000, cat: 'Gadgets', img: '💻', m: 80000 },
-    { id: 3, name: 'Apple Vision Pro', price: 6500000, cat: 'Gadgets', img: '🥽', m: 120000 },
-    { id: 4, name: 'Luxury Watch', price: 25000000, cat: 'Gadgets', img: '⌚', m: 300000 },
-    { id: 5, name: 'Home Theater', price: 45000000, cat: 'Gadgets', img: '🎬', m: 500000 },
-    { id: 6, name: 'Mercedes G-Wagon', price: 120000000, cat: 'Cars', img: '🚙', m: 1500000 },
-    { id: 7, name: 'Lamborghini Urus', price: 250000000, cat: 'Cars', img: '🏎️', m: 3000000 },
-    { id: 8, name: 'Rolls Royce', price: 450000000, cat: 'Cars', img: '🚗', m: 5500000 },
-    { id: 9, name: 'Bugatti Chiron', price: 850000000, cat: 'Cars', img: '🏁', m: 10000000 },
-    { id: 10, name: 'Ikoyi Duplex', price: 380000000, cat: 'Houses', img: '🏠', m: 4000000 },
-    { id: 11, name: 'Lekki Penthouse', price: 650000000, cat: 'Houses', img: '🏢', m: 7000000 },
-    { id: 12, name: 'Banana Island Villa', price: 1200000000, cat: 'Houses', img: '🏰', m: 12000000 },
-    { id: 13, name: 'Private Island', price: 3500000000, cat: 'Houses', img: '🏝️', m: 35000000 },
-    { id: 14, name: 'Cessna Citation', price: 1800000000, cat: 'Jets', img: '✈️', m: 18000000 },
-    { id: 15, name: 'Bombardier Global', price: 3200000000, cat: 'Jets', img: '🛩️', m: 32000000 },
-    { id: 16, name: 'Gulfstream G650', price: 5500000000, cat: 'Jets', img: '🛫', m: 55000000 },
-    { id: 17, name: 'Boeing Jet', price: 12000000000, cat: 'Jets', img: '🛬', m: 120000000 },
-    { id: 18, name: 'Sport Yacht', price: 2500000000, cat: 'Yachts', img: '🚤', m: 25000000 },
-    { id: 19, name: 'Luxury Yacht', price: 4800000000, cat: 'Yachts', img: '🛥️', m: 48000000 },
-    { id: 20, name: 'Mega Yacht', price: 9500000000, cat: 'Yachts', img: '🚢', m: 95000000 },
-    { id: 21, name: 'Superyacht', price: 18000000000, cat: 'Yachts', img: '⛴️', m: 180000000 },
+    { id: 1, name: 'iPhone 15 Pro Max', price: 2500000, cat: 'Gadgets', img: iphoneImg, m: 50000 },
+    { id: 2, name: 'MacBook Pro M3', price: 4800000, cat: 'Gadgets', img: macbookImg, m: 80000 },
+    { id: 3, name: 'Apple Vision Pro', price: 6500000, cat: 'Gadgets', img: visionProImg, m: 120000 },
+    { id: 4, name: 'Luxury Watch', price: 25000000, cat: 'Gadgets', img: watchImg, m: 300000 },
+    { id: 5, name: 'Home Theater', price: 45000000, cat: 'Gadgets', img: homeTheaterImg, m: 500000 },
+    { id: 6, name: 'Mercedes G-Wagon', price: 120000000, cat: 'Cars', img: mercedesImg, m: 1500000 },
+    { id: 7, name: 'Lamborghini Urus', price: 250000000, cat: 'Cars', img: lamborghiniImg, m: 3000000 },
+    { id: 8, name: 'Rolls Royce', price: 450000000, cat: 'Cars', img: rollsRoyceImg, m: 5500000 },
+    { id: 9, name: 'Bugatti Chiron', price: 850000000, cat: 'Cars', img: bugattiImg, m: 10000000 },
+    { id: 10, name: 'Ikoyi Duplex', price: 380000000, cat: 'Houses', img: duplexImg, m: 4000000 },
+    { id: 11, name: 'Lekki Penthouse', price: 650000000, cat: 'Houses', img: penthouseImg, m: 7000000 },
+    { id: 12, name: 'Banana Island Villa', price: 1200000000, cat: 'Houses', img: villaImg, m: 12000000 },
+    { id: 13, name: 'Private Island', price: 3500000000, cat: 'Houses', img: privateIslandImg, m: 35000000 },
+    { id: 14, name: 'Cessna Citation', price: 1800000000, cat: 'Jets', img: cessnaCitationImg, m: 18000000 },
+    { id: 15, name: 'Bombardier Global', price: 3200000000, cat: 'Jets', img: bombardierImg, m: 32000000 },
+    { id: 16, name: 'Gulfstream G650', price: 5500000000, cat: 'Jets', img: gulfstreamImg, m: 55000000 },
+    { id: 17, name: 'Boeing Jet', price: 12000000000, cat: 'Jets', img: boeingJetImg, m: 120000000 },
+    { id: 18, name: 'Sport Yacht', price: 2500000000, cat: 'Yachts', img: sportYachtImg, m: 25000000 },
+    { id: 19, name: 'Luxury Yacht', price: 4800000000, cat: 'Yachts', img: luxuryYachtImg, m: 48000000 },
+    { id: 20, name: 'Mega Yacht', price: 9500000000, cat: 'Yachts', img: megaYachtImg, m: 95000000 },
+    { id: 21, name: 'Superyacht', price: 18000000000, cat: 'Yachts', img: superyachtImg, m: 180000000 },
   ];
 
   const categories = ['All', 'Gadgets', 'Cars', 'Houses', 'Jets', 'Yachts'];
@@ -532,10 +553,14 @@ export default function NaijaWealthSim() {
                 const totalCost = Math.floor(adjustedPrice * 1.25);
                 
                 return (
-                  <div key={i.id} className="bg-card rounded-xl p-4 border border-card-border" data-testid={`item-${i.id}`}>
-                    <div className="flex gap-3 mb-3">
-                      <div className="text-3xl">{i.img}</div>
-                      <div className="flex-1">
+                  <div key={i.id} className="bg-card rounded-xl overflow-hidden border border-card-border" data-testid={`item-${i.id}`}>
+                    <img 
+                      src={i.img} 
+                      alt={i.name}
+                      className="w-full h-64 object-cover shadow-lg"
+                    />
+                    <div className="p-4">
+                      <div className="mb-3">
                         <div className="font-semibold">{i.name}</div>
                         <div className="text-xs text-muted-foreground mb-1">{i.cat}</div>
                         <div className="font-bold">{fmt(adjustedPrice)}</div>
@@ -546,15 +571,15 @@ export default function NaijaWealthSim() {
                           </div>
                         )}
                       </div>
+                      <button 
+                        onClick={() => buy(i)} 
+                        disabled={balance < totalCost} 
+                        className="w-full bg-chart-3 text-white py-2 rounded-lg disabled:opacity-50 hover-elevate active-elevate-2"
+                        data-testid={`button-buy-${i.id}`}
+                      >
+                        Buy ({fmt(totalCost)})
+                      </button>
                     </div>
-                    <button 
-                      onClick={() => buy(i)} 
-                      disabled={balance < totalCost} 
-                      className="w-full bg-chart-3 text-white py-2 rounded-lg disabled:opacity-50 hover-elevate active-elevate-2"
-                      data-testid={`button-buy-${i.id}`}
-                    >
-                      Buy ({fmt(totalCost)})
-                    </button>
                   </div>
                 );
               })}
@@ -664,11 +689,17 @@ export default function NaijaWealthSim() {
             ) : (
               <div className="grid grid-cols-2 gap-3">
                 {owned.map((i, idx) => (
-                  <div key={idx} className="bg-card rounded-xl p-3 border border-card-border text-center">
-                    <div className="text-3xl mb-1">{i.img}</div>
-                    <div className="text-sm font-semibold">{i.name}</div>
-                    <div className="text-xs text-muted-foreground mt-1">{fmt(i.price)}</div>
-                    <div className="text-xs text-chart-5 mt-1">-{fmt(i.m)}/30s</div>
+                  <div key={idx} className="bg-card rounded-xl overflow-hidden border border-card-border">
+                    <img 
+                      src={i.img} 
+                      alt={i.name}
+                      className="w-full h-32 object-cover"
+                    />
+                    <div className="p-3 text-center">
+                      <div className="text-sm font-semibold">{i.name}</div>
+                      <div className="text-xs text-muted-foreground mt-1">{fmt(i.price)}</div>
+                      <div className="text-xs text-chart-5 mt-1">-{fmt(i.m)}/30s</div>
+                    </div>
                   </div>
                 ))}
               </div>
