@@ -217,6 +217,10 @@ export default function NaijaWealthSim() {
     setLevel(1);
     setTaxTimer(30);
     setMaintenance(0);
+    setAdTimer(60);
+    setShowAd(false);
+    setShowAdSimulation(false);
+    setAdCountdown(30);
   };
 
   const handleContinueWithAd = () => {
