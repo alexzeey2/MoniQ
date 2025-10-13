@@ -1,26 +1,26 @@
 import { useState, useEffect } from 'react';
 import { Home, TrendingUp, ShoppingBag, User, ArrowLeft, Clock, AlertCircle, PieChart, Shield, ShieldOff, Zap, RotateCcw, Play } from 'lucide-react';
-import iphoneImg from '@assets/stock_images/iphone_15_pro_max_sm_ef695f2d.jpg';
-import macbookImg from '@assets/stock_images/macbook_pro_laptop_c_a898d7c6.jpg';
-import visionProImg from '@assets/stock_images/apple_vision_pro_hea_e5a1499e.jpg';
-import watchImg from '@assets/stock_images/luxury_watch_timepie_67f77a0b.jpg';
-import homeTheaterImg from '@assets/stock_images/home_theater_system_a51f0954.jpg';
-import mercedesImg from '@assets/stock_images/mercedes_g-wagon_suv_abe0eea4.jpg';
-import lamborghiniImg from '@assets/stock_images/lamborghini_urus_lux_23a2f584.jpg';
-import rollsRoyceImg from '@assets/stock_images/rolls_royce_luxury_c_0435db38.jpg';
-import bugattiImg from '@assets/stock_images/bugatti_chiron_super_2da275a8.jpg';
-import duplexImg from '@assets/stock_images/luxury_modern_duplex_5580753e.jpg';
-import penthouseImg from '@assets/stock_images/luxury_penthouse_apa_dc0dbccb.jpg';
-import villaImg from '@assets/stock_images/luxury_villa_mansion_14a13706.jpg';
-import privateIslandImg from '@assets/stock_images/private_tropical_isl_69d7fd70.jpg';
-import cessnaCitationImg from '@assets/stock_images/cessna_citation_priv_36358457.jpg';
-import bombardierImg from '@assets/stock_images/bombardier_global_pr_152d50ea.jpg';
-import gulfstreamImg from '@assets/stock_images/gulfstream_g650_priv_14596af7.jpg';
-import boeingJetImg from '@assets/stock_images/boeing_private_jet_l_3773be21.jpg';
-import sportYachtImg from '@assets/stock_images/sport_yacht_speedboa_20869f4c.jpg';
-import luxuryYachtImg from '@assets/stock_images/luxury_yacht_87cf592f.jpg';
-import megaYachtImg from '@assets/stock_images/mega_yacht_3dd56598.jpg';
-import superyachtImg from '@assets/stock_images/superyacht_4259c77a.jpg';
+import iphoneImg from '@assets/stock_images/iphone_15_pro_max_sm_1174984a.jpg';
+import macbookImg from '@assets/stock_images/macbook_pro_m3_lapto_72f862fb.jpg';
+import visionProImg from '@assets/stock_images/apple_vision_pro_hea_d2befd55.jpg';
+import watchImg from '@assets/stock_images/luxury_watch_product_3f9680fe.jpg';
+import homeTheaterImg from '@assets/stock_images/home_theater_system__1e505e7e.jpg';
+import mercedesImg from '@assets/stock_images/mercedes_g-wagon_g-c_b8ac926c.jpg';
+import lamborghiniImg from '@assets/stock_images/lamborghini_urus_sup_4b4a42cb.jpg';
+import rollsRoyceImg from '@assets/stock_images/rolls_royce_luxury_c_f98068e8.jpg';
+import bugattiImg from '@assets/stock_images/bugatti_chiron_hyper_a2ee3f4b.jpg';
+import duplexImg from '@assets/stock_images/luxury_duplex_house__74c0a9a7.jpg';
+import penthouseImg from '@assets/stock_images/luxury_penthouse_apa_bccf7330.jpg';
+import villaImg from '@assets/stock_images/luxury_villa_mansion_11e43a80.jpg';
+import privateIslandImg from '@assets/stock_images/private_island_tropi_57eabe22.jpg';
+import cessnaCitationImg from '@assets/stock_images/cessna_citation_priv_91d55f94.jpg';
+import bombardierImg from '@assets/stock_images/bombardier_global_bu_405a472c.jpg';
+import gulfstreamImg from '@assets/stock_images/gulfstream_g650_priv_1484f1cf.jpg';
+import boeingJetImg from '@assets/stock_images/boeing_private_jet_p_ae8bd119.jpg';
+import sportYachtImg from '@assets/stock_images/sport_yacht_boat_pro_a1fc26e2.jpg';
+import luxuryYachtImg from '@assets/stock_images/luxury_yacht_boat_pr_782653a0.jpg';
+import megaYachtImg from '@assets/stock_images/mega_yacht_superyach_38d15143.jpg';
+import superyachtImg from '@assets/stock_images/superyacht_large_yac_19d2e1a3.jpg';
 
 export default function NaijaWealthSim() {
   const [screen, setScreen] = useState('home');
@@ -559,25 +559,19 @@ export default function NaijaWealthSim() {
                       alt={i.name}
                       className="w-full h-64 object-cover shadow-lg"
                     />
-                    <div className="p-4">
-                      <div className="mb-3">
-                        <div className="font-semibold">{i.name}</div>
-                        <div className="text-xs text-muted-foreground mb-1">{i.cat}</div>
-                        <div className="font-bold">{fmt(adjustedPrice)}</div>
-                        <div className="text-xs text-chart-5">{fmt(adjustedMaintenance)}/30s</div>
-                        {level > 1 && (
-                          <div className="text-xs text-chart-3 font-medium mt-1">
-                            Level {level} price (+{((level - 1) * 30)}%)
-                          </div>
-                        )}
+                    <div className="p-4 flex items-center justify-between gap-4">
+                      <div className="flex-1">
+                        <div className="font-semibold mb-1">{i.name}</div>
+                        <div className="font-bold text-lg mb-1">{fmt(totalCost)}</div>
+                        <div className="text-xs text-chart-5">-{fmt(adjustedMaintenance)}/30s</div>
                       </div>
                       <button 
                         onClick={() => buy(i)} 
                         disabled={balance < totalCost} 
-                        className="w-full bg-chart-3 text-white py-2 rounded-lg disabled:opacity-50 hover-elevate active-elevate-2"
+                        className="bg-chart-3 text-white px-6 py-2 rounded-lg disabled:opacity-50 hover-elevate active-elevate-2 whitespace-nowrap"
                         data-testid={`button-buy-${i.id}`}
                       >
-                        Buy ({fmt(totalCost)})
+                        Buy
                       </button>
                     </div>
                   </div>
