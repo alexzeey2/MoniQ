@@ -44,8 +44,19 @@ export default function NaijaWealthSim() {
   const [showLevelUp, setShowLevelUp] = useState(false);
   const [showAdSimulation, setShowAdSimulation] = useState(false);
   const [adCountdown, setAdCountdown] = useState(30);
+  
+  // Tutorial state
+  const [tutorialActive, setTutorialActive] = useState(false);
+  const [tutorialStep, setTutorialStep] = useState(0);
+  const [tutorialCompleted, setTutorialCompleted] = useState(false);
+  const [showTutorialWelcome, setShowTutorialWelcome] = useState(false);
+  const [tutorialInvestmentMade, setTutorialInvestmentMade] = useState(false);
+  const [tutorialFirstPurchase, setTutorialFirstPurchase] = useState(false);
+  const [tutorialSecondPurchase, setTutorialSecondPurchase] = useState(false);
+  const [previousReturnRate, setPreviousReturnRate] = useState(0.30);
 
   const STORAGE_KEY = 'naijaWealthSim_gameState';
+  const TUTORIAL_KEY = 'naijaWealthSim_tutorialCompleted';
 
   const saveGameState = () => {
     const gameState = {
@@ -80,6 +91,36 @@ export default function NaijaWealthSim() {
     }
   };
 
+  const checkTutorial = () => {
+    const completed = localStorage.getItem(TUTORIAL_KEY);
+    if (!completed) {
+      setShowTutorialWelcome(true);
+    } else {
+      setTutorialCompleted(true);
+    }
+  };
+
+  const startTutorial = () => {
+    setShowTutorialWelcome(false);
+    setTutorialActive(true);
+    setTutorialStep(1);
+  };
+
+  const skipTutorial = () => {
+    setShowTutorialWelcome(false);
+    setTutorialActive(false);
+    setTutorialStep(0);
+    localStorage.setItem(TUTORIAL_KEY, 'true');
+    setTutorialCompleted(true);
+  };
+
+  const completeTutorial = () => {
+    setTutorialActive(false);
+    setTutorialStep(0);
+    localStorage.setItem(TUTORIAL_KEY, 'true');
+    setTutorialCompleted(true);
+  };
+
   const items = [
     { id: 1, name: 'iPhone 15 Pro Max', price: 2500000, cat: 'Gadgets', img: iphoneImg, m: 50000 },
     { id: 2, name: 'MacBook Pro M3', price: 4800000, cat: 'Gadgets', img: macbookImg, m: 80000 },
@@ -108,6 +149,7 @@ export default function NaijaWealthSim() {
 
   useEffect(() => {
     loadGameState();
+    checkTutorial();
   }, []);
 
   useEffect(() => {
@@ -119,10 +161,11 @@ export default function NaijaWealthSim() {
   }, [owned]);
 
   useEffect(() => {
-    if (gameOver || accountManager) return;
+    if (gameOver || accountManager || tutorialActive) return;
     const t = setInterval(() => {
       setDecayTimer(p => {
         if (p <= 1) {
+          setPreviousReturnRate(returnRate);
           setReturnRate(c => Math.max(0.00, c - 0.10));
           return 420;
         }
@@ -130,10 +173,10 @@ export default function NaijaWealthSim() {
       });
     }, 1000);
     return () => clearInterval(t);
-  }, [gameOver, accountManager]);
+  }, [gameOver, accountManager, tutorialActive, returnRate]);
 
   useEffect(() => {
-    if (gameOver || accountManager) return;
+    if (gameOver || accountManager || tutorialActive) return;
     const t = setInterval(() => {
       setAdTimer(p => {
         if (p <= 1) {
@@ -145,10 +188,10 @@ export default function NaijaWealthSim() {
       });
     }, 1000);
     return () => clearInterval(t);
-  }, [gameOver, accountManager]);
+  }, [gameOver, accountManager, tutorialActive]);
 
   useEffect(() => {
-    if (gameOver || accountManager) return;
+    if (gameOver || accountManager || tutorialActive) return;
     const t = setInterval(() => {
       setTaxTimer(p => {
         if (p <= 1) {
@@ -163,7 +206,7 @@ export default function NaijaWealthSim() {
       });
     }, 1000);
     return () => clearInterval(t);
-  }, [balance, gameOver, taxRate, maintenance, accountManager]);
+  }, [balance, gameOver, taxRate, maintenance, accountManager, tutorialActive]);
 
   useEffect(() => {
     if (accountManager) return;
@@ -234,6 +277,43 @@ export default function NaijaWealthSim() {
   useEffect(() => {
     checkLevelUp();
   }, [owned, level]);
+
+  // Tutorial progression effects
+  useEffect(() => {
+    // Step 2: Wait for 40M investment
+    if (tutorialActive && tutorialStep === 2 && investments.some(inv => inv.a === 40000000)) {
+      setTutorialInvestmentMade(true);
+    }
+  }, [tutorialActive, tutorialStep, investments]);
+
+  useEffect(() => {
+    // Step 3: Detect returnRate drop from 30% to 20%
+    if (!tutorialActive && !tutorialCompleted && returnRate === 0.20 && previousReturnRate === 0.30 && !tutorialFirstPurchase) {
+      setTutorialActive(true);
+      setTutorialStep(3);
+    }
+  }, [tutorialActive, tutorialCompleted, returnRate, previousReturnRate, tutorialFirstPurchase]);
+
+  useEffect(() => {
+    // Step 4: Wait for first purchase (iPhone - id 1)
+    if (tutorialActive && tutorialStep === 4 && purchased.includes(1)) {
+      setTutorialFirstPurchase(true);
+      setTimeout(() => {
+        setTutorialStep(5);
+      }, 2000);
+    }
+  }, [tutorialActive, tutorialStep, purchased]);
+
+  useEffect(() => {
+    // Step 6: Wait for second purchase (MacBook - id 2) or skip
+    if (tutorialActive && tutorialStep === 6 && (purchased.includes(2) || tutorialSecondPurchase)) {
+      setTutorialSecondPurchase(true);
+      setTimeout(() => {
+        setTutorialStep(7);
+        setScreen('home');
+      }, 2000);
+    }
+  }, [tutorialActive, tutorialStep, purchased, tutorialSecondPurchase]);
 
   const fmt = (n: number) => new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN', minimumFractionDigits: 0 }).format(n);
   const formatTime = (s: number) => `${Math.floor(s / 60)}:${(s % 60).toString().padStart(2, '0')}`;
@@ -507,8 +587,8 @@ export default function NaijaWealthSim() {
               <div className="text-3xl font-bold mb-2">{fmt(balance)}</div>
               <div className="text-sm">Returns: {(returnRate * 100).toFixed(0)}%</div>
             </div>
-            <div className="grid grid-cols-3 gap-3">
-              {[1000000, 10000000, 100000000].map(a => (
+            <div className="grid grid-cols-2 gap-3">
+              {[1000000, 10000000, 40000000, 100000000].map(a => (
                 <button 
                   key={a} 
                   onClick={() => invest(a)} 
@@ -726,17 +806,37 @@ export default function NaijaWealthSim() {
             { id: 'luxury', icon: ShoppingBag, label: 'Store' },
             { id: 'portfolio', icon: PieChart, label: 'Portfolio' },
             { id: 'profile', icon: User, label: 'Profile' },
-          ].map(({ id, icon: Icon, label }) => (
-            <button 
-              key={id} 
-              onClick={() => setScreen(id)} 
-              className={`flex flex-col items-center gap-1 transition-colors ${screen === id ? 'text-primary' : 'text-muted-foreground'}`}
-              data-testid={`nav-${id}`}
-            >
-              <Icon className="w-5 h-5" />
-              <span className="text-xs">{label}</span>
-            </button>
-          ))}
+          ].map(({ id, icon: Icon, label }) => {
+            const isHighlighted = tutorialActive && ((tutorialStep === 1 && id === 'invest'));
+            const isDisabled = tutorialActive && tutorialStep === 1 && id !== 'invest';
+            
+            return (
+              <button 
+                key={id} 
+                onClick={() => {
+                  if (isDisabled) return;
+                  setScreen(id);
+                  if (tutorialActive && tutorialStep === 1 && id === 'invest') {
+                    setTutorialStep(2);
+                  }
+                }}
+                className={`flex flex-col items-center gap-1 transition-colors relative ${
+                  screen === id ? 'text-primary' : 
+                  isDisabled ? 'text-muted-foreground/30' : 
+                  'text-muted-foreground'
+                } ${isHighlighted ? 'animate-pulse' : ''}`}
+                style={isHighlighted ? { zIndex: 100 } : undefined}
+                data-testid={`nav-${id}`}
+                disabled={isDisabled}
+              >
+                <Icon className="w-5 h-5" />
+                <span className="text-xs">{label}</span>
+                {isHighlighted && (
+                  <div className="absolute -top-2 -right-2 w-3 h-3 bg-primary rounded-full animate-ping" />
+                )}
+              </button>
+            );
+          })}
         </div>
       </nav>
 
@@ -945,6 +1045,245 @@ export default function NaijaWealthSim() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* TUTORIAL: Welcome Modal (Step 1) */}
+      {showTutorialWelcome && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-6" style={{ zIndex: 100 }}>
+          <div className="bg-card rounded-2xl p-8 max-w-sm w-full border border-card-border">
+            <div className="text-6xl mb-4 text-center">🎮</div>
+            <h2 className="text-2xl font-bold mb-3 text-center">Welcome to Naija Wealth Sim!</h2>
+            <p className="text-center text-muted-foreground mb-6">
+              Let's learn how to play. Follow the guide and become a wealth master!
+            </p>
+            <div className="flex flex-col gap-3">
+              <button 
+                onClick={startTutorial}
+                className="w-full bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-3 rounded-xl font-semibold hover-elevate active-elevate-2"
+                data-testid="button-start-tutorial"
+              >
+                Start Tutorial
+              </button>
+              <button 
+                onClick={skipTutorial}
+                className="w-full bg-muted text-muted-foreground py-2 rounded-xl text-sm hover-elevate active-elevate-2"
+                data-testid="button-skip-tutorial"
+              >
+                Skip Tutorial
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TUTORIAL: Tutorial Overlay & Tooltips */}
+      {tutorialActive && (
+        <>
+          {/* Overlay */}
+          <div className="fixed inset-0 bg-black/60" style={{ zIndex: 90 }} />
+          
+          {/* Skip Button */}
+          <button 
+            onClick={skipTutorial}
+            className="fixed top-4 right-4 bg-muted text-muted-foreground px-4 py-2 rounded-lg text-sm hover-elevate active-elevate-2"
+            style={{ zIndex: 100 }}
+            data-testid="button-skip-tutorial-active"
+          >
+            Skip Tutorial
+          </button>
+
+          {/* Step 2: Investment Guide */}
+          {tutorialStep === 1 && (
+            <div className="fixed inset-0 flex items-center justify-center p-6" style={{ zIndex: 95 }}>
+              <div className="bg-card rounded-2xl p-6 max-w-sm w-full border border-primary shadow-2xl">
+                <div className="text-4xl mb-3 text-center">💰</div>
+                <h3 className="text-xl font-bold mb-2 text-center">Make Your First Investment</h3>
+                <p className="text-center text-muted-foreground mb-4">
+                  Click the "Invest" button below to start making money!
+                </p>
+                <div className="text-sm text-center bg-chart-2/20 border border-chart-2/30 rounded-lg p-3">
+                  👇 Look for the <strong className="text-primary">Invest</strong> button in the navigation bar
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Step 2 continued: After clicking Invest, show investment amount guide */}
+          {tutorialStep === 2 && screen === 'invest' && !tutorialInvestmentMade && (
+            <div className="fixed inset-0 flex items-center justify-center p-6" style={{ zIndex: 95 }}>
+              <div className="bg-card rounded-2xl p-6 max-w-sm w-full border border-primary shadow-2xl">
+                <div className="text-4xl mb-3 text-center">🎯</div>
+                <h3 className="text-xl font-bold mb-2 text-center">Invest ₦40M Now!</h3>
+                <p className="text-center text-muted-foreground mb-4">
+                  Tap the <strong>₦40M</strong> button and wait 60 seconds for 30% profit!
+                </p>
+                <div className="text-sm text-center bg-chart-3/20 border border-chart-3/30 rounded-lg p-3">
+                  ⏱️ Investments mature in 60 seconds with <strong className="text-primary">30% returns!</strong>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Step 2 waiting: Investment made, waiting for returns */}
+          {tutorialStep === 2 && tutorialInvestmentMade && (
+            <div className="fixed bottom-24 left-0 right-0 flex justify-center p-6" style={{ zIndex: 95 }}>
+              <div className="bg-card rounded-xl p-4 border border-primary shadow-2xl max-w-sm">
+                <p className="text-center text-sm">
+                  ✅ Great! Now wait for your returns... ⏱️
+                  <br />
+                  <span className="text-muted-foreground text-xs">Tutorial will continue automatically</span>
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Step 3: Decay Warning */}
+          {tutorialStep === 3 && (
+            <div className="fixed inset-0 flex items-center justify-center p-6" style={{ zIndex: 95 }}>
+              <div className="bg-card rounded-2xl p-6 max-w-sm w-full border border-chart-5 shadow-2xl">
+                <div className="text-5xl mb-3 text-center">⚠️</div>
+                <h3 className="text-xl font-bold mb-2 text-center text-chart-5">Profit Rate Dropped!</h3>
+                <p className="text-center text-muted-foreground mb-4">
+                  Your profit rate dropped to <strong className="text-destructive">20%</strong>! 
+                  Buy an item to restore it to <strong className="text-primary">30%</strong>!
+                </p>
+                <button
+                  onClick={() => { setTutorialStep(4); setScreen('luxury'); }}
+                  className="w-full bg-chart-5 text-white py-3 rounded-xl font-semibold hover-elevate active-elevate-2"
+                  data-testid="button-tutorial-go-store"
+                >
+                  Go to Store
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Step 4: First Purchase Guide */}
+          {tutorialStep === 4 && screen === 'luxury' && !tutorialFirstPurchase && (
+            <div className="fixed bottom-24 left-0 right-0 flex justify-center p-6" style={{ zIndex: 95 }}>
+              <div className="bg-card rounded-xl p-6 border border-primary shadow-2xl max-w-sm">
+                <div className="text-3xl mb-2 text-center">👆</div>
+                <p className="text-center text-sm font-semibold mb-2">Buy the iPhone!</p>
+                <p className="text-center text-xs text-muted-foreground">
+                  Purchase the <strong>iPhone 15 Pro Max</strong> to restore your 30% profit rate!
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Step 5: Second Purchase with Balance Warning */}
+          {tutorialStep === 5 && screen === 'luxury' && (
+            <div className="fixed inset-0 flex items-center justify-center p-6" style={{ zIndex: 95 }}>
+              <div className="bg-card rounded-2xl p-6 max-w-sm w-full border border-primary shadow-2xl">
+                <div className="text-4xl mb-3 text-center">💡</div>
+                <h3 className="text-xl font-bold mb-3 text-center">Ready for Another Purchase?</h3>
+                <div className="bg-destructive/20 border-2 border-destructive rounded-lg p-4 mb-4">
+                  <p className="text-sm font-semibold text-destructive mb-2">⚠️ IMPORTANT RULE:</p>
+                  <p className="text-sm text-foreground">
+                    Always keep at least <strong className="text-destructive">₦11M</strong> in your balance!
+                    Never go below ₦11M or you risk losing the game!
+                  </p>
+                </div>
+                {balance >= (Math.floor(items[1].price * 1.25) + 11000000) ? (
+                  <>
+                    <div className="text-sm bg-muted rounded-lg p-3 mb-4">
+                      <div className="flex justify-between mb-1">
+                        <span>Your balance:</span>
+                        <span className="font-semibold">{fmt(balance)}</span>
+                      </div>
+                      <div className="flex justify-between mb-1">
+                        <span>MacBook cost:</span>
+                        <span className="font-semibold">{fmt(Math.floor(items[1].price * 1.25))}</span>
+                      </div>
+                      <div className="flex justify-between border-t border-border pt-1">
+                        <span>Balance after:</span>
+                        <span className="font-semibold text-primary">{fmt(balance - Math.floor(items[1].price * 1.25))} ✅</span>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setTutorialStep(6)}
+                      className="w-full bg-primary text-primary-foreground py-3 rounded-xl font-semibold hover-elevate active-elevate-2"
+                    >
+                      Got it! Continue
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <div className="text-sm bg-destructive/20 rounded-lg p-3 mb-4 text-destructive">
+                      ❌ Not enough balance! This would drop you below ₦11M. Skip this for now.
+                    </div>
+                    <button
+                      onClick={() => { setTutorialSecondPurchase(true); setTutorialStep(7); setScreen('home'); }}
+                      className="w-full bg-muted text-foreground py-3 rounded-xl font-semibold hover-elevate active-elevate-2"
+                    >
+                      Skip & Continue
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Step 7: Account Manager Feature */}
+          {tutorialStep === 7 && screen === 'home' && (
+            <div className="fixed bottom-32 left-0 right-0 flex justify-center p-6" style={{ zIndex: 95 }}>
+              <div className="bg-card rounded-xl p-6 border border-chart-2 shadow-2xl max-w-sm">
+                <div className="text-3xl mb-2 text-center">💡</div>
+                <h4 className="font-bold mb-2 text-center">Pro Tip: Account Manager</h4>
+                <p className="text-sm text-center text-muted-foreground mb-3">
+                  Use the <strong className="text-primary">Account Manager</strong> (shield icon) to pause all timers when you need a break!
+                </p>
+                <div className="text-xs bg-muted rounded-lg p-2 mb-3 text-center">
+                  Cost: ₦20M • Pauses taxes & decay
+                </div>
+                <button
+                  onClick={() => setTutorialStep(8)}
+                  className="w-full bg-chart-2 text-white py-2 rounded-xl font-semibold hover-elevate active-elevate-2"
+                >
+                  Got it!
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Step 8: Tutorial Complete */}
+          {tutorialStep === 8 && (
+            <div className="fixed inset-0 flex items-center justify-center p-6" style={{ zIndex: 95 }}>
+              <div className="bg-card rounded-2xl p-8 max-w-sm w-full border border-primary shadow-2xl">
+                <div className="text-6xl mb-4 text-center">🎉</div>
+                <h2 className="text-2xl font-bold mb-3 text-center">Tutorial Complete!</h2>
+                <p className="text-center text-muted-foreground mb-6">
+                  You're ready to get rich! Here's what you learned:
+                </p>
+                <div className="space-y-2 mb-6 text-sm">
+                  <div className="flex items-start gap-2">
+                    <span className="text-primary">•</span>
+                    <span>Invest regularly for 30% returns</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-primary">•</span>
+                    <span>Buy items to restore profit rate</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-primary">•</span>
+                    <span>Always keep ₦11M+ in balance</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-primary">•</span>
+                    <span>Use Account Manager when needed</span>
+                  </div>
+                </div>
+                <button
+                  onClick={completeTutorial}
+                  className="w-full bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-3 rounded-xl font-semibold hover-elevate active-elevate-2"
+                  data-testid="button-complete-tutorial"
+                >
+                  Start Playing! 💰
+                </button>
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
