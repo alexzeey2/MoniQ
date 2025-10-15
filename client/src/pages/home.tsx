@@ -21,7 +21,17 @@ import luxuryYachtImg from '@assets/Luxury_Yacht_1760488589022.png';
 import megaYachtImg from '@assets/Mega_Yacht_1760488589112.png';
 import superyachtImg from '@assets/Superyacht_1760488589340.png';
 
-export default function NaijaWealthSim() {
+interface NaijaWealthSimProps {
+  onReturnToWelcome: () => void;
+}
+
+export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProps) {
+  // Player data
+  const [playerName, setPlayerName] = useState('');
+  const [playerCountry, setPlayerCountry] = useState('Nigeria');
+  const [currency, setCurrency] = useState('₦');
+  const [conversionRate, setConversionRate] = useState(1);
+
   const [screen, setScreen] = useState('home');
   const [balance, setBalance] = useState(50000000);
   const [investments, setInvestments] = useState<Array<{id: number, a: number, t: number, r: number}>>([]);
@@ -56,6 +66,7 @@ export default function NaijaWealthSim() {
 
   const STORAGE_KEY = 'naijaWealthSim_gameState';
   const TUTORIAL_KEY = 'naijaWealthSim_tutorialCompleted';
+  const PLAYER_DATA_KEY = 'naijaWealthSim_playerData';
 
   const saveGameState = () => {
     const gameState = {
@@ -148,6 +159,20 @@ export default function NaijaWealthSim() {
   useEffect(() => {
     loadGameState();
     checkTutorial();
+    
+    // Load player data
+    const savedPlayerData = localStorage.getItem(PLAYER_DATA_KEY);
+    if (savedPlayerData) {
+      try {
+        const data = JSON.parse(savedPlayerData);
+        setPlayerName(data.playerName || '');
+        setPlayerCountry(data.playerCountry || 'Nigeria');
+        setCurrency(data.currency || '₦');
+        setConversionRate(data.conversionRate || 1);
+      } catch (error) {
+        console.error('Failed to load player data:', error);
+      }
+    }
   }, []);
 
   useEffect(() => {
@@ -249,7 +274,7 @@ export default function NaijaWealthSim() {
   };
 
   const checkLevelUp = () => {
-    const totalItemsInGame = 21;
+    const totalItemsInGame = 20;
     if (owned.length === totalItemsInGame && level < 10) {
       setShowLevelUp(true);
     }
@@ -313,7 +338,10 @@ export default function NaijaWealthSim() {
     }
   }, [tutorialActive, tutorialStep, purchased, tutorialSecondPurchase]);
 
-  const fmt = (n: number) => new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN', minimumFractionDigits: 0 }).format(n);
+  const fmt = (n: number) => {
+    const convertedAmount = Math.round(n * conversionRate);
+    return `${currency}${new Intl.NumberFormat('en-US').format(convertedAmount)}`;
+  };
   const formatTime = (s: number) => `${Math.floor(s / 60)}:${(s % 60).toString().padStart(2, '0')}`;
 
   const invest = (amt: number) => {
@@ -347,23 +375,22 @@ export default function NaijaWealthSim() {
   };
 
   const handleRestart = () => {
+    // Clear game data but keep player data
     localStorage.removeItem(STORAGE_KEY);
-    setBalance(50000000);
-    setInvestments([]);
-    setOwned([]);
-    setPurchased([]);
-    setReturnRate(0.30);
-    setDecayTimer(420);
     setGameOver(false);
-    setAccountManager(false);
-    setManagerCost(20000000);
-    setLevel(1);
-    setTaxTimer(30);
-    setMaintenance(0);
-    setAdTimer(60);
-    setShowAd(false);
     setShowAdSimulation(false);
-    setAdCountdown(30);
+    
+    // Return to welcome page (player data will be pre-filled)
+    onReturnToWelcome();
+  };
+
+  const changePlayer = () => {
+    // Clear both game data and player data
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(PLAYER_DATA_KEY);
+    
+    // Return to welcome page
+    onReturnToWelcome();
   };
 
   const handleContinueWithAd = () => {
@@ -720,6 +747,25 @@ export default function NaijaWealthSim() {
         {screen === 'profile' && (
           <div className="p-6 space-y-4">
             <h2 className="text-2xl font-bold mb-2">Profile</h2>
+            
+            {/* Player Info Card */}
+            <div className="bg-gradient-to-br from-emerald-500/10 to-blue-500/10 rounded-2xl p-4 border border-emerald-200/20">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-sm text-muted-foreground mb-1">Player</div>
+                  <div className="text-lg font-bold">{playerName}</div>
+                  <div className="text-sm text-muted-foreground">{playerCountry} • {currency}</div>
+                </div>
+                <button
+                  onClick={changePlayer}
+                  className="px-3 py-1.5 bg-muted hover-elevate active-elevate-2 rounded-lg text-sm font-medium"
+                  data-testid="button-change-player"
+                >
+                  Change Player
+                </button>
+              </div>
+            </div>
+            
             <div className="bg-gradient-to-br from-muted to-muted/80 rounded-2xl p-6 text-foreground">
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-16 h-16 bg-gradient-to-br from-primary/40 to-primary rounded-full flex items-center justify-center text-2xl">
@@ -743,7 +789,7 @@ export default function NaijaWealthSim() {
                 </div>
                 <div className="bg-card/30 rounded-lg p-2">
                   <div className="text-muted-foreground">Items</div>
-                  <div className="font-bold text-lg">{owned.length}/21</div>
+                  <div className="font-bold text-lg">{owned.length}/20</div>
                 </div>
                 <div className="bg-card/30 rounded-lg p-2">
                   <div className="text-muted-foreground">Maintenance</div>
