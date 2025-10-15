@@ -1,10 +1,10 @@
-# NaijaWealthSim - Nigerian Wealth Simulation Game
+# NaijaWealthSim (Sọ́ágỌ́) - Wealth Simulation Game
 
 ## Overview
 
-NaijaWealthSim is a mobile-first wealth simulation game where players start with ₦50M and build their fortune through strategic investments and luxury purchases. The game features a dynamic economy with taxes, maintenance costs, and decay mechanics. Players navigate high-stakes decisions including game-over scenarios with ad-based continuation options.
+NaijaWealthSim (branded as "Sọ́ágỌ́") is a mobile-first wealth simulation game where players start with ₦50M (or currency equivalent) and build their fortune through strategic investments and luxury purchases. The game features a welcome/signup system with dynamic currency conversion, a progressive economy with taxes, maintenance costs, and decay mechanics. Players navigate high-stakes decisions including game-over scenarios with ad-based continuation options.
 
-The application is built as a single-page React application with Express.js backend, designed specifically for mobile devices (max-width: 448px) with a Nigerian cultural context featuring local currency, luxury items, and lifestyle elements.
+The application is built as a single-page React application with Express.js backend, designed specifically for mobile devices (max-width: 448px) with international support through currency conversion (Nigeria: ₦ Naira, Others: $ at 1:1500 rate).
 
 ## User Preferences
 
@@ -82,12 +82,24 @@ Preferred communication style: Simple, everyday language.
 
 ### Game Mechanics Architecture
 
+**Welcome & Player Onboarding**
+- Welcome/signup page shown on first visit (client/src/pages/welcome.tsx)
+- Player information collection: name and country selection
+- Dynamic currency conversion based on country:
+  - Nigeria: ₦ (Naira) with 1:1 conversion rate
+  - Other countries: $ (Dollar) with 1:1500 conversion rate
+- Player data persisted in localStorage (key: 'naijaWealthSim_playerData')
+- Returning players: skip welcome if player data exists
+- Game over flow: clear game data, keep player info, return to welcome with pre-filled fields
+- "Change Player" feature in profile to switch accounts
+
 **Core Game State**
-- Balance tracking (starting at ₦50M)
+- Balance tracking (starting at ₦50M or $33,333 for non-Nigeria)
 - Investment system with amount, timestamp, and return rate
 - Owned items array with purchase tracking
 - Timer-based mechanics (tax timer, decay timer, ad timer)
 - Level progression system with level-up notifications
+- All amounts displayed using player's currency with conversion applied via fmt() function
 
 **Economic Systems**
 - Fixed 25% tax rate on balance
