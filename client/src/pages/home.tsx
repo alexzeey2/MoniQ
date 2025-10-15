@@ -551,7 +551,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                 <div className="flex-1">
                   <div className="font-semibold text-foreground text-sm">Living Expenses</div>
                   <div className="text-muted-foreground text-xs mt-1">
-                    25% of balance deducted every 30s. Keep above ₦5M!
+                    25% of balance deducted every 30s. Keep above {currency}{Math.round(5000000 * conversionRate / (conversionRate === 1 ? 1000000 : 1000))}{conversionRate === 1 ? 'M' : 'K'}!
                   </div>
                 </div>
               </div>
@@ -621,7 +621,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                   className="py-6 font-semibold bg-card border-2 border-card-border rounded-xl disabled:opacity-50 hover-elevate active-elevate-2"
                   data-testid={`button-invest-${a}`}
                 >
-                  ₦{a / 1000000}M
+                  {currency}{Math.round(a * conversionRate / (conversionRate === 1 ? 1000000 : 1000))}{conversionRate === 1 ? 'M' : 'K'}
                 </button>
               ))}
             </div>
@@ -953,7 +953,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
             <div className="text-6xl mb-4 text-center">💸</div>
             <h2 className="text-2xl font-bold mb-2 text-center text-foreground">Game Over!</h2>
             <p className="text-sm text-center text-muted-foreground mb-6">
-              Your balance dropped below ₦5M. Choose your next move:
+              Your balance dropped below {currency}{Math.round(5000000 * conversionRate / (conversionRate === 1 ? 1000000 : 1000))}{conversionRate === 1 ? 'M' : 'K'}. Choose your next move:
             </p>
 
             {/* Consequence Cards */}
@@ -1051,7 +1051,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
             <div className="overflow-y-auto p-6 space-y-4 text-sm">
               <div>
                 <div className="font-bold text-lg mb-2">🎯 Mission</div>
-                <p className="text-muted-foreground">Turn ₦50M into ₦81B! Stay above ₦5M or you lose.</p>
+                <p className="text-muted-foreground">Turn {currency}{Math.round(50000000 * conversionRate / (conversionRate === 1 ? 1000000 : 1000))}{conversionRate === 1 ? 'M' : 'K'} into {currency}{Math.round(81000000000 * conversionRate / (conversionRate === 1 ? 1000000000 : 1000000))}{conversionRate === 1 ? 'B' : 'M'}! Stay above {currency}{Math.round(5000000 * conversionRate / (conversionRate === 1 ? 1000000 : 1000))}{conversionRate === 1 ? 'M' : 'K'} or you lose.</p>
               </div>
               <div>
                 <div className="font-bold text-lg mb-2">💰 Making Money</div>
@@ -1075,7 +1075,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                 <p className="text-muted-foreground">• <strong>When profit drops:</strong> Buy cheap item to restore</p>
                 <p className="text-muted-foreground">• <strong>Don't overspend:</strong> Too many items = high maintenance</p>
                 <p className="text-muted-foreground">• <strong>Never reach 0%:</strong> At 0% profit, you can't earn and will lose!</p>
-                <p className="text-muted-foreground">• <strong>Keep buffer:</strong> Stay above ₦10M to be safe</p>
+                <p className="text-muted-foreground">• <strong>Keep buffer:</strong> Stay above {currency}{Math.round(10000000 * conversionRate / (conversionRate === 1 ? 1000000 : 1000))}{conversionRate === 1 ? 'M' : 'K'} to be safe</p>
               </div>
             </div>
             <div className="p-4 border-t border-border">
@@ -1157,9 +1157,9 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
             <div className="fixed inset-0 flex items-center justify-center p-6" style={{ zIndex: 95 }}>
               <div className="bg-card rounded-2xl p-6 max-w-sm w-full border border-primary shadow-2xl">
                 <div className="text-4xl mb-3 text-center">🎯</div>
-                <h3 className="text-xl font-bold mb-2 text-center">Invest ₦40M Now!</h3>
+                <h3 className="text-xl font-bold mb-2 text-center">Invest {currency}{Math.round(40000000 * conversionRate / (conversionRate === 1 ? 1000000 : 1000))}{conversionRate === 1 ? 'M' : 'K'} Now!</h3>
                 <p className="text-center text-muted-foreground mb-4">
-                  Tap the <strong>₦40M</strong> button and wait 60 seconds for 30% profit!
+                  Tap the <strong>{currency}{Math.round(40000000 * conversionRate / (conversionRate === 1 ? 1000000 : 1000))}{conversionRate === 1 ? 'M' : 'K'}</strong> button and wait 60 seconds for 30% profit!
                 </p>
                 <div className="text-sm text-center bg-chart-3/20 border border-chart-3/30 rounded-lg p-3">
                   ⏱️ Investments mature in 60 seconds with <strong className="text-primary">30% returns!</strong>
@@ -1224,8 +1224,8 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                 <div className="bg-destructive/20 border-2 border-destructive rounded-lg p-4 mb-4">
                   <p className="text-sm font-semibold text-destructive mb-2">⚠️ IMPORTANT RULE:</p>
                   <p className="text-sm text-foreground">
-                    Always keep at least <strong className="text-destructive">₦11M</strong> in your balance!
-                    Never go below ₦11M or you risk losing the game!
+                    Always keep at least <strong className="text-destructive">{currency}{Math.round(11000000 * conversionRate / (conversionRate === 1 ? 1000000 : 1000))}{conversionRate === 1 ? 'M' : 'K'}</strong> in your balance!
+                    Never go below {currency}{Math.round(11000000 * conversionRate / (conversionRate === 1 ? 1000000 : 1000))}{conversionRate === 1 ? 'M' : 'K'} or you risk losing the game!
                   </p>
                 </div>
                 {balance >= (Math.floor(items[1].price * 1.25) + 11000000) ? (
@@ -1254,7 +1254,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                 ) : (
                   <>
                     <div className="text-sm bg-destructive/20 rounded-lg p-3 mb-4 text-destructive">
-                      ❌ Not enough balance! This would drop you below ₦11M. Skip this for now.
+                      ❌ Not enough balance! This would drop you below {currency}{Math.round(11000000 * conversionRate / (conversionRate === 1 ? 1000000 : 1000))}{conversionRate === 1 ? 'M' : 'K'}. Skip this for now.
                     </div>
                     <button
                       onClick={() => { setTutorialSecondPurchase(true); setTutorialStep(7); setScreen('home'); }}
@@ -1278,7 +1278,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                   Use the <strong className="text-primary">Account Manager</strong> (shield icon) to pause all timers when you need a break!
                 </p>
                 <div className="text-xs bg-muted rounded-lg p-2 mb-3 text-center">
-                  Cost: ₦20M • Pauses taxes & decay
+                  Cost: {currency}{Math.round(20000000 * conversionRate / (conversionRate === 1 ? 1000000 : 1000))}{conversionRate === 1 ? 'M' : 'K'} • Pauses taxes & decay
                 </div>
                 <button
                   onClick={() => setTutorialStep(8)}
@@ -1310,7 +1310,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                   </div>
                   <div className="flex items-start gap-2">
                     <span className="text-primary">•</span>
-                    <span>Always keep ₦11M+ in balance</span>
+                    <span>Always keep {currency}{Math.round(11000000 * conversionRate / (conversionRate === 1 ? 1000000 : 1000))}{conversionRate === 1 ? 'M' : 'K'}+ in balance</span>
                   </div>
                   <div className="flex items-start gap-2">
                     <span className="text-primary">•</span>
