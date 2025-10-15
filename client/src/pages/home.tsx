@@ -4,7 +4,6 @@ import iphoneImg from '@assets/Iphone 15 Pro Max_1760488588844.png';
 import macbookImg from '@assets/MacBook Pro M3_1760488589069.png';
 import visionProImg from '@assets/Apple Vision Pro_1760488588518.png';
 import watchImg from '@assets/Luxury Watch_1760488588988.png';
-import homeTheaterImg from '@assets/stock_images/home_theater_speaker_6a945d7d.jpg';
 import mercedesImg from '@assets/Mercedes G-wagon_1760488589156.png';
 import lamborghiniImg from '@assets/Lamborghini Urus_1760488588886.png';
 import rollsRoyceImg from '@assets/Rolls Royce_1760488589256.png';
@@ -126,7 +125,6 @@ export default function NaijaWealthSim() {
     { id: 2, name: 'MacBook Pro M3', price: 4800000, cat: 'Gadgets', img: macbookImg, m: 80000 },
     { id: 3, name: 'Apple Vision Pro', price: 6500000, cat: 'Gadgets', img: visionProImg, m: 120000 },
     { id: 4, name: 'Luxury Watch', price: 25000000, cat: 'Gadgets', img: watchImg, m: 300000 },
-    { id: 5, name: 'Home Theater', price: 45000000, cat: 'Gadgets', img: homeTheaterImg, m: 500000 },
     { id: 6, name: 'Mercedes G-Wagon', price: 120000000, cat: 'Cars', img: mercedesImg, m: 1500000 },
     { id: 7, name: 'Lamborghini Urus', price: 250000000, cat: 'Cars', img: lamborghiniImg, m: 3000000 },
     { id: 8, name: 'Rolls Royce', price: 450000000, cat: 'Cars', img: rollsRoyceImg, m: 5500000 },
