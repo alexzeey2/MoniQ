@@ -861,7 +861,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
               <div className="bg-destructive/10 border border-destructive/30 rounded-xl p-4 text-center">
                 <div className="text-3xl mb-2">🔄</div>
                 <div className="font-semibold text-sm text-foreground mb-1">Restart</div>
-                <div className="text-xs text-destructive">Start fresh from Level 1</div>
+                <div className="text-xs text-destructive">Start fresh with {currency}{Math.round(50000000 * conversionRate / (conversionRate === 1 ? 1000000 : 1000))}{conversionRate === 1 ? 'M' : 'K'}</div>
               </div>
               <div className="bg-primary/10 border border-primary/30 rounded-xl p-4 text-center">
                 <div className="text-3xl mb-2">📺</div>
@@ -951,7 +951,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
             <div className="overflow-y-auto p-6 space-y-4 text-sm">
               <div>
                 <div className="font-bold text-lg mb-2">🎯 Game Objective</div>
-                <p className="text-muted-foreground mb-2">Master all 10 levels by buying ALL 20 luxury items in each level!</p>
+                <p className="text-muted-foreground mb-2">Build your wealth by buying ALL 20 luxury items!</p>
                 <p className="text-muted-foreground">Start: {currency}{Math.round(50000000 * conversionRate / (conversionRate === 1 ? 1000000 : 1000))}{conversionRate === 1 ? 'M' : 'K'} | Lose if balance drops below {currency}{Math.round(5000000 * conversionRate / (conversionRate === 1 ? 1000000 : 1000))}{conversionRate === 1 ? 'M' : 'K'}</p>
               </div>
               
@@ -976,10 +976,10 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
               </div>
               
               <div>
-                <div className="font-bold text-lg mb-2">🏆 Leveling Up</div>
-                <p className="text-muted-foreground mb-2">• Buy ALL 20 items to complete the current level</p>
-                <p className="text-muted-foreground mb-2">• Reach Level 10 to master the game!</p>
-                <p className="text-muted-foreground">• Each level gets harder: +30% item prices, -2% max profit</p>
+                <div className="font-bold text-lg mb-2">🏆 Winning Goal</div>
+                <p className="text-muted-foreground mb-2">• Collect ALL 20 luxury items to win!</p>
+                <p className="text-muted-foreground mb-2">• Keep your balance above the minimum</p>
+                <p className="text-muted-foreground">• Manage investments and expenses wisely</p>
               </div>
               
               <div>
