@@ -21,6 +21,53 @@ import luxuryYachtImg from '@assets/Luxury_Yacht_1760488589022.png';
 import megaYachtImg from '@assets/Mega_Yacht_1760488589112.png';
 import superyachtImg from '@assets/Superyacht_1760488589340.png';
 
+// Sound effect utilities
+const playKaChing = () => {
+  const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+  
+  // Ka-ching sound: multiple tones creating a "cash register" effect
+  const playTone = (frequency: number, startTime: number, duration: number) => {
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    oscillator.frequency.value = frequency;
+    oscillator.type = 'sine';
+    
+    gainNode.gain.setValueAtTime(0.3, startTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
+    
+    oscillator.start(startTime);
+    oscillator.stop(startTime + duration);
+  };
+  
+  const now = audioContext.currentTime;
+  playTone(800, now, 0.1);        // High ding
+  playTone(600, now + 0.05, 0.15); // Mid ding
+  playTone(900, now + 0.1, 0.2);   // Higher ding for that "ching" sound
+};
+
+const playDeposit = () => {
+  const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
+  
+  oscillator.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+  
+  oscillator.frequency.value = 400;
+  oscillator.type = 'sine';
+  
+  const now = audioContext.currentTime;
+  gainNode.gain.setValueAtTime(0.2, now);
+  gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+  
+  oscillator.start(now);
+  oscillator.stop(now + 0.15);
+};
+
 interface NaijaWealthSimProps {
   onReturnToWelcome: () => void;
 }
@@ -243,6 +290,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
       setInvestments(p => p.map(inv => {
         if (inv.t <= 1) {
           setBalance(b => b + Math.floor(inv.a * (1 + inv.r)));
+          playKaChing(); // Ka-ching sound when investment returns!
           return null;
         }
         return { ...inv, t: inv.t - 1 };
@@ -314,6 +362,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
     if (a > balance || a < 1000000 || (balance - a) < 5000000) return;
     setBalance(balance - a);
     setInvestments([...investments, { id: Date.now(), a, t: 60, r: returnRate }]);
+    playDeposit(); // Sound effect for making an investment
   };
 
   const buy = (item: any) => {
