@@ -104,9 +104,10 @@ Preferred communication style: Simple, everyday language.
 **Economic Systems**
 - Fixed 25% tax rate on balance
 - Per-item maintenance costs (stored in item.m property)
-- 30% return rate on investments with decay over time (420s decay timer)
+- 30% return rate on investments with instant decay after 7 minutes
+- Profit decay: Rate stays at 30% for 7 minutes, then drops to 0% instantly
 - Account manager feature (₦20M cost) for tax optimization
-- Investment decay requiring player engagement
+- Investment decay requiring player engagement (buy items to restore profit rate)
 
 **Item Categories**
 - Gadgets (iPhone, MacBook, Vision Pro, luxury watches, home theater)
@@ -136,12 +137,22 @@ Preferred communication style: Simple, everyday language.
   - Calculations: `invested = Σ(investment.amount)`, `returns = Σ(investment.amount × investment.rate)`
 
 **Investment Blocking System (October 2025)**
+- **Profit Decay Mechanics**:
+  - Profit rate stays at 30% for exactly 7 minutes (420 seconds)
+  - After 7 minutes, rate drops to 0% instantly (not gradual decay)
+  - Timer counts down from 420s → 0s, rate stays constant until timer expires
+  
 - **Zero Rate Warning Popup**:
-  - Triggers when profit rate decays to 0% (after 7 minutes without purchases)
+  - Triggers instantly when profit rate drops to 0% (after 7 minute timer expires)
   - Modal displays "Investment Blocked!" warning with explanation
   - Provides "Go to Store" button to help users restore investment ability
   - Dismissible with "Close" button
-  - Investment buttons remain disabled until player buys an item to reset rate to 30%
+  - Investment buttons disabled at 0% with red warning message on invest page
+  
+- **Restoration**:
+  - Buying ANY item from Store instantly resets profit rate back to 30%
+  - Timer resets to 420 seconds (7 minutes)
+  - Warning popup auto-closes when rate is restored
 
 ## External Dependencies
 
