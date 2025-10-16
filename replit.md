@@ -122,12 +122,14 @@ Preferred communication style: Simple, everyday language.
 - Continue option unlocked after watching ad
 - Visual hierarchy emphasizing decision consequences (red for loss, emerald for recovery)
 
-**Portfolio Summary Sections (October 2025)**
-- **Home Page Enhancements**:
-  - Investments section: Shows total invested capital and expected returns with color-coded gains
-  - Next Expenses section: Preview of upcoming living expenses (25%) and item maintenance costs
-  - Simplified UI: Removed profit rate tracking and decay bars for cleaner home screen
-  - Removed duplicate navigation: Invest/Store cube buttons removed (use bottom nav instead)
+**Home Page Design (October 2025)**
+- **Simplified Layout**:
+  - Balance card with level badge and living expenses timer
+  - Account Manager activation/deactivation card
+  - Living Expenses information card (25% every 30s)
+  - "How to Play" button at bottom for easy access
+  - Removed: Profit rate tracking, investments summary, next expenses, item maintenance alerts
+  - Clean focus on balance management and core actions
   
 - **Invest Page Enhancements**:
   - Investment Summary card: Shows total invested capital and expected returns before investment buttons
@@ -153,6 +155,17 @@ Preferred communication style: Simple, everyday language.
   - Buying ANY item from Store instantly resets profit rate back to 30%
   - Timer resets to 420 seconds (7 minutes)
   - Warning popup auto-closes when rate is restored
+
+**"How to Play" Guide (October 2025)**
+- **Updated Content**:
+  - Game Objective: Master 10 levels by buying all 20 items per level
+  - Investment Steps: Clear 4-step process for making investments
+  - Profit Rate System: Explains 30% rate for 7 minutes, then instant 0% drop
+  - Critical warnings about 0% rate blocking investments
+  - Leveling system explained: Buy all 20 items → advance level → harder challenges
+  - Winning strategies: Invest fast, buy items before 7min timer, use Account Manager
+  - Removed: All mentions of gradual decay and item maintenance costs
+  - Located: "How to Play" button at bottom of home page
 
 ## External Dependencies
 
