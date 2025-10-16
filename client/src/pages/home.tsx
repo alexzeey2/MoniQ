@@ -186,15 +186,15 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
 
   useEffect(() => {
     if (gameOver || accountManager || tutorialActive) return;
-    const baseRate = getLevelMultiplier().baseReturnRate;
-    const decayPerSecond = baseRate / 420; // Decay from baseRate to 0 over 7 minutes (420 seconds)
-    
     const t = setInterval(() => {
-      setReturnRate(current => {
-        const newRate = Math.max(0, current - decayPerSecond);
-        return Number(newRate.toFixed(4)); // Prevent floating point issues
+      setDecayTimer(p => {
+        if (p <= 1) {
+          // After 7 minutes (420 seconds), drop rate to 0% instantly
+          setReturnRate(0);
+          return 0;
+        }
+        return p - 1;
       });
-      setDecayTimer(p => Math.max(0, p - 1));
     }, 1000);
     return () => clearInterval(t);
   }, [gameOver, accountManager, tutorialActive]);
