@@ -121,6 +121,18 @@ Preferred communication style: Simple, everyday language.
 - Continue option unlocked after watching ad
 - Visual hierarchy emphasizing decision consequences (red for loss, emerald for recovery)
 
+**Portfolio Summary Sections (October 2025)**
+- **Home Page Enhancements**:
+  - Investments section: Shows total invested capital and expected returns with color-coded gains
+  - Profit Rate section: Displays current return rate percentage and decay timer countdown
+  - Next Expenses section: Preview of upcoming living expenses (25%) and item maintenance costs
+  - All sections use chart-themed color backgrounds (chart-2 for investments, chart-3 for profit, chart-5 for expenses)
+  
+- **Invest Page Enhancements**:
+  - Investment Summary card: Shows total invested capital and expected returns before investment buttons
+  - Provides quick overview of investment portfolio status
+  - Calculations: `invested = Σ(investment.amount)`, `returns = Σ(investment.amount × investment.rate)`
+
 ## External Dependencies
 
 ### UI & Styling
