@@ -124,14 +124,24 @@ Preferred communication style: Simple, everyday language.
 **Portfolio Summary Sections (October 2025)**
 - **Home Page Enhancements**:
   - Investments section: Shows total invested capital and expected returns with color-coded gains
-  - Profit Rate section: Displays current return rate percentage and decay timer countdown
   - Next Expenses section: Preview of upcoming living expenses (25%) and item maintenance costs
-  - All sections use chart-themed color backgrounds (chart-2 for investments, chart-3 for profit, chart-5 for expenses)
+  - Simplified UI: Removed profit rate tracking and decay bars for cleaner home screen
+  - Removed duplicate navigation: Invest/Store cube buttons removed (use bottom nav instead)
   
 - **Invest Page Enhancements**:
   - Investment Summary card: Shows total invested capital and expected returns before investment buttons
-  - Provides quick overview of investment portfolio status
+  - Investment History: Moved from home page, displays all active investments below buttons
+  - Zero-rate protection: Investment buttons disabled when profit rate reaches 0%
+  - Warning message: "Cannot Invest!" alert shown when rate is 0% with instructions to visit Store
   - Calculations: `invested = Σ(investment.amount)`, `returns = Σ(investment.amount × investment.rate)`
+
+**Investment Blocking System (October 2025)**
+- **Zero Rate Warning Popup**:
+  - Triggers when profit rate decays to 0% (after 7 minutes without purchases)
+  - Modal displays "Investment Blocked!" warning with explanation
+  - Provides "Go to Store" button to help users restore investment ability
+  - Dismissible with "Close" button
+  - Investment buttons remain disabled until player buys an item to reset rate to 30%
 
 ## External Dependencies
 
