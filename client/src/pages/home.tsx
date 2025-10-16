@@ -63,6 +63,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
   const [tutorialFirstPurchase, setTutorialFirstPurchase] = useState(false);
   const [tutorialSecondPurchase, setTutorialSecondPurchase] = useState(false);
   const [previousReturnRate, setPreviousReturnRate] = useState(0.30);
+  const [showZeroRateWarning, setShowZeroRateWarning] = useState(false);
 
   const STORAGE_KEY = 'naijaWealthSim_gameState';
   const TUTORIAL_KEY = 'naijaWealthSim_tutorialCompleted';
@@ -197,6 +198,13 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
     }, 1000);
     return () => clearInterval(t);
   }, [gameOver, accountManager, tutorialActive, returnRate]);
+
+  // Show warning popup when profit rate reaches 0%
+  useEffect(() => {
+    if (returnRate === 0 && !gameOver && !accountManager) {
+      setShowZeroRateWarning(true);
+    }
+  }, [returnRate, gameOver, accountManager]);
 
   useEffect(() => {
     if (gameOver || accountManager || tutorialActive) return;
@@ -462,35 +470,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
             </button>
 
             {!accountManager && (
-              <div className={`rounded-xl p-4 border-2 ${returnRate < 0.20 ? 'bg-destructive/10 border-destructive/30' : returnRate < 0.25 ? 'bg-chart-5/10 border-chart-5/30' : 'bg-chart-2/10 border-chart-2/20'}`}>
-                <div className="flex gap-3">
-                  <Zap className="w-5 h-5 mt-0.5" />
-                  <div className="flex-1">
-                    <div className="flex justify-between mb-2 text-sm">
-                      <span className="font-semibold">Investment Profit: {(returnRate * 100).toFixed(0)}%</span>
-                      <span className="text-xs">Weakens in {formatTime(decayTimer)}</span>
-                    </div>
-                    <div className="w-full bg-muted rounded-full h-2 mb-2">
-                      <div className={`h-2 rounded-full transition-all duration-300 ${decayTimer > 300 ? 'bg-primary' : decayTimer > 120 ? 'bg-chart-5' : 'bg-destructive'}`} style={{ width: `${(decayTimer / 420) * 100}%` }}></div>
-                    </div>
-                    <div className="text-xs text-muted-foreground">
-                      {returnRate < 0.30 ? (
-                        <span className="text-chart-5 font-medium">Profit decreased by {((0.30 - returnRate) * 100).toFixed(0)}%! Buy item to restore.</span>
-                      ) : (
-                        <span>Profit decreases -10% every 7 mins. Buy items to reset!</span>
-                      )}
-                    </div>
-                    {returnRate <= 0.10 && (
-                      <div className="mt-2 text-xs bg-destructive/20 border border-destructive/30 rounded px-2 py-1 text-destructive font-medium">
-                        ⚠️ DANGER! At 0% profit you can't earn money and will lose!
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {!accountManager && (
               <div className="bg-chart-2/10 border border-chart-2/20 rounded-xl p-4">
                 <div className="flex items-start gap-3">
                   <div className="text-2xl">👨‍💼</div>
@@ -572,21 +551,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
               </div>
             </div>
 
-            {/* Profit Rate */}
-            <div className="bg-chart-3/10 rounded-xl p-4 border border-chart-3/20">
-              <div className="flex justify-between text-sm mb-2">
-                <span className="text-muted-foreground">Profit Rate</span>
-                <span className="font-semibold">{(returnRate * 100).toFixed(0)}%</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Weakens In</span>
-                <span className="font-semibold">{formatTime(decayTimer)}</span>
-              </div>
-              <div className="text-xs text-muted-foreground mt-2">
-                -10% every 7 minutes
-              </div>
-            </div>
-
             {/* Next Expenses */}
             <div className="bg-chart-5/10 rounded-xl p-4 border border-chart-5/20">
               <div className="text-sm font-semibold text-foreground mb-2">Next Expenses</div>
@@ -601,44 +565,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                 </div>
               </div>
             </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <button 
-                onClick={() => setScreen('invest')} 
-                className="bg-card rounded-xl p-4 shadow border border-card-border hover-elevate active-elevate-2"
-                data-testid="button-nav-invest"
-              >
-                <div className="bg-chart-2/20 w-10 h-10 rounded-xl flex items-center justify-center mb-2">
-                  <TrendingUp className="w-5 h-5 text-chart-2" />
-                </div>
-                <div className="font-semibold">Invest</div>
-                <div className="text-xs text-chart-2 font-bold">{(returnRate * 100).toFixed(0)}%</div>
-              </button>
-              <button 
-                onClick={() => setScreen('luxury')} 
-                className="bg-card rounded-xl p-4 shadow border border-card-border hover-elevate active-elevate-2"
-                data-testid="button-nav-store"
-              >
-                <div className="bg-chart-3/20 w-10 h-10 rounded-xl flex items-center justify-center mb-2">
-                  <ShoppingBag className="w-5 h-5 text-chart-3" />
-                </div>
-                <div className="font-semibold">Store</div>
-                <div className="text-xs text-muted-foreground">Reset power</div>
-              </button>
-            </div>
-
-            {investments.map(inv => (
-              <div key={inv.id} className="bg-card rounded-xl p-4 border border-card-border" data-testid={`investment-${inv.id}`}>
-                <div className="flex justify-between mb-2">
-                  <div>
-                    <div className="text-sm text-muted-foreground">Investment</div>
-                    <div className="font-semibold">{fmt(inv.a)}</div>
-                  </div>
-                  <div className="bg-primary/20 text-primary text-xs px-2 py-1 rounded">+{(inv.r * 100).toFixed(0)}%</div>
-                </div>
-                <div className="text-sm text-muted-foreground">{accountManager ? 'Paused' : `${inv.t}s`}</div>
-              </div>
-            ))}
           </div>
         )}
         
@@ -673,12 +599,26 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
               </div>
             </div>
 
+            {returnRate === 0 && (
+              <div className="bg-destructive/10 border-2 border-destructive/30 rounded-xl p-4">
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-destructive mt-0.5" />
+                  <div>
+                    <div className="font-semibold text-destructive text-sm mb-1">Cannot Invest!</div>
+                    <div className="text-xs text-muted-foreground">
+                      Your profit rate has reached 0%. You must buy an item from the Store to restore your investment ability.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="grid grid-cols-2 gap-3">
               {[1000000, 10000000, 40000000, 100000000].map(a => (
                 <button 
                   key={a} 
                   onClick={() => invest(a)} 
-                  disabled={a > balance || (balance - a) < 5000000} 
+                  disabled={returnRate === 0 || a > balance || (balance - a) < 5000000} 
                   className="py-6 font-semibold bg-card border-2 border-card-border rounded-xl disabled:opacity-50 hover-elevate active-elevate-2"
                   data-testid={`button-invest-${a}`}
                 >
@@ -686,6 +626,20 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                 </button>
               ))}
             </div>
+
+            {/* Investment History */}
+            {investments.map(inv => (
+              <div key={inv.id} className="bg-card rounded-xl p-4 border border-card-border" data-testid={`investment-${inv.id}`}>
+                <div className="flex justify-between mb-2">
+                  <div>
+                    <div className="text-sm text-muted-foreground">Investment</div>
+                    <div className="font-semibold">{fmt(inv.a)}</div>
+                  </div>
+                  <div className="bg-primary/20 text-primary text-xs px-2 py-1 rounded">+{(inv.r * 100).toFixed(0)}%</div>
+                </div>
+                <div className="text-sm text-muted-foreground">{accountManager ? 'Paused' : `${inv.t}s`}</div>
+              </div>
+            ))}
           </div>
         )}
 
@@ -1003,6 +957,49 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                 {level >= 10 ? 'Max Level!' : 'Next Level'}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Zero Rate Warning Modal */}
+      {showZeroRateWarning && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-6" style={{ zIndex: 60 }}>
+          <div className="bg-card rounded-2xl p-8 max-w-sm w-full border-2 border-destructive">
+            <div className="text-6xl mb-4 text-center">⚠️</div>
+            <h2 className="text-2xl font-bold mb-2 text-center text-destructive">Investment Blocked!</h2>
+            <p className="text-sm text-center text-muted-foreground mb-6">
+              Your profit rate has reached 0% after 7 minutes. You cannot make any new investments until you buy an item from the Store to restore your investment power.
+            </p>
+
+            <div className="bg-chart-5/20 border border-chart-5/30 rounded-xl p-4 mb-6">
+              <div className="flex items-start gap-3">
+                <ShoppingBag className="w-5 h-5 text-chart-5 mt-0.5" />
+                <div className="flex-1">
+                  <div className="font-semibold text-foreground text-sm mb-1">What to do:</div>
+                  <div className="text-xs text-muted-foreground">
+                    Visit the Store and purchase any item. This will reset your profit rate back to 30% and unlock investments again.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button 
+              onClick={() => {
+                setShowZeroRateWarning(false);
+                setScreen('luxury');
+              }}
+              className="w-full bg-gradient-to-r from-chart-3 to-chart-5 text-white py-3 rounded-xl font-semibold hover-elevate active-elevate-2"
+              data-testid="button-go-to-store"
+            >
+              Go to Store
+            </button>
+            <button 
+              onClick={() => setShowZeroRateWarning(false)}
+              className="w-full mt-3 bg-muted text-foreground py-3 rounded-xl font-semibold hover-elevate active-elevate-2"
+              data-testid="button-close-warning"
+            >
+              Close
+            </button>
           </div>
         </div>
       )}
