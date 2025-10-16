@@ -49,8 +49,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
   const [decayTimer, setDecayTimer] = useState(420);
   const [adTimer, setAdTimer] = useState(60);
   const [showGuide, setShowGuide] = useState(false);
-  const [level, setLevel] = useState(1);
-  const [showLevelUp, setShowLevelUp] = useState(false);
   const [showAdSimulation, setShowAdSimulation] = useState(false);
   const [adCountdown, setAdCountdown] = useState(30);
   
@@ -75,7 +73,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
       investments,
       owned,
       purchased,
-      level,
       returnRate,
       accountManager,
       managerCost,
@@ -92,7 +89,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
         setInvestments(gameState.investments ?? []);
         setOwned(gameState.owned ?? []);
         setPurchased(gameState.purchased ?? []);
-        setLevel(gameState.level ?? 1);
         setReturnRate(gameState.returnRate ?? 0.30);
         setAccountManager(gameState.accountManager ?? false);
         setManagerCost(gameState.managerCost ?? 20000000);
@@ -178,7 +174,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
 
   useEffect(() => {
     saveGameState();
-  }, [balance, investments, owned, purchased, level, returnRate, accountManager, managerCost]);
+  }, [balance, investments, owned, purchased, returnRate, accountManager, managerCost]);
 
   useEffect(() => {
     setMaintenance(owned.reduce((s, i) => s + i.m, 0));
@@ -269,47 +265,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
     }
   }, [showAdSimulation, adCountdown]);
 
-  const getLevelBadge = (lvl: number) => {
-    const badges = ['🥉', '🥈', '🥇', '💎', '👑', '⭐', '🔥', '💫', '🏆', '🎖️'];
-    return badges[lvl - 1] || '🏅';
-  };
-
-  const getLevelMultiplier = () => {
-    return {
-      itemCostMultiplier: 1 + ((level - 1) * 0.30),
-      maintenanceMultiplier: 1 + ((level - 1) * 0.30),
-      startingBalance: 50000000 * (1 + ((level - 1) * 0.20)),
-      baseReturnRate: 0.30 - ((level - 1) * 0.02)
-    };
-  };
-
-  const checkLevelUp = () => {
-    const totalItemsInGame = 20;
-    if (owned.length === totalItemsInGame && level < 10) {
-      setShowLevelUp(true);
-    }
-  };
-
-  const startNextLevel = () => {
-    const nextLevel = level + 1;
-    
-    setLevel(nextLevel);
-    setBalance(Math.floor(50000000 * (1 + ((nextLevel - 1) * 0.20))));
-    setReturnRate(0.30 - ((nextLevel - 1) * 0.02));
-    setInvestments([]);
-    setOwned([]);
-    setPurchased([]);
-    setTaxTimer(30);
-    setDecayTimer(420);
-    setMaintenance(0);
-    setAccountManager(false);
-    setManagerCost(20000000);
-    setShowLevelUp(false);
-  };
-
-  useEffect(() => {
-    checkLevelUp();
-  }, [owned, level]);
 
   // Tutorial progression effects
   useEffect(() => {
@@ -362,15 +317,12 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
   };
 
   const buy = (item: any) => {
-    const multipliers = getLevelMultiplier();
-    const adjustedPrice = Math.floor(item.price * multipliers.itemCostMultiplier);
-    const cost = Math.floor(adjustedPrice * 1.25);
+    const cost = Math.floor(item.price * 1.25);
     if (cost > balance || (balance - cost) < 5000000) return;
     setBalance(balance - cost);
-    const adjustedMaintenance = Math.floor(item.m * multipliers.maintenanceMultiplier);
-    setOwned([...owned, { ...item, price: adjustedPrice, m: adjustedMaintenance }]);
+    setOwned([...owned, { ...item, price: item.price, m: item.m }]);
     setPurchased([...purchased, item.id]);
-    setReturnRate(getLevelMultiplier().baseReturnRate);
+    setReturnRate(0.30);
     setDecayTimer(420);
   };
 
@@ -429,15 +381,9 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
         {screen === 'home' && (
           <div className="p-6 space-y-4">
             <div className="bg-gradient-to-br from-primary to-primary/80 rounded-2xl p-6 text-primary-foreground shadow-lg">
-              <div className="flex justify-between items-start mb-3">
-                <div>
-                  <div className="text-sm opacity-80 mb-1">Balance</div>
-                  <div className="text-3xl font-bold" data-testid="text-balance">{fmt(balance)}</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-3xl">{getLevelBadge(level)}</div>
-                  <div className="text-xs opacity-80 mt-1">Level {level}</div>
-                </div>
+              <div className="mb-3">
+                <div className="text-sm opacity-80 mb-1">Balance</div>
+                <div className="text-3xl font-bold" data-testid="text-balance">{fmt(balance)}</div>
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-sm bg-white/10 rounded-lg px-3 py-2">
@@ -641,10 +587,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
             </div>
             <div className="space-y-3">
               {items.filter(i => !purchased.includes(i.id) && (selectedCategory === 'All' || i.cat === selectedCategory)).map(i => {
-                const multipliers = getLevelMultiplier();
-                const adjustedPrice = Math.floor(i.price * multipliers.itemCostMultiplier);
-                const adjustedMaintenance = Math.floor(i.m * multipliers.maintenanceMultiplier);
-                const totalCost = Math.floor(adjustedPrice * 1.25);
+                const totalCost = Math.floor(i.price * 1.25);
                 
                 return (
                   <div key={i.id} className="bg-card rounded-xl overflow-hidden border border-card-border" data-testid={`item-${i.id}`}>
@@ -657,7 +600,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                       <div className="flex-1">
                         <div className="font-semibold mb-1">{i.name}</div>
                         <div className="font-bold text-lg mb-1">{fmt(totalCost)}</div>
-                        <div className="text-xs text-chart-5">-{fmt(adjustedMaintenance)}/30s</div>
+                        <div className="text-xs text-chart-5">-{fmt(i.m)}/30s</div>
                       </div>
                       <button 
                         onClick={() => buy(i)} 
@@ -755,16 +698,16 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
               <div className="text-3xl font-bold mb-3">{fmt(balance)}</div>
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div className="bg-card/30 rounded-lg p-2">
-                  <div className="text-muted-foreground">Level</div>
-                  <div className="font-bold text-lg">{getLevelBadge(level)} {level}</div>
-                </div>
-                <div className="bg-card/30 rounded-lg p-2">
                   <div className="text-muted-foreground">Profit Rate</div>
-                  <div className="font-bold text-lg">{(getLevelMultiplier().baseReturnRate * 100).toFixed(0)}%</div>
+                  <div className="font-bold text-lg">{(returnRate * 100).toFixed(0)}%</div>
                 </div>
                 <div className="bg-card/30 rounded-lg p-2">
                   <div className="text-muted-foreground">Items</div>
                   <div className="font-bold text-lg">{owned.length}/20</div>
+                </div>
+                <div className="bg-card/30 rounded-lg p-2">
+                  <div className="text-muted-foreground">Investments</div>
+                  <div className="font-bold text-lg">{investments.length}</div>
                 </div>
                 <div className="bg-card/30 rounded-lg p-2">
                   <div className="text-muted-foreground">Maintenance</div>
@@ -859,67 +802,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
         </div>
       </nav>
 
-      {/* Level Up Modal */}
-      {showLevelUp && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-6" style={{ zIndex: 60 }}>
-          <div className="bg-card rounded-2xl p-8 max-w-sm text-center border border-card-border">
-            <div className="text-6xl mb-4">{getLevelBadge(level + 1)}</div>
-            <h2 className="text-2xl font-bold mb-2 text-foreground">Level {level} Complete!</h2>
-            <p className="text-muted-foreground mb-4">You bought all {owned.length} items! Ready for the next challenge?</p>
-            
-            <div className="bg-gradient-to-br from-chart-3/20 to-chart-2/20 rounded-xl p-4 mb-6 text-left border border-chart-3/30">
-              <div className="font-semibold text-foreground mb-3">Level {level + 1} Changes:</div>
-              <div className="space-y-2 text-sm text-muted-foreground">
-                <div className="flex justify-between">
-                  <span>Starting Balance:</span>
-                  <span className="font-semibold text-primary">+20%</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Item Prices:</span>
-                  <span className="font-semibold text-chart-5">+30%</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Maintenance:</span>
-                  <span className="font-semibold text-chart-5">+30%</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Max Profit:</span>
-                  <span className="font-semibold text-destructive">-2%</span>
-                </div>
-              </div>
-              <div className="mt-3 text-xs text-chart-3">
-                New max profit: {((getLevelMultiplier().baseReturnRate - 0.02) * 100).toFixed(0)}%
-              </div>
-            </div>
-
-            {level >= 10 && (
-              <div className="mb-6">
-                <div className="text-4xl mb-2">🏆</div>
-                <div className="font-bold text-xl text-primary">GAME MASTERED!</div>
-                <p className="text-sm text-muted-foreground mt-2">You've conquered all 10 levels!</p>
-              </div>
-            )}
-
-            <div className="flex gap-3">
-              <button 
-                onClick={() => setShowLevelUp(false)} 
-                className="flex-1 bg-muted text-foreground py-3 rounded-xl font-semibold hover-elevate active-elevate-2"
-                data-testid="button-stay-level"
-              >
-                Stay Here
-              </button>
-              <button 
-                onClick={startNextLevel}
-                disabled={level >= 10}
-                className="flex-1 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-3 rounded-xl font-semibold hover-elevate active-elevate-2 disabled:opacity-50"
-                data-testid="button-next-level"
-              >
-                {level >= 10 ? 'Max Level!' : 'Next Level'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Zero Rate Warning Modal */}
       {showZeroRateWarning && (
