@@ -708,8 +708,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
             <h2 className="text-2xl font-bold mb-2">Portfolio</h2>
             <div className="bg-gradient-to-br from-primary to-primary/80 rounded-2xl p-6 text-primary-foreground">
               <div className="text-sm opacity-80 mb-1">Expected Net Worth</div>
-              <div className="text-3xl font-bold mb-2">{fmt(balance + investments.reduce((s, i) => s + i.a, 0) + investments.reduce((s, i) => s + Math.floor(i.a * i.r), 0) - Math.floor(balance * taxRate) - maintenance)}</div>
-              <div className="text-xs opacity-80">Returns: {(returnRate * 100).toFixed(0)}%</div>
+              <div className="text-3xl font-bold">{fmt(balance + investments.reduce((s, i) => s + i.a, 0) + investments.reduce((s, i) => s + Math.floor(i.a * i.r), 0) - Math.floor(balance * taxRate) - maintenance)}</div>
             </div>
             <div className="space-y-3">
               <div className="bg-card rounded-xl p-4 border border-card-border">
@@ -729,19 +728,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                     <span className="text-muted-foreground">Returns</span>
                     <span className="font-semibold text-primary">+{fmt(investments.reduce((s, i) => s + Math.floor(i.a * i.r), 0))}</span>
                   </div>
-                </div>
-              </div>
-              <div className="bg-chart-3/10 rounded-xl p-4 border border-chart-3/20">
-                <div className="flex justify-between text-sm mb-2">
-                  <span className="text-muted-foreground">Profit Rate</span>
-                  <span className="font-semibold">{(returnRate * 100).toFixed(0)}%</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Weakens In</span>
-                  <span className="font-semibold">{formatTime(decayTimer)}</span>
-                </div>
-                <div className="text-xs text-muted-foreground mt-2">
-                  -10% every 7 minutes
                 </div>
               </div>
               <div className="bg-chart-5/10 rounded-xl p-4 border border-chart-5/20">
