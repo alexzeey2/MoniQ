@@ -557,6 +557,51 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
               </div>
             </div>
 
+            {/* Investments Summary */}
+            <div className="bg-chart-2/10 rounded-xl p-4 border border-chart-2/20">
+              <div className="text-sm font-semibold text-foreground mb-2">Investments</div>
+              <div className="space-y-1 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Invested</span>
+                  <span className="font-semibold">{fmt(investments.reduce((s, i) => s + i.a, 0))}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Returns</span>
+                  <span className="font-semibold text-primary">+{fmt(investments.reduce((s, i) => s + Math.floor(i.a * i.r), 0))}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Profit Rate */}
+            <div className="bg-chart-3/10 rounded-xl p-4 border border-chart-3/20">
+              <div className="flex justify-between text-sm mb-2">
+                <span className="text-muted-foreground">Profit Rate</span>
+                <span className="font-semibold">{(returnRate * 100).toFixed(0)}%</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Weakens In</span>
+                <span className="font-semibold">{formatTime(decayTimer)}</span>
+              </div>
+              <div className="text-xs text-muted-foreground mt-2">
+                -10% every 7 minutes
+              </div>
+            </div>
+
+            {/* Next Expenses */}
+            <div className="bg-chart-5/10 rounded-xl p-4 border border-chart-5/20">
+              <div className="text-sm font-semibold text-foreground mb-2">Next Expenses</div>
+              <div className="space-y-1 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Living Expenses (25%)</span>
+                  <span className="font-semibold">-{fmt(Math.floor(balance * taxRate))}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Maintenance</span>
+                  <span className="font-semibold">-{fmt(maintenance)}</span>
+                </div>
+              </div>
+            </div>
+
             <div className="grid grid-cols-2 gap-4">
               <button 
                 onClick={() => setScreen('invest')} 
@@ -612,6 +657,22 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
               <div className="text-3xl font-bold mb-2">{fmt(balance)}</div>
               <div className="text-sm">Returns: {(returnRate * 100).toFixed(0)}%</div>
             </div>
+            
+            {/* Investment Summary */}
+            <div className="bg-chart-2/10 rounded-xl p-4 border border-chart-2/20">
+              <div className="text-sm font-semibold text-foreground mb-2">Investment Summary</div>
+              <div className="space-y-1 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Total Invested</span>
+                  <span className="font-semibold">{fmt(investments.reduce((s, i) => s + i.a, 0))}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Expected Returns</span>
+                  <span className="font-semibold text-primary">+{fmt(investments.reduce((s, i) => s + Math.floor(i.a * i.r), 0))}</span>
+                </div>
+              </div>
+            </div>
+
             <div className="grid grid-cols-2 gap-3">
               {[1000000, 10000000, 40000000, 100000000].map(a => (
                 <button 
