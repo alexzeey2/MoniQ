@@ -122,6 +122,11 @@ Preferred communication style: Simple, everyday language.
 - Continue option unlocked after watching ad
 - Visual hierarchy emphasizing decision consequences (red for loss, emerald for recovery)
 
+**Sound Effects (October 2025)**
+- **Ka-ching Sound**: Plays when investment returns are collected (multi-tone cash register effect)
+- **Deposit Sound**: Plays when making an investment deposit (simple confirmation tone)
+- Both sounds use Web Audio API for programmatic generation
+
 **Home Page Design (October 2025)**
 - **Simplified Layout**:
   - Balance card with living expenses timer
