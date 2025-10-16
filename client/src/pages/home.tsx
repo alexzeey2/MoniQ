@@ -454,23 +454,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
               </div>
             </div>
 
-            <button 
-              onClick={() => setShowGuide(true)} 
-              className="w-full bg-gradient-to-r from-chart-2 to-chart-3 text-white rounded-xl p-4 shadow flex items-center justify-between hover-elevate active-elevate-2"
-              data-testid="button-show-guide"
-            >
-              <div className="flex items-center gap-3">
-                <div className="bg-white/20 rounded-lg p-2 text-2xl">📚</div>
-                <div className="text-left">
-                  <div className="font-bold">How to Play</div>
-                  <div className="text-sm opacity-90">Learn basics & strategies</div>
-                </div>
-              </div>
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-
             {!accountManager && (
               <div className="bg-chart-2/10 border border-chart-2/20 rounded-xl p-4">
                 <div className="flex items-start gap-3">
@@ -514,18 +497,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
               </div>
             )}
 
-            {maintenance > 0 && (
-              <div className="bg-chart-5/10 border border-chart-5/20 rounded-xl p-3">
-                <div className="flex items-start gap-2">
-                  <AlertCircle className="w-4 h-4 text-chart-5 mt-0.5" />
-                  <div>
-                    <div className="text-sm font-semibold text-foreground">Item Maintenance</div>
-                    <div className="text-xs text-muted-foreground">{fmt(maintenance)}/30s for {owned.length} items</div>
-                  </div>
-                </div>
-              </div>
-            )}
-
             <div className="bg-chart-5/10 border border-chart-5/20 rounded-xl p-4">
               <div className="flex items-start gap-3">
                 <AlertCircle className="w-5 h-5 text-chart-5 flex-shrink-0 mt-0.5" />
@@ -538,35 +509,22 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
               </div>
             </div>
 
-            {/* Investments Summary */}
-            <div className="bg-chart-2/10 rounded-xl p-4 border border-chart-2/20">
-              <div className="text-sm font-semibold text-foreground mb-2">Investments</div>
-              <div className="space-y-1 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Invested</span>
-                  <span className="font-semibold">{fmt(investments.reduce((s, i) => s + i.a, 0))}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Returns</span>
-                  <span className="font-semibold text-primary">+{fmt(investments.reduce((s, i) => s + Math.floor(i.a * i.r), 0))}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Next Expenses */}
-            <div className="bg-chart-5/10 rounded-xl p-4 border border-chart-5/20">
-              <div className="text-sm font-semibold text-foreground mb-2">Next Expenses</div>
-              <div className="space-y-1 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Living Expenses (25%)</span>
-                  <span className="font-semibold">-{fmt(Math.floor(balance * taxRate))}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Maintenance</span>
-                  <span className="font-semibold">-{fmt(maintenance)}</span>
+            <button 
+              onClick={() => setShowGuide(true)} 
+              className="w-full bg-gradient-to-r from-chart-2 to-chart-3 text-white rounded-xl p-4 shadow flex items-center justify-between hover-elevate active-elevate-2"
+              data-testid="button-show-guide"
+            >
+              <div className="flex items-center gap-3">
+                <div className="bg-white/20 rounded-lg p-2 text-2xl">📚</div>
+                <div className="text-left">
+                  <div className="font-bold">How to Play</div>
+                  <div className="text-sm opacity-90">Learn the game & win strategies</div>
                 </div>
               </div>
-            </div>
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
           </div>
         )}
         
@@ -1096,32 +1054,45 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
             </div>
             <div className="overflow-y-auto p-6 space-y-4 text-sm">
               <div>
-                <div className="font-bold text-lg mb-2">🎯 Mission</div>
-                <p className="text-muted-foreground">Turn {currency}{Math.round(50000000 * conversionRate / (conversionRate === 1 ? 1000000 : 1000))}{conversionRate === 1 ? 'M' : 'K'} into {currency}{Math.round(81000000000 * conversionRate / (conversionRate === 1 ? 1000000000 : 1000000))}{conversionRate === 1 ? 'B' : 'M'}! Stay above {currency}{Math.round(5000000 * conversionRate / (conversionRate === 1 ? 1000000 : 1000))}{conversionRate === 1 ? 'M' : 'K'} or you lose.</p>
+                <div className="font-bold text-lg mb-2">🎯 Game Objective</div>
+                <p className="text-muted-foreground mb-2">Master all 10 levels by buying ALL 20 luxury items in each level!</p>
+                <p className="text-muted-foreground">Start: {currency}{Math.round(50000000 * conversionRate / (conversionRate === 1 ? 1000000 : 1000))}{conversionRate === 1 ? 'M' : 'K'} | Lose if balance drops below {currency}{Math.round(5000000 * conversionRate / (conversionRate === 1 ? 1000000 : 1000))}{conversionRate === 1 ? 'M' : 'K'}</p>
               </div>
+              
               <div>
-                <div className="font-bold text-lg mb-2">💰 Making Money</div>
-                <p className="text-muted-foreground">Tap "Invest" → Pick amount → Wait 60s → Get 30% profit! Keep reinvesting to grow your wealth faster.</p>
-                <div className="bg-chart-5/20 border border-chart-5/30 rounded-lg p-2 mt-2 text-xs">
-                  <strong>Important:</strong> Your profit % decreases by -10% every 7 minutes. Buy items to reset it back to 30%!
-                </div>
+                <div className="font-bold text-lg mb-2">💰 How to Invest</div>
+                <p className="text-muted-foreground mb-2">1. Go to <strong>Invest</strong> page</p>
+                <p className="text-muted-foreground mb-2">2. Choose investment amount</p>
+                <p className="text-muted-foreground mb-2">3. Wait 60 seconds</p>
+                <p className="text-muted-foreground">4. Receive 30% profit automatically!</p>
               </div>
+              
               <div>
-                <div className="font-bold text-lg mb-2">⚠️ Costs</div>
-                <p className="text-muted-foreground mb-2"><strong>Living Expenses:</strong> 25% of your balance every 30 seconds</p>
-                <p className="text-muted-foreground mb-2"><strong>Investment Profit Weakens:</strong> Your profit drops by -10% every 7 minutes (30% → 20% → 10% → 0%)</p>
-                <p className="text-muted-foreground mb-2"><strong>Item Upkeep:</strong> Each item costs maintenance every 30s</p>
+                <div className="font-bold text-lg mb-2">⚡ Profit Rate System</div>
+                <p className="text-muted-foreground mb-2">Your profit rate starts at <strong>30%</strong> and stays there for <strong>7 minutes</strong>.</p>
                 <div className="bg-destructive/20 border border-destructive/30 rounded-lg p-3 mt-2">
-                  <p className="text-destructive text-xs font-medium">⚠️ WARNING: If your profit reaches 0%, you can't make money anymore and WILL lose the game! Buy items to reset profit to 30%.</p>
+                  <p className="text-destructive text-xs font-semibold mb-1">⚠️ CRITICAL:</p>
+                  <p className="text-destructive text-xs">After 7 minutes, your profit rate drops to <strong>0% instantly</strong>. You CANNOT invest when rate is 0%!</p>
+                </div>
+                <div className="bg-primary/20 border border-primary/30 rounded-lg p-2 mt-2 text-xs">
+                  <strong>Solution:</strong> Buy ANY item from the Store to reset your profit back to 30% and restart the 7-minute timer!
                 </div>
               </div>
+              
               <div>
-                <div className="font-bold text-lg mb-2">💡 Strategy</div>
-                <p className="text-muted-foreground">• <strong>First 7 mins:</strong> Invest hard (30% profit!)</p>
-                <p className="text-muted-foreground">• <strong>When profit drops:</strong> Buy cheap item to restore</p>
-                <p className="text-muted-foreground">• <strong>Don't overspend:</strong> Too many items = high maintenance</p>
-                <p className="text-muted-foreground">• <strong>Never reach 0%:</strong> At 0% profit, you can't earn and will lose!</p>
-                <p className="text-muted-foreground">• <strong>Keep buffer:</strong> Stay above {currency}{Math.round(10000000 * conversionRate / (conversionRate === 1 ? 1000000 : 1000))}{conversionRate === 1 ? 'M' : 'K'} to be safe</p>
+                <div className="font-bold text-lg mb-2">🏆 Leveling Up</div>
+                <p className="text-muted-foreground mb-2">• Buy ALL 20 items to complete the current level</p>
+                <p className="text-muted-foreground mb-2">• Reach Level 10 to master the game!</p>
+                <p className="text-muted-foreground">• Each level gets harder: +30% item prices, -2% max profit</p>
+              </div>
+              
+              <div>
+                <div className="font-bold text-lg mb-2">💡 Winning Strategy</div>
+                <p className="text-muted-foreground">• <strong>Invest fast:</strong> 30% returns for 7 minutes!</p>
+                <p className="text-muted-foreground">• <strong>Before 7 mins:</strong> Buy a cheap item to reset profit timer</p>
+                <p className="text-muted-foreground">• <strong>Use Account Manager:</strong> Pause timers when needed ({currency}{Math.round(20000000 * conversionRate / (conversionRate === 1 ? 1000000 : 1000))}{conversionRate === 1 ? 'M' : 'K'})</p>
+                <p className="text-muted-foreground">• <strong>Watch your balance:</strong> Living expenses take 25% every 30s</p>
+                <p className="text-muted-foreground">• <strong>Never hit 0% profit:</strong> You can't invest = guaranteed loss!</p>
               </div>
             </div>
             <div className="p-4 border-t border-border">
