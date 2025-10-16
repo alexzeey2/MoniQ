@@ -509,6 +509,20 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
               </div>
             </div>
 
+            <div className="bg-chart-5/10 rounded-xl p-4 border border-chart-5/20">
+              <div className="text-sm font-semibold text-foreground mb-2">Next Expenses</div>
+              <div className="space-y-1 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Living Expenses (25%)</span>
+                  <span className="font-semibold">-{fmt(Math.floor(balance * taxRate))}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Maintenance</span>
+                  <span className="font-semibold">-{fmt(maintenance)}</span>
+                </div>
+              </div>
+            </div>
+
             <button 
               onClick={() => setShowGuide(true)} 
               className="w-full bg-gradient-to-r from-chart-2 to-chart-3 text-white rounded-xl p-4 shadow flex items-center justify-between hover-elevate active-elevate-2"

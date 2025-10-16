@@ -127,8 +127,9 @@ Preferred communication style: Simple, everyday language.
   - Balance card with level badge and living expenses timer
   - Account Manager activation/deactivation card
   - Living Expenses information card (25% every 30s)
+  - Next Expenses section (shows upcoming living expenses 25% + maintenance costs)
   - "How to Play" button at bottom for easy access
-  - Removed: Profit rate tracking, investments summary, next expenses, item maintenance alerts
+  - Removed: Profit rate tracking, investments summary, item maintenance alerts
   - Clean focus on balance management and core actions
   
 - **Invest Page Enhancements**:
