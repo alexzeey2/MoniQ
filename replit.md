@@ -2,7 +2,7 @@
 
 ## Overview
 
-NaijaWealthSim (branded as "Sọ́ágỌ́") is a mobile-first wealth simulation game where players start with ₦50M (or currency equivalent) and build their fortune through strategic investments and luxury purchases. The game features a welcome/signup system with dynamic currency conversion, a progressive economy with taxes, maintenance costs, and decay mechanics. Players navigate high-stakes decisions including game-over scenarios with ad-based continuation options.
+NaijaWealthSim (branded as "Sọ́ágỌ́") is a mobile-first wealth simulation game where players start with ₦50M (or currency equivalent) and build their fortune through strategic investments and luxury purchases. The game features a welcome/signup system with dynamic currency conversion, taxes, maintenance costs, and profit decay mechanics. Players navigate high-stakes decisions including game-over scenarios with ad-based continuation options. The objective is to collect all 20 luxury items while managing balance, investments, and expenses.
 
 The application is built as a single-page React application with Express.js backend, designed specifically for mobile devices (max-width: 448px) with international support through currency conversion (Nigeria: ₦ Naira, Others: $ at 1:1500 rate).
 
@@ -98,7 +98,7 @@ Preferred communication style: Simple, everyday language.
 - Investment system with amount, timestamp, and return rate
 - Owned items array with purchase tracking
 - Timer-based mechanics (tax timer, decay timer, ad timer)
-- Level progression system with level-up notifications
+- Win condition: Collect all 20 luxury items
 - All amounts displayed using player's currency with conversion applied via fmt() function
 
 **Economic Systems**
@@ -159,13 +159,13 @@ Preferred communication style: Simple, everyday language.
 
 **"How to Play" Guide (October 2025)**
 - **Updated Content**:
-  - Game Objective: Master 10 levels by buying all 20 items per level
+  - Game Objective: Build wealth by collecting ALL 20 luxury items
   - Investment Steps: Clear 4-step process for making investments
   - Profit Rate System: Explains 30% rate for 7 minutes, then instant 0% drop
   - Critical warnings about 0% rate blocking investments
-  - Leveling system explained: Buy all 20 items → advance level → harder challenges
+  - Winning Goal: Collect all 20 items, keep balance above minimum
   - Winning strategies: Invest fast, buy items before 7min timer, use Account Manager
-  - Removed: All mentions of gradual decay and item maintenance costs
+  - Removed: All level progression, gradual decay, and leveling system mentions
   - Located: "How to Play" button at bottom of home page
 
 ## External Dependencies
