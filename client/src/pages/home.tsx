@@ -456,16 +456,46 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
             </div>
 
             <div className="bg-chart-5/10 rounded-xl p-4 border border-chart-5/20">
-              <div className="text-sm font-semibold text-foreground mb-2">Next Expenses</div>
-              <div className="space-y-1 text-sm">
+              <div className="text-sm font-semibold text-foreground mb-3">Next Expenses (in {taxTimer}s)</div>
+              <div className="space-y-1.5 text-xs">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Living Expenses (25%)</span>
-                  <span className="font-semibold">-{fmt(Math.floor(balance * taxRate))}</span>
+                  <span className="text-muted-foreground">1. Food & Dining:</span>
+                  <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.16))}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Maintenance</span>
-                  <span className="font-semibold">-{fmt(maintenance)}</span>
+                  <span className="text-muted-foreground">2. Clothing & Fashion:</span>
+                  <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.08))}</span>
                 </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">3. Entertainment:</span>
+                  <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.12))}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">4. Travel:</span>
+                  <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.12))}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">5. Transportation:</span>
+                  <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.20))}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">6. Family Support:</span>
+                  <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.20))}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">7. Emergency Fund:</span>
+                  <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.12))}</span>
+                </div>
+                <div className="flex justify-between pt-2 border-t border-chart-5/30">
+                  <span className="text-foreground font-medium">Total Living Expenses:</span>
+                  <span className="font-bold">-{fmt(Math.floor(balance * taxRate))}</span>
+                </div>
+                {maintenance > 0 && (
+                  <div className="flex justify-between pt-1">
+                    <span className="text-foreground font-medium">+ Maintenance:</span>
+                    <span className="font-bold">-{fmt(maintenance)}</span>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -646,16 +676,46 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                 </div>
               </div>
               <div className="bg-chart-5/10 rounded-xl p-4 border border-chart-5/20">
-                <div className="text-sm font-semibold text-foreground mb-2">Next Expenses</div>
-                <div className="space-y-1 text-sm">
+                <div className="text-sm font-semibold text-foreground mb-3">Next Expenses (in {taxTimer}s)</div>
+                <div className="space-y-1.5 text-xs">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Living Expenses (25%)</span>
-                    <span className="font-semibold">-{fmt(Math.floor(balance * taxRate))}</span>
+                    <span className="text-muted-foreground">1. Food & Dining:</span>
+                    <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.16))}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Maintenance</span>
-                    <span className="font-semibold">-{fmt(maintenance)}</span>
+                    <span className="text-muted-foreground">2. Clothing & Fashion:</span>
+                    <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.08))}</span>
                   </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">3. Entertainment:</span>
+                    <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.12))}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">4. Travel:</span>
+                    <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.12))}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">5. Transportation:</span>
+                    <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.20))}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">6. Family Support:</span>
+                    <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.20))}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">7. Emergency Fund:</span>
+                    <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.12))}</span>
+                  </div>
+                  <div className="flex justify-between pt-2 border-t border-chart-5/30">
+                    <span className="text-foreground font-medium">Total Living Expenses:</span>
+                    <span className="font-bold">-{fmt(Math.floor(balance * taxRate))}</span>
+                  </div>
+                  {maintenance > 0 && (
+                    <div className="flex justify-between pt-1">
+                      <span className="text-foreground font-medium">+ Maintenance:</span>
+                      <span className="font-bold">-{fmt(maintenance)}</span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

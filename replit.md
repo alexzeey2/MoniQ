@@ -124,12 +124,19 @@ Preferred communication style: Simple, everyday language.
 
 **Home Page Design (October 2025)**
 - **Simplified Layout**:
-  - Balance card with level badge and living expenses timer
+  - Balance card with living expenses timer
   - Account Manager activation/deactivation card
   - Living Expenses information card (25% every 30s)
-  - Next Expenses section (shows upcoming living expenses 25% + maintenance costs)
+  - Next Expenses section: Shows 25% living expenses split into 7 realistic categories with currency amounts:
+    - Food & Dining (16%)
+    - Clothing & Fashion (8%)
+    - Entertainment (12%)
+    - Travel (12%)
+    - Transportation (20%)
+    - Family Support (20%)
+    - Emergency Fund (12%)
   - "How to Play" button at bottom for easy access
-  - Removed: Profit rate tracking, investments summary, item maintenance alerts
+  - Removed: Level badges, profit rate tracking, investments summary, item maintenance alerts
   - Clean focus on balance management and core actions
   
 - **Invest Page Enhancements**:
