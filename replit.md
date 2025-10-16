@@ -123,9 +123,9 @@ Preferred communication style: Simple, everyday language.
 - Visual hierarchy emphasizing decision consequences (red for loss, emerald for recovery)
 
 **Sound Effects (October 2025)**
-- **Ka-ching Sound**: Plays when investment returns are collected (multi-tone cash register effect)
-- **Deposit Sound**: Plays when making an investment deposit (simple confirmation tone)
-- Both sounds use Web Audio API for programmatic generation
+- **Ka-ching Sound**: Plays when investment returns are collected (MP3 audio file: cashier ka-ching sound effect)
+- **Deposit Sound**: Plays when making an investment deposit (Web Audio API generated tone)
+- Ka-ching uses imported MP3 asset, deposit sound is programmatically generated
 
 **Home Page Design (October 2025)**
 - **Simplified Layout**:
