@@ -38,7 +38,24 @@ const startBackgroundMusic = () => {
     bgMusic = new Audio(backgroundMusic);
     bgMusic.loop = true;
     bgMusic.volume = 0.3;
-    bgMusic.play().catch(err => console.log('Background music play failed:', err));
+    
+    // Try to play with user interaction context
+    const playPromise = bgMusic.play();
+    if (playPromise !== undefined) {
+      playPromise
+        .then(() => {
+          console.log('Background music started successfully');
+        })
+        .catch(err => {
+          console.log('Background music play failed (autoplay policy):', err);
+          // Store flag to retry on user interaction
+          document.addEventListener('click', () => {
+            if (bgMusic && bgMusic.paused) {
+              bgMusic.play().catch(e => console.log('Retry failed:', e));
+            }
+          }, { once: true });
+        });
+    }
   }
 };
 
