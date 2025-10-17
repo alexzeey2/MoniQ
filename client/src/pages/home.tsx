@@ -21,12 +21,25 @@ import luxuryYachtImg from '@assets/Luxury_Yacht_1760488589022.png';
 import megaYachtImg from '@assets/Mega_Yacht_1760488589112.png';
 import superyachtImg from '@assets/Superyacht_1760488589340.png';
 import kaChingSound from '@assets/cashier-quotka-chingquot-sound-effect-129698_1760655284960.mp3';
+import backgroundMusic from '@assets/finance-money-trading-investment-413270_1760680811791.mp3';
+
+// Background music instance
+let bgMusic: HTMLAudioElement | null = null;
 
 // Sound effect utilities
 const playKaChing = () => {
   const audio = new Audio(kaChingSound);
   audio.volume = 0.5;
   audio.play().catch(err => console.log('Audio play failed:', err));
+};
+
+const startBackgroundMusic = () => {
+  if (!bgMusic) {
+    bgMusic = new Audio(backgroundMusic);
+    bgMusic.loop = true;
+    bgMusic.volume = 0.3;
+    bgMusic.play().catch(err => console.log('Background music play failed:', err));
+  }
 };
 
 const playDeposit = () => {
@@ -193,6 +206,9 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
         setPlayerCountry(data.playerCountry || 'Nigeria');
         setCurrency(data.currency || '₦');
         setConversionRate(data.conversionRate || 1);
+        
+        // Start background music after player data is loaded (user has signed up)
+        startBackgroundMusic();
       } catch (error) {
         console.error('Failed to load player data:', error);
       }
