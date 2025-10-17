@@ -125,7 +125,11 @@ Preferred communication style: Simple, everyday language.
 **Sound Effects (October 2025)**
 - **Ka-ching Sound**: Plays when investment returns are collected (MP3 audio file: cashier ka-ching sound effect)
 - **Deposit Sound**: Plays when making an investment deposit (Web Audio API generated tone)
-- Ka-ching uses imported MP3 asset, deposit sound is programmatically generated
+- **Background Music**: Plays continuously in a loop throughout gameplay (MP3: finance-money-trading-investment audio track)
+  - Starts automatically after user completes signup
+  - Volume: 30% to not overpower sound effects
+  - Loops seamlessly for ambient atmosphere
+  - Handles browser autoplay policies with fallback retry on user interaction
 
 **Home Page Design (October 2025)**
 - **Simplified Layout**:
