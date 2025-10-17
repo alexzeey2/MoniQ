@@ -626,16 +626,9 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
             )}
 
             <div className="grid grid-cols-2 gap-3">
-              {[1000000, 10000000, 40000000, 100000000, 1000000000].map(a => {
-                // Format the button label
-                let label = '';
-                if (a >= 1000000000) {
-                  // Billions
-                  label = `${currency}${Math.round(a * conversionRate / (conversionRate === 1 ? 1000000000 : 1000000))}${conversionRate === 1 ? 'B' : 'M'}`;
-                } else {
-                  // Millions/Thousands
-                  label = `${currency}${Math.round(a * conversionRate / (conversionRate === 1 ? 1000000 : 1000))}${conversionRate === 1 ? 'M' : 'K'}`;
-                }
+              {[1000000, 10000000, 40000000, 100000000].map(a => {
+                // Format the button label for smaller amounts
+                const label = `${currency}${Math.round(a * conversionRate / (conversionRate === 1 ? 1000000 : 1000))}${conversionRate === 1 ? 'M' : 'K'}`;
                 
                 return (
                   <button 
@@ -650,6 +643,16 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                 );
               })}
             </div>
+
+            {/* 1 Billion Button - Full Width */}
+            <button 
+              onClick={() => invest(1000000000)} 
+              disabled={returnRate === 0 || 1000000000 > balance || (balance - 1000000000) < 5000000} 
+              className="w-full py-6 font-semibold bg-card border-2 border-card-border rounded-xl disabled:opacity-50 hover-elevate active-elevate-2"
+              data-testid="button-invest-1000000000"
+            >
+              {fmt(1000000000 * conversionRate)}
+            </button>
 
             {/* Investment History */}
             {investments.map(inv => (
