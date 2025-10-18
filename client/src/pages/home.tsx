@@ -1186,10 +1186,12 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
       {/* TUTORIAL: Tutorial Overlay & Tooltips */}
       {tutorialActive && (
         <>
-          {/* Overlay */}
-          <div className="fixed inset-0 bg-black/60" style={{ zIndex: 90 }} />
+          {/* Overlay - only show when there's a modal */}
+          {(tutorialStep === 1 || tutorialStep === 3 || tutorialStep === 5 || tutorialStep === 7 || tutorialStep === 10) && (
+            <div className="fixed inset-0 bg-black/60" style={{ zIndex: 90 }} />
+          )}
 
-          {/* Step 2: Investment Guide */}
+          {/* Step 1: Investment Guide */}
           {tutorialStep === 1 && (
             <div className="fixed inset-0 flex items-center justify-center p-6" style={{ zIndex: 95 }}>
               <div className="bg-card rounded-2xl p-6 max-w-sm w-full border border-primary shadow-2xl">
