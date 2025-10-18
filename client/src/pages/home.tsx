@@ -260,7 +260,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
   }, [owned]);
 
   useEffect(() => {
-    if (gameOver || accountManager || tutorialActive) return;
+    if (gameOver || accountManager) return;
     const t = setInterval(() => {
       setDecayTimer(p => {
         if (p <= 1) {
@@ -272,7 +272,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
       });
     }, 1000);
     return () => clearInterval(t);
-  }, [gameOver, accountManager, tutorialActive]);
+  }, [gameOver, accountManager]);
 
   // Show/hide warning popup based on profit rate
   useEffect(() => {
@@ -284,7 +284,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
   }, [returnRate, gameOver, accountManager]);
 
   useEffect(() => {
-    if (gameOver || accountManager || tutorialActive) return;
+    if (gameOver || accountManager) return;
     const t = setInterval(() => {
       setAdTimer(p => {
         if (p <= 1) {
@@ -296,10 +296,10 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
       });
     }, 1000);
     return () => clearInterval(t);
-  }, [gameOver, accountManager, tutorialActive]);
+  }, [gameOver, accountManager]);
 
   useEffect(() => {
-    if (gameOver || accountManager || tutorialActive) return;
+    if (gameOver || accountManager) return;
     const t = setInterval(() => {
       setTaxTimer(p => {
         if (p <= 1) {
@@ -314,7 +314,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
       });
     }, 1000);
     return () => clearInterval(t);
-  }, [balance, gameOver, taxRate, maintenance, accountManager, tutorialActive]);
+  }, [balance, gameOver, taxRate, maintenance, accountManager]);
 
   useEffect(() => {
     if (accountManager) return;
