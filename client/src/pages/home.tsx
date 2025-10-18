@@ -349,36 +349,36 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
 
   // Tutorial progression effects
   useEffect(() => {
-    // Step 2: Wait for 40M investment
-    if (tutorialActive && tutorialStep === 2 && investments.some(inv => inv.a === 40000000)) {
+    // Step 4: Wait for 40M investment
+    if (tutorialActive && tutorialStep === 4 && investments.some(inv => inv.a === 40000000)) {
       setTutorialInvestmentMade(true);
     }
   }, [tutorialActive, tutorialStep, investments]);
 
   useEffect(() => {
-    // Step 3: Detect returnRate drop from 30% to 20%
+    // Step 5: Detect returnRate drop from 30% to 20%
     if (!tutorialActive && !tutorialCompleted && returnRate === 0.20 && previousReturnRate === 0.30 && !tutorialFirstPurchase) {
       setTutorialActive(true);
-      setTutorialStep(3);
+      setTutorialStep(5);
     }
   }, [tutorialActive, tutorialCompleted, returnRate, previousReturnRate, tutorialFirstPurchase]);
 
   useEffect(() => {
-    // Step 4: Wait for first purchase (iPhone - id 1)
-    if (tutorialActive && tutorialStep === 4 && purchased.includes(1)) {
+    // Step 6: Wait for first purchase (iPhone - id 1)
+    if (tutorialActive && tutorialStep === 6 && purchased.includes(1)) {
       setTutorialFirstPurchase(true);
       setTimeout(() => {
-        setTutorialStep(5);
+        setTutorialStep(7);
       }, 2000);
     }
   }, [tutorialActive, tutorialStep, purchased]);
 
   useEffect(() => {
-    // Step 6: Wait for second purchase (MacBook - id 2) or skip
-    if (tutorialActive && tutorialStep === 6 && (purchased.includes(2) || tutorialSecondPurchase)) {
+    // Step 8: Wait for second purchase (MacBook - id 2) or skip
+    if (tutorialActive && tutorialStep === 8 && (purchased.includes(2) || tutorialSecondPurchase)) {
       setTutorialSecondPurchase(true);
       setTimeout(() => {
-        setTutorialStep(7);
+        setTutorialStep(9);
         setScreen('home');
       }, 2000);
     }
@@ -928,8 +928,8 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
             { id: 'portfolio', icon: PieChart, label: 'Portfolio' },
             { id: 'profile', icon: User, label: 'Profile' },
           ].map(({ id, icon: Icon, label }) => {
-            const isHighlighted = tutorialActive && ((tutorialStep === 1 && id === 'invest'));
-            const isDisabled = tutorialActive && tutorialStep === 1 && id !== 'invest';
+            const isHighlighted = tutorialActive && ((tutorialStep === 1 || tutorialStep === 2) && id === 'invest');
+            const isDisabled = tutorialActive && (tutorialStep === 1 || tutorialStep === 2) && id !== 'invest';
             
             return (
               <button 
@@ -937,8 +937,8 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                 onClick={() => {
                   if (isDisabled) return;
                   setScreen(id);
-                  if (tutorialActive && tutorialStep === 1 && id === 'invest') {
-                    setTutorialStep(2);
+                  if (tutorialActive && (tutorialStep === 1 || tutorialStep === 2) && id === 'invest') {
+                    setTutorialStep(3);
                   }
                 }}
                 className={`flex flex-col items-center gap-1 transition-colors relative ${
@@ -1212,8 +1212,8 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
             </div>
           )}
 
-          {/* Step 2 continued: After clicking Invest, show investment amount guide */}
-          {tutorialStep === 2 && screen === 'invest' && !tutorialInvestmentMade && (
+          {/* Step 3: After clicking Invest, show investment amount guide */}
+          {tutorialStep === 3 && screen === 'invest' && !tutorialInvestmentMade && (
             <div className="fixed inset-0 flex items-center justify-center p-6" style={{ zIndex: 95 }}>
               <div className="bg-card rounded-2xl p-6 max-w-sm w-full border border-primary shadow-2xl">
                 <div className="text-4xl mb-3 text-center">🎯</div>
@@ -1221,15 +1221,22 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                 <p className="text-center text-muted-foreground mb-4">
                   Tap the <strong>{currency}{Math.round(40000000 * conversionRate / (conversionRate === 1 ? 1000000 : 1000))}{conversionRate === 1 ? 'M' : 'K'}</strong> button and wait 60 seconds for 30% profit!
                 </p>
-                <div className="text-sm text-center bg-chart-3/20 border border-chart-3/30 rounded-lg p-3">
+                <div className="text-sm text-center bg-chart-3/20 border border-chart-3/30 rounded-lg p-3 mb-4">
                   ⏱️ Investments mature in 60 seconds with <strong className="text-primary">30% returns!</strong>
                 </div>
+                <button
+                  onClick={() => setTutorialStep(4)}
+                  className="w-full bg-primary text-primary-foreground py-3 rounded-xl font-semibold hover-elevate active-elevate-2"
+                  data-testid="button-tutorial-ok-invest"
+                >
+                  Got it! 👍
+                </button>
               </div>
             </div>
           )}
 
-          {/* Step 2 waiting: Investment made, waiting for returns */}
-          {tutorialStep === 2 && tutorialInvestmentMade && (
+          {/* Step 4 waiting: Investment made, waiting for returns */}
+          {tutorialStep === 4 && tutorialInvestmentMade && (
             <div className="fixed bottom-24 left-0 right-0 flex justify-center p-6" style={{ zIndex: 95 }}>
               <div className="bg-card rounded-xl p-4 border border-primary shadow-2xl max-w-sm">
                 <p className="text-center text-sm">
@@ -1241,8 +1248,8 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
             </div>
           )}
 
-          {/* Step 3: Decay Warning */}
-          {tutorialStep === 3 && (
+          {/* Step 5: Decay Warning */}
+          {tutorialStep === 5 && (
             <div className="fixed inset-0 flex items-center justify-center p-6" style={{ zIndex: 95 }}>
               <div className="bg-card rounded-2xl p-6 max-w-sm w-full border border-chart-5 shadow-2xl">
                 <div className="text-5xl mb-3 text-center">⚠️</div>
@@ -1252,7 +1259,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                   Buy an item to restore it to <strong className="text-primary">30%</strong>!
                 </p>
                 <button
-                  onClick={() => { setTutorialStep(4); setScreen('luxury'); }}
+                  onClick={() => { setTutorialStep(6); setScreen('luxury'); }}
                   className="w-full bg-chart-5 text-white py-3 rounded-xl font-semibold hover-elevate active-elevate-2"
                   data-testid="button-tutorial-go-store"
                 >
@@ -1262,8 +1269,8 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
             </div>
           )}
 
-          {/* Step 4: First Purchase Guide */}
-          {tutorialStep === 4 && screen === 'luxury' && !tutorialFirstPurchase && (
+          {/* Step 6: First Purchase Guide */}
+          {tutorialStep === 6 && screen === 'luxury' && !tutorialFirstPurchase && (
             <div className="fixed bottom-24 left-0 right-0 flex justify-center p-6" style={{ zIndex: 95 }}>
               <div className="bg-card rounded-xl p-6 border border-primary shadow-2xl max-w-sm">
                 <div className="text-3xl mb-2 text-center">👆</div>
@@ -1275,8 +1282,8 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
             </div>
           )}
 
-          {/* Step 5: Second Purchase with Balance Warning */}
-          {tutorialStep === 5 && screen === 'luxury' && (
+          {/* Step 7: Second Purchase with Balance Warning */}
+          {tutorialStep === 7 && screen === 'luxury' && (
             <div className="fixed inset-0 flex items-center justify-center p-6" style={{ zIndex: 95 }}>
               <div className="bg-card rounded-2xl p-6 max-w-sm w-full border border-primary shadow-2xl">
                 <div className="text-4xl mb-3 text-center">💡</div>
@@ -1305,7 +1312,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                       </div>
                     </div>
                     <button
-                      onClick={() => setTutorialStep(6)}
+                      onClick={() => setTutorialStep(8)}
                       className="w-full bg-primary text-primary-foreground py-3 rounded-xl font-semibold hover-elevate active-elevate-2"
                     >
                       Got it! Continue
@@ -1317,7 +1324,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                       ❌ Not enough balance! This would drop you below {currency}{Math.round(11000000 * conversionRate / (conversionRate === 1 ? 1000000 : 1000))}{conversionRate === 1 ? 'M' : 'K'}. Skip this for now.
                     </div>
                     <button
-                      onClick={() => { setTutorialSecondPurchase(true); setTutorialStep(7); setScreen('home'); }}
+                      onClick={() => { setTutorialSecondPurchase(true); setTutorialStep(9); setScreen('home'); }}
                       className="w-full bg-muted text-foreground py-3 rounded-xl font-semibold hover-elevate active-elevate-2"
                     >
                       Skip & Continue
@@ -1328,8 +1335,8 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
             </div>
           )}
 
-          {/* Step 7: Account Manager Feature */}
-          {tutorialStep === 7 && screen === 'home' && (
+          {/* Step 9: Account Manager Feature */}
+          {tutorialStep === 9 && screen === 'home' && (
             <div className="fixed bottom-32 left-0 right-0 flex justify-center p-6" style={{ zIndex: 95 }}>
               <div className="bg-card rounded-xl p-6 border border-chart-2 shadow-2xl max-w-sm">
                 <div className="text-3xl mb-2 text-center">💡</div>
@@ -1341,7 +1348,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                   Cost: {currency}{Math.round(20000000 * conversionRate / (conversionRate === 1 ? 1000000 : 1000))}{conversionRate === 1 ? 'M' : 'K'} • Pauses taxes & decay
                 </div>
                 <button
-                  onClick={() => setTutorialStep(8)}
+                  onClick={() => setTutorialStep(10)}
                   className="w-full bg-chart-2 text-white py-2 rounded-xl font-semibold hover-elevate active-elevate-2"
                 >
                   Got it!
@@ -1350,8 +1357,8 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
             </div>
           )}
 
-          {/* Step 8: Tutorial Complete */}
-          {tutorialStep === 8 && (
+          {/* Step 10: Tutorial Complete */}
+          {tutorialStep === 10 && (
             <div className="fixed inset-0 flex items-center justify-center p-6" style={{ zIndex: 95 }}>
               <div className="bg-card rounded-2xl p-8 max-w-sm w-full border border-primary shadow-2xl">
                 <div className="text-6xl mb-4 text-center">🎉</div>
