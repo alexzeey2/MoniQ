@@ -1172,22 +1172,13 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
             <p className="text-center text-muted-foreground mb-6">
               Let's learn how to play. Follow the guide and become a wealth master!
             </p>
-            <div className="flex flex-col gap-3">
-              <button 
-                onClick={startTutorial}
-                className="w-full bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-3 rounded-xl font-semibold hover-elevate active-elevate-2"
-                data-testid="button-start-tutorial"
-              >
-                Start Tutorial
-              </button>
-              <button 
-                onClick={skipTutorial}
-                className="w-full bg-muted text-muted-foreground py-2 rounded-xl text-sm hover-elevate active-elevate-2"
-                data-testid="button-skip-tutorial"
-              >
-                Skip Tutorial
-              </button>
-            </div>
+            <button 
+              onClick={startTutorial}
+              className="w-full bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-3 rounded-xl font-semibold hover-elevate active-elevate-2"
+              data-testid="button-start-tutorial"
+            >
+              Start Tutorial
+            </button>
           </div>
         </div>
       )}
@@ -1197,16 +1188,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
         <>
           {/* Overlay */}
           <div className="fixed inset-0 bg-black/60" style={{ zIndex: 90 }} />
-          
-          {/* Skip Button */}
-          <button 
-            onClick={skipTutorial}
-            className="fixed top-4 right-4 bg-muted text-muted-foreground px-4 py-2 rounded-lg text-sm hover-elevate active-elevate-2"
-            style={{ zIndex: 100 }}
-            data-testid="button-skip-tutorial-active"
-          >
-            Skip Tutorial
-          </button>
 
           {/* Step 2: Investment Guide */}
           {tutorialStep === 1 && (
@@ -1217,9 +1198,16 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                 <p className="text-center text-muted-foreground mb-4">
                   Click the "Invest" button below to start making money!
                 </p>
-                <div className="text-sm text-center bg-chart-2/20 border border-chart-2/30 rounded-lg p-3">
+                <div className="text-sm text-center bg-chart-2/20 border border-chart-2/30 rounded-lg p-3 mb-4">
                   👇 Look for the <strong className="text-primary">Invest</strong> button in the navigation bar
                 </div>
+                <button
+                  onClick={() => setTutorialStep(2)}
+                  className="w-full bg-primary text-primary-foreground py-3 rounded-xl font-semibold hover-elevate active-elevate-2"
+                  data-testid="button-tutorial-ok"
+                >
+                  Got it! 👍
+                </button>
               </div>
             </div>
           )}
