@@ -21,10 +21,13 @@ import luxuryYachtImg from '@assets/Luxury_Yacht_1760488589022.png';
 import megaYachtImg from '@assets/Mega_Yacht_1760488589112.png';
 import superyachtImg from '@assets/Superyacht_1760488589340.png';
 import kaChingSound from '@assets/cashier-quotka-chingquot-sound-effect-129698_1760655284960.mp3';
-import backgroundMusic from '@assets/finance-money-trading-investment-413270_1760680811791.mp3';
+import backgroundMusic1 from '@assets/finance-money-trading-investment-413270_1760680811791.mp3';
+import backgroundMusic2 from '@assets/dynamics-of-success-185722_1760813144268.mp3';
 
-// Background music instance
+// Background music instances
 let bgMusic: HTMLAudioElement | null = null;
+let currentTrack: 1 | 2 = 1;
+let loopCount = 0;
 
 // Sound effect utilities
 const playKaChing = () => {
@@ -33,11 +36,52 @@ const playKaChing = () => {
   audio.play().catch(err => console.log('Audio play failed:', err));
 };
 
+const switchBackgroundTrack = () => {
+  if (bgMusic) {
+    bgMusic.pause();
+    bgMusic = null;
+  }
+  
+  // Switch to the other track
+  currentTrack = currentTrack === 1 ? 2 : 1;
+  loopCount = 0;
+  
+  const trackUrl = currentTrack === 1 ? backgroundMusic1 : backgroundMusic2;
+  bgMusic = new Audio(trackUrl);
+  bgMusic.volume = 0.3;
+  
+  // Listen for when the track ends
+  bgMusic.addEventListener('ended', () => {
+    loopCount++;
+    if (loopCount >= 4) {
+      // Switch to the other track after 4 loops
+      switchBackgroundTrack();
+    } else {
+      // Play the same track again
+      bgMusic?.play().catch(err => console.log('Loop play failed:', err));
+    }
+  });
+  
+  bgMusic.play().catch(err => console.log('Track play failed:', err));
+};
+
 const startBackgroundMusic = () => {
   if (!bgMusic) {
-    bgMusic = new Audio(backgroundMusic);
-    bgMusic.loop = true;
+    const trackUrl = backgroundMusic1;
+    bgMusic = new Audio(trackUrl);
     bgMusic.volume = 0.3;
+    
+    // Listen for when the track ends
+    bgMusic.addEventListener('ended', () => {
+      loopCount++;
+      if (loopCount >= 4) {
+        // Switch to the other track after 4 loops
+        switchBackgroundTrack();
+      } else {
+        // Play the same track again
+        bgMusic?.play().catch(err => console.log('Loop play failed:', err));
+      }
+    });
     
     // Try to play with user interaction context
     const playPromise = bgMusic.play();
