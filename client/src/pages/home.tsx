@@ -259,8 +259,11 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
     setMaintenance(owned.reduce((s, i) => s + i.m, 0));
   }, [owned]);
 
+  // Helper: Check if tutorial is showing a blocking modal that should pause timers
+  const tutorialModalActive = tutorialActive && (tutorialStep === 1 || tutorialStep === 3 || tutorialStep === 5 || tutorialStep === 7 || tutorialStep === 10);
+
   useEffect(() => {
-    if (gameOver || accountManager) return;
+    if (gameOver || accountManager || tutorialModalActive) return;
     const t = setInterval(() => {
       setDecayTimer(p => {
         if (p <= 1) {
@@ -272,7 +275,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
       });
     }, 1000);
     return () => clearInterval(t);
-  }, [gameOver, accountManager]);
+  }, [gameOver, accountManager, tutorialModalActive]);
 
   // Show/hide warning popup based on profit rate
   useEffect(() => {
@@ -284,7 +287,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
   }, [returnRate, gameOver, accountManager]);
 
   useEffect(() => {
-    if (gameOver || accountManager) return;
+    if (gameOver || accountManager || tutorialModalActive) return;
     const t = setInterval(() => {
       setAdTimer(p => {
         if (p <= 1) {
@@ -296,10 +299,10 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
       });
     }, 1000);
     return () => clearInterval(t);
-  }, [gameOver, accountManager]);
+  }, [gameOver, accountManager, tutorialModalActive]);
 
   useEffect(() => {
-    if (gameOver || accountManager) return;
+    if (gameOver || accountManager || tutorialModalActive) return;
     const t = setInterval(() => {
       setTaxTimer(p => {
         if (p <= 1) {
@@ -314,10 +317,10 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
       });
     }, 1000);
     return () => clearInterval(t);
-  }, [balance, gameOver, taxRate, maintenance, accountManager]);
+  }, [balance, gameOver, taxRate, maintenance, accountManager, tutorialModalActive]);
 
   useEffect(() => {
-    if (accountManager) return;
+    if (accountManager || tutorialModalActive) return;
     const t = setInterval(() => {
       setInvestments(p => p.map(inv => {
         if (inv.t <= 1) {
@@ -329,7 +332,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
       }).filter(Boolean) as Array<{id: number, a: number, t: number, r: number}>);
     }, 1000);
     return () => clearInterval(t);
-  }, [accountManager]);
+  }, [accountManager, tutorialModalActive]);
 
 
   useEffect(() => {
@@ -366,8 +369,8 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
   }, [tutorialActive, tutorialStep, tutorialInvestmentMade, investments]);
 
   useEffect(() => {
-    // Step 5: Detect returnRate drop from 30% to 20%
-    if (!tutorialActive && !tutorialCompleted && returnRate === 0.20 && previousReturnRate === 0.30 && !tutorialFirstPurchase) {
+    // Step 5: Detect returnRate drop to 0% (game drops from 30% to 0% after 7 minutes)
+    if (!tutorialActive && !tutorialCompleted && returnRate === 0 && previousReturnRate === 0.30 && !tutorialFirstPurchase) {
       setTutorialActive(true);
       setTutorialStep(5);
     }
@@ -1267,7 +1270,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                 <div className="text-5xl mb-3 text-center">⚠️</div>
                 <h3 className="text-xl font-bold mb-2 text-center text-chart-5">Profit Rate Dropped!</h3>
                 <p className="text-center text-muted-foreground mb-4">
-                  Your profit rate dropped to <strong className="text-destructive">20%</strong>! 
+                  Your profit rate dropped to <strong className="text-destructive">0%</strong>! 
                   Buy an item to restore it to <strong className="text-primary">30%</strong>!
                 </p>
                 <button
