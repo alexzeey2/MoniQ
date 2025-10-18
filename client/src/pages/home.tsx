@@ -109,16 +109,15 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
   const [showAdSimulation, setShowAdSimulation] = useState(false);
   const [adCountdown, setAdCountdown] = useState(30);
   
-  // Progressive Tutorial State
-  const [investmentCount, setInvestmentCount] = useState(0);
-  const [tutorialPhase, setTutorialPhase] = useState(1); // 1: Forced, 2: Guided, 3: Highlights, 4: Free
-  const [tutorialFullyComplete, setTutorialFullyComplete] = useState(false);
-  const [showInvestmentCalculator, setShowInvestmentCalculator] = useState(false);
-  const [selectedInvestAmount, setSelectedInvestAmount] = useState(0);
-  const [showPhase2Warning, setShowPhase2Warning] = useState(false);
-  const [currentHighlight, setCurrentHighlight] = useState(0); // 0: none, 1: How to Play, 2: Expenses, 3: Account Manager, 4: Portfolio
-  const [highlightDismissed, setHighlightDismissed] = useState<number[]>([]);
-  const [tutorialStartTime, setTutorialStartTime] = useState(Date.now());
+  // Guided Spotlight Tutorial State
+  const [guidedTutorialStep, setGuidedTutorialStep] = useState(0); // 0 = not started, 1+ = active steps
+  const [tutorialComplete, setTutorialComplete] = useState(false);
+  const [tutorialWaitingForInvestment, setTutorialWaitingForInvestment] = useState(false);
+  const [tutorialTargetAmount, setTutorialTargetAmount] = useState(0);
+  const [tutorialMinBalance, setTutorialMinBalance] = useState(10000000);
+  const [showTutorialBlocker, setShowTutorialBlocker] = useState(false);
+  const [blockerMessage, setBlockerMessage] = useState('');
+  const [tutorialItemsToBuy, setTutorialItemsToBuy] = useState<number[]>([1, 2, 3]); // iPhone, MacBook, Vision Pro
   
   // Old tutorial state (keep for backwards compatibility but will migrate to new system)
   const [tutorialActive, setTutorialActive] = useState(false);
