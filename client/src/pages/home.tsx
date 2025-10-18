@@ -349,11 +349,21 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
 
   // Tutorial progression effects
   useEffect(() => {
-    // Step 4: Wait for 40M investment
+    // Step 4: Wait for 40M investment to be made
     if (tutorialActive && tutorialStep === 4 && investments.some(inv => inv.a === 40000000)) {
       setTutorialInvestmentMade(true);
     }
   }, [tutorialActive, tutorialStep, investments]);
+
+  useEffect(() => {
+    // Step 4: After investment is made, wait for it to mature (disappear from investments)
+    if (tutorialActive && tutorialStep === 4 && tutorialInvestmentMade && !investments.some(inv => inv.a === 40000000)) {
+      // Investment has returned! Progress to next step
+      setTimeout(() => {
+        setTutorialStep(5);
+      }, 1000);
+    }
+  }, [tutorialActive, tutorialStep, tutorialInvestmentMade, investments]);
 
   useEffect(() => {
     // Step 5: Detect returnRate drop from 30% to 20%
@@ -1239,7 +1249,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
 
           {/* Step 4 waiting: Investment made, waiting for returns */}
           {tutorialStep === 4 && tutorialInvestmentMade && (
-            <div className="fixed bottom-24 left-0 right-0 flex justify-center p-6" style={{ zIndex: 95 }}>
+            <div className="fixed top-20 left-0 right-0 flex justify-center p-6" style={{ zIndex: 95 }}>
               <div className="bg-card rounded-xl p-4 border border-primary shadow-2xl max-w-sm">
                 <p className="text-center text-sm">
                   ✅ Great! Now wait for your returns... ⏱️
