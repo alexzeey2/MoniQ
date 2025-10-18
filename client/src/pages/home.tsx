@@ -166,46 +166,12 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
     }
   };
 
-  const saveTutorialProgress = () => {
-    const tutorialProgress = {
-      investmentCount,
-      tutorialPhase,
-      tutorialFullyComplete,
-      highlightDismissed,
-      tutorialStartTime,
-    };
-    localStorage.setItem(TUTORIAL_PROGRESS_KEY, JSON.stringify(tutorialProgress));
-  };
-
-  const loadTutorialProgress = () => {
-    try {
-      const saved = localStorage.getItem(TUTORIAL_PROGRESS_KEY);
-      if (saved) {
-        const progress = JSON.parse(saved);
-        setInvestmentCount(progress.investmentCount ?? 0);
-        setTutorialPhase(progress.tutorialPhase ?? 1);
-        setTutorialFullyComplete(progress.tutorialFullyComplete ?? false);
-        setHighlightDismissed(progress.highlightDismissed ?? []);
-        setTutorialStartTime(progress.tutorialStartTime ?? Date.now());
-      }
-    } catch (error) {
-      console.error('Failed to load tutorial progress:', error);
-    }
-  };
-
   const skipAllTutorials = () => {
-    setTutorialFullyComplete(true);
-    setTutorialPhase(4);
-    setInvestmentCount(999);
-    localStorage.setItem(TUTORIAL_PROGRESS_KEY, JSON.stringify({
-      investmentCount: 999,
-      tutorialPhase: 4,
-      tutorialFullyComplete: true,
-      highlightDismissed: [1, 2, 3, 4],
-      tutorialStartTime: Date.now(),
-    }));
+    setTutorialComplete(true);
+    setGuidedTutorialStep(999);
     setShowTutorialWelcome(false);
     setTutorialActive(false);
+    localStorage.setItem(TUTORIAL_KEY, 'true');
   };
 
   const checkTutorial = () => {
@@ -265,7 +231,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
 
   useEffect(() => {
     loadGameState();
-    loadTutorialProgress();
     checkTutorial();
     
     // Load player data
@@ -366,39 +331,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
     return () => clearInterval(t);
   }, [accountManager]);
 
-  // Progressive Tutorial Phase 3: Feature Highlights Auto-Progression
-  useEffect(() => {
-    if (tutorialPhase !== 3 || tutorialFullyComplete) return;
-    
-    // Auto-dismiss current highlight after 5 seconds
-    if (currentHighlight > 0 && !highlightDismissed.includes(currentHighlight)) {
-      const autoDismissTimer = setTimeout(() => {
-        dismissHighlight(currentHighlight);
-      }, 5000);
-      return () => clearTimeout(autoDismissTimer);
-    }
-    
-    // Wait 30 seconds before showing next highlight
-    if (currentHighlight > 0 && highlightDismissed.includes(currentHighlight) && currentHighlight < 4) {
-      const nextHighlightTimer = setTimeout(() => {
-        setCurrentHighlight(currentHighlight + 1);
-      }, 30000);
-      return () => clearTimeout(nextHighlightTimer);
-    }
-    
-    // All highlights complete, mark tutorial as fully complete
-    if (highlightDismissed.length === 4 && currentHighlight === 0) {
-      setTutorialFullyComplete(true);
-      setTutorialPhase(4);
-      saveTutorialProgress();
-    }
-  }, [tutorialPhase, currentHighlight, highlightDismissed, tutorialFullyComplete]);
-
-  const dismissHighlight = (highlightNum: number) => {
-    setHighlightDismissed([...highlightDismissed, highlightNum]);
-    setCurrentHighlight(0); // Hide current highlight
-    saveTutorialProgress();
-  };
 
   useEffect(() => {
     if (showAdSimulation && adCountdown > 0) {
@@ -462,31 +394,9 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
     const a = parseInt(amt.toString());
     if (a > balance || a < 1000000 || (balance - a) < 5000000) return;
     
-    // Progressive tutorial: Close calculator/warning modals
-    setShowInvestmentCalculator(false);
-    setShowPhase2Warning(false);
-    
     setBalance(balance - a);
     setInvestments([...investments, { id: Date.now(), a, t: 60, r: returnRate }]);
     playDeposit(); // Sound effect for making an investment
-    
-    // Track investment count for progressive tutorial
-    const newCount = investmentCount + 1;
-    setInvestmentCount(newCount);
-    
-    // Update tutorial phase based on investment count
-    if (newCount === 3 && tutorialPhase === 1) {
-      // Transition from Phase 1 (Forced) to Phase 2 (Guided)
-      setTutorialPhase(2);
-    } else if (newCount === 6 && tutorialPhase === 2) {
-      // Transition from Phase 2 (Guided) to Phase 3 (Feature Highlights)
-      setTutorialPhase(3);
-      // Start first highlight after 2 seconds
-      setTimeout(() => setCurrentHighlight(1), 2000);
-    }
-    
-    // Save progress
-    saveTutorialProgress();
   };
 
   const buy = (item: any) => {
@@ -548,199 +458,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
     setAdCountdown(30);
   };
 
-  // Progressive Tutorial: Handle investment button click with tutorial logic
-  const handleInvestClick = (amount: number) => {
-    if (tutorialPhase === 1 || tutorialPhase === 2) {
-      // Show calculator/warning modal in Phase 1-2
-      setSelectedInvestAmount(amount);
-      if (tutorialPhase === 1) {
-        setShowInvestmentCalculator(true);
-      } else {
-        setShowPhase2Warning(true);
-      }
-    } else {
-      // Free play - invest directly
-      invest(amount);
-    }
-  };
-
-  // Progressive Tutorial UI Renderer
-  const renderTutorialUI = () => {
-    return (
-      <>
-        {/* Phase 1 & 2: Investment Calculator/Warning Modal */}
-        {(showInvestmentCalculator || showPhase2Warning) && selectedInvestAmount > 0 && (
-          <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-6" style={{ zIndex: 100 }}>
-            <div className="bg-card rounded-2xl p-6 max-w-sm w-full border-2 border-primary shadow-2xl">
-              <div className="text-4xl mb-3 text-center">
-                {tutorialPhase === 1 ? '🎓' : '💡'}
-              </div>
-              <h3 className="text-xl font-bold mb-3 text-center">
-                {tutorialPhase === 1 ? `Investment #${investmentCount + 1}` : 'Investment Tip'}
-              </h3>
-              
-              <div className="bg-muted rounded-lg p-4 mb-4 space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Current Balance:</span>
-                  <span className="font-semibold">{fmt(balance)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Investment:</span>
-                  <span className="font-semibold text-destructive">-{fmt(selectedInvestAmount)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Expected Returns (30%):</span>
-                  <span className="font-semibold text-primary">+{fmt(Math.floor(selectedInvestAmount * 0.30))}</span>
-                </div>
-                <div className="flex justify-between pt-2 border-t border-border">
-                  <span className="text-foreground font-medium">Balance After:</span>
-                  <span className="font-bold">{fmt(balance - selectedInvestAmount)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-foreground font-medium">After Returns:</span>
-                  <span className="font-bold text-primary">{fmt(balance - selectedInvestAmount + Math.floor(selectedInvestAmount * 1.30))}</span>
-                </div>
-              </div>
-
-              {tutorialPhase === 1 && investmentCount < 2 && (
-                <div className="bg-chart-5/20 border border-chart-5 rounded-lg p-3 mb-4 text-xs">
-                  <p className="font-semibold mb-1">📚 Tutorial Tip:</p>
-                  <p>Always ensure you have at least ₦5M left after investing. This is your safety buffer!</p>
-                </div>
-              )}
-
-              <div className="flex gap-3">
-                {tutorialPhase === 2 && (
-                  <button 
-                    onClick={() => { setShowPhase2Warning(false); setSelectedInvestAmount(0); }}
-                    className="flex-1 bg-muted text-foreground py-3 rounded-xl font-semibold text-sm hover-elevate active-elevate-2"
-                    data-testid="button-skip-warning"
-                  >
-                    Skip Tip
-                  </button>
-                )}
-                <button 
-                  onClick={() => {
-                    invest(selectedInvestAmount);
-                    setSelectedInvestAmount(0);
-                  }}
-                  disabled={balance - selectedInvestAmount < 5000000}
-                  className="flex-1 bg-primary text-primary-foreground py-3 rounded-xl font-semibold disabled:opacity-50 hover-elevate active-elevate-2"
-                  data-testid="button-confirm-invest"
-                >
-                  {tutorialPhase === 1 ? 'Continue' : 'Invest Now'}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Phase 3: Feature Highlights with Pulse Animations */}
-        {tutorialPhase === 3 && currentHighlight > 0 && !highlightDismissed.includes(currentHighlight) && (
-          <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 90 }}>
-            {/* Highlight 1: How to Play Button */}
-            {currentHighlight === 1 && (
-              <div className="absolute bottom-32 left-1/2 transform -translate-x-1/2 pointer-events-auto">
-                <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground rounded-2xl p-4 shadow-2xl max-w-xs animate-bounce">
-                  <div className="flex items-start gap-3">
-                    <div className="text-2xl">💡</div>
-                    <div>
-                      <div className="font-bold text-sm mb-1">Need Help?</div>
-                      <div className="text-xs opacity-90">
-                        Tap "How to Play" button below anytime for game rules!
-                      </div>
-                    </div>
-                  </div>
-                  <button 
-                    onClick={() => dismissHighlight(1)}
-                    className="mt-2 w-full bg-white/20 py-1 rounded-lg text-xs font-semibold"
-                  >
-                    Got it!
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* Highlight 2: Living Expenses */}
-            {currentHighlight === 2 && (
-              <div className="absolute top-72 left-1/2 transform -translate-x-1/2 pointer-events-auto">
-                <div className="bg-gradient-to-r from-chart-5 to-chart-5/80 text-white rounded-2xl p-4 shadow-2xl max-w-xs animate-bounce">
-                  <div className="flex items-start gap-3">
-                    <div className="text-2xl">📊</div>
-                    <div>
-                      <div className="font-bold text-sm mb-1">Track Your Spending</div>
-                      <div className="text-xs opacity-90">
-                        See where your money goes! Check the expense breakdown above.
-                      </div>
-                    </div>
-                  </div>
-                  <button 
-                    onClick={() => dismissHighlight(2)}
-                    className="mt-2 w-full bg-white/20 py-1 rounded-lg text-xs font-semibold"
-                  >
-                    Thanks!
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* Highlight 3: Account Manager */}
-            {currentHighlight === 3 && (
-              <div className="absolute top-56 left-1/2 transform -translate-x-1/2 pointer-events-auto">
-                <div className="bg-gradient-to-r from-chart-2 to-chart-2/80 text-white rounded-2xl p-4 shadow-2xl max-w-xs animate-bounce">
-                  <div className="flex items-start gap-3">
-                    <div className="text-2xl">🛡️</div>
-                    <div>
-                      <div className="font-bold text-sm mb-1">Need a Break?</div>
-                      <div className="text-xs opacity-90">
-                        Account Manager pauses ALL timers! Costs ₦20M.
-                      </div>
-                    </div>
-                  </div>
-                  <button 
-                    onClick={() => dismissHighlight(3)}
-                    className="mt-2 w-full bg-white/20 py-1 rounded-lg text-xs font-semibold"
-                  >
-                    Awesome!
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* Highlight 4: Portfolio Tab */}
-            {currentHighlight === 4 && (
-              <div className="absolute bottom-24 left-1/2 transform -translate-x-1/2 pointer-events-auto">
-                <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground rounded-2xl p-4 shadow-2xl max-w-xs animate-bounce">
-                  <div className="flex items-start gap-3">
-                    <div className="text-2xl">📈</div>
-                    <div>
-                      <div className="font-bold text-sm mb-1">Track Your Wealth</div>
-                      <div className="text-xs opacity-90">
-                        Visit Portfolio tab to see your net worth and investments!
-                      </div>
-                    </div>
-                  </div>
-                  <button 
-                    onClick={() => dismissHighlight(4)}
-                    className="mt-2 w-full bg-white/20 py-1 rounded-lg text-xs font-semibold"
-                  >
-                    Got it!
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Tutorial Progress Indicator */}
-        {!tutorialFullyComplete && tutorialPhase < 4 && (
-          <div className="fixed top-2 left-1/2 transform -translate-x-1/2 bg-primary/90 text-primary-foreground px-4 py-1 rounded-full text-xs font-semibold shadow-lg" style={{ zIndex: 85 }}>
-            Tutorial: Phase {tutorialPhase}/3 • {investmentCount}/5 investments
-          </div>
-        )}
-      </>
-    );
-  };
 
   return (
     <div className="max-w-md mx-auto bg-background min-h-screen flex flex-col">
@@ -938,7 +655,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                 return (
                   <button 
                     key={a} 
-                    onClick={() => handleInvestClick(a)} 
+                    onClick={() => invest(a)} 
                     disabled={returnRate === 0 || a > balance || (balance - a) < 5000000} 
                     className="py-6 font-semibold bg-card border-2 border-card-border rounded-xl disabled:opacity-50 hover-elevate active-elevate-2"
                     data-testid={`button-invest-${a}`}
@@ -951,7 +668,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
 
             {/* 1 Billion Button - Full Width */}
             <button 
-              onClick={() => handleInvestClick(1000000000)} 
+              onClick={() => invest(1000000000)} 
               disabled={returnRate === 0 || 1000000000 > balance || (balance - 1000000000) < 5000000} 
               className="w-full py-6 font-semibold bg-card border-2 border-card-border rounded-xl disabled:opacity-50 hover-elevate active-elevate-2"
               data-testid="button-invest-1000000000"
@@ -1125,27 +842,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                 </button>
               </div>
             </div>
-
-            {/* Tutorial Settings */}
-            {!tutorialFullyComplete && (
-              <div className="bg-muted/50 rounded-xl p-4 border border-border">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="font-semibold text-sm">Progressive Tutorial</div>
-                    <div className="text-xs text-muted-foreground mt-1">
-                      Phase {tutorialPhase}/3 • {investmentCount}/5 investments
-                    </div>
-                  </div>
-                  <button 
-                    onClick={skipAllTutorials}
-                    className="px-3 py-1.5 bg-destructive/10 text-destructive hover-elevate active-elevate-2 rounded-lg text-xs font-medium border border-destructive/30"
-                    data-testid="button-skip-all-tutorials"
-                  >
-                    Skip All
-                  </button>
-                </div>
-              </div>
-            )}
             
             <div className="bg-gradient-to-br from-muted to-muted/80 rounded-2xl p-6 text-foreground">
               <div className="flex items-center gap-4 mb-4">
@@ -1705,9 +1401,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
           )}
         </>
       )}
-
-      {/* Progressive Tutorial UI */}
-      {renderTutorialUI()}
     </div>
   );
 }
