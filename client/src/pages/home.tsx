@@ -435,10 +435,15 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
   const handleRestart = () => {
     // Clear game data but keep player data
     localStorage.removeItem(STORAGE_KEY);
+    
+    // Clear tutorial progress so it starts over on restart
+    localStorage.removeItem(TUTORIAL_KEY);
+    localStorage.removeItem(TUTORIAL_PROGRESS_KEY);
+    
     setGameOver(false);
     setShowAdSimulation(false);
     
-    // Return to welcome page (player data will be pre-filled)
+    // Return to welcome page (player data will be pre-filled, tutorial will restart)
     onReturnToWelcome();
   };
 
