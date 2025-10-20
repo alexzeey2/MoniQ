@@ -158,7 +158,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
   const [expensesExpanded, setExpensesExpanded] = useState(false);
   const [expensesShowTimer, setExpensesShowTimer] = useState(0);
   const [expensesAutoHideTimer, setExpensesAutoHideTimer] = useState(0);
-  const [showZeroRateWarning, setShowZeroRateWarning] = useState(false);
 
   const STORAGE_KEY = 'naijaWealthSim_gameState';
   const PLAYER_DATA_KEY = 'naijaWealthSim_playerData';
@@ -262,15 +261,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
     }, 1000);
     return () => clearInterval(t);
   }, [gameOver, accountManager]);
-
-  // Show/hide warning popup based on profit rate
-  useEffect(() => {
-    if (returnRate === 0 && !gameOver && !accountManager) {
-      setShowZeroRateWarning(true);
-    } else if (returnRate > 0) {
-      setShowZeroRateWarning(false);
-    }
-  }, [returnRate, gameOver, accountManager]);
 
   useEffect(() => {
     if (gameOver || accountManager) return;
@@ -650,7 +640,33 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
         )}
         
         {screen === 'invest' && (
-          <div className="p-6 space-y-4">
+          <div className="p-6 space-y-4 relative">
+            {/* Investment Blocked Modal - Only on Invest Screen */}
+            {returnRate === 0 && (
+              <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-6" style={{ zIndex: 60 }}>
+                <div className="bg-card rounded-2xl p-8 max-w-sm w-full border-2 border-destructive">
+                  <div className="text-center mb-6">
+                    <div className="text-5xl mb-3">⚠️</div>
+                    <h2 className="text-xl font-bold text-destructive mb-4">INVESTMENT BLOCKED</h2>
+                    <p className="text-sm text-foreground mb-2">
+                      Your profit rate dropped to 0%!
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      Buy an item from the Store to restore it back to 30% and continue investing.
+                    </p>
+                  </div>
+
+                  <button 
+                    onClick={() => setScreen('luxury')}
+                    className="w-full bg-gradient-to-r from-chart-3 to-chart-5 text-white py-3 rounded-xl font-semibold hover-elevate active-elevate-2"
+                    data-testid="button-go-to-store"
+                  >
+                    Go to Store
+                  </button>
+                </div>
+              </div>
+            )}
+
             <button 
               onClick={() => setScreen('home')} 
               className="flex items-center gap-2 text-muted-foreground hover-elevate active-elevate-2 rounded-lg px-2 py-1"
@@ -679,20 +695,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                 </div>
               </div>
             </div>
-
-            {returnRate === 0 && (
-              <div className="bg-destructive/10 border-2 border-destructive/30 rounded-xl p-4">
-                <div className="flex items-start gap-3">
-                  <AlertCircle className="w-5 h-5 text-destructive mt-0.5" />
-                  <div>
-                    <div className="font-semibold text-destructive text-sm mb-1">Cannot Invest!</div>
-                    <div className="text-xs text-muted-foreground">
-                      Your profit rate has reached 0%. You must buy an item from the Store to restore your investment ability.
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
 
             <div className="grid grid-cols-2 gap-3">
               {[1000000, 10000000, 40000000, 100000000].map(a => {
@@ -1048,49 +1050,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
         </div>
       </nav>
 
-
-      {/* Zero Rate Warning Modal */}
-      {showZeroRateWarning && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-6" style={{ zIndex: 60 }}>
-          <div className="bg-card rounded-2xl p-8 max-w-sm w-full border-2 border-destructive">
-            <div className="text-6xl mb-4 text-center">⚠️</div>
-            <h2 className="text-2xl font-bold mb-2 text-center text-destructive">Investment Blocked!</h2>
-            <p className="text-sm text-center text-muted-foreground mb-6">
-              Your profit rate has reached 0% after 7 minutes. You cannot make any new investments until you buy an item from the Store to restore your investment power.
-            </p>
-
-            <div className="bg-chart-5/20 border border-chart-5/30 rounded-xl p-4 mb-6">
-              <div className="flex items-start gap-3">
-                <ShoppingBag className="w-5 h-5 text-chart-5 mt-0.5" />
-                <div className="flex-1">
-                  <div className="font-semibold text-foreground text-sm mb-1">What to do:</div>
-                  <div className="text-xs text-muted-foreground">
-                    Visit the Store and purchase any item. This will reset your profit rate back to 30% and unlock investments again.
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <button 
-              onClick={() => {
-                setShowZeroRateWarning(false);
-                setScreen('luxury');
-              }}
-              className="w-full bg-gradient-to-r from-chart-3 to-chart-5 text-white py-3 rounded-xl font-semibold hover-elevate active-elevate-2"
-              data-testid="button-go-to-store"
-            >
-              Go to Store
-            </button>
-            <button 
-              onClick={() => setShowZeroRateWarning(false)}
-              className="w-full mt-3 bg-muted text-foreground py-3 rounded-xl font-semibold hover-elevate active-elevate-2"
-              data-testid="button-close-warning"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* Game Over Modal */}
       {gameOver && !showAdSimulation && (

@@ -108,6 +108,12 @@ Preferred communication style: Simple, everyday language.
 - Profit decay: Rate stays at 30% for 7 minutes, then drops to 0% instantly
 - Account manager feature (₦20M cost) for tax optimization
 - Investment decay requiring player engagement (buy items to restore profit rate)
+- **Investment Blocked Modal** (appears after 7 minutes when profit drops to 0%):
+  - Blocks only the invest page (not global)
+  - Displays clear warning message with ⚠️ icon
+  - Explains profit rate dropped to 0% and requires store purchase
+  - Single "Go to Store" button to navigate to luxury items
+  - Modal prevents any investments until player buys an item
 
 **Item Categories**
 - Gadgets (iPhone, MacBook, Vision Pro, luxury watches, home theater)
