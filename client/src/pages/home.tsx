@@ -153,6 +153,11 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
   const [showAdSimulation, setShowAdSimulation] = useState(false);
   const [adCountdown, setAdCountdown] = useState(30);
   
+  // Tutorial state
+  const [tutorialActive, setTutorialActive] = useState(false);
+  const [tutorialStep, setTutorialStep] = useState<'click-invest' | 'make-investment' | 'wait-investment' | 'click-store' | 'buy-iphone' | 'click-invest-again' | 'completed'>('click-invest');
+  const [tutorialInvestmentId, setTutorialInvestmentId] = useState<number | null>(null);
+  
   // Expenses notification state
   const [showExpensesNotification, setShowExpensesNotification] = useState(false);
   const [expensesExpanded, setExpensesExpanded] = useState(false);
@@ -199,6 +204,11 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
         setReturnRate(gameState.returnRate ?? 0.30);
         setAccountManager(gameState.accountManager ?? false);
         setManagerCost(gameState.managerCost ?? 20000000);
+        setTutorialActive(false); // Tutorial already done for returning players
+      } else {
+        // New player - start tutorial
+        setTutorialActive(true);
+        setTutorialStep('click-invest');
       }
     } catch (error) {
       console.error('Failed to load game state:', error);
@@ -290,7 +300,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
   }, [gameOver, accountManager]);
 
   useEffect(() => {
-    if (gameOver || accountManager) return;
+    if (gameOver || accountManager || tutorialActive) return; // Pause during tutorial
     const t = setInterval(() => {
       setTaxTimer(p => {
         if (p <= 1) {
@@ -328,7 +338,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
       });
     }, 1000);
     return () => clearInterval(t);
-  }, [balance, gameOver, taxRate, maintenance, accountManager]);
+  }, [balance, gameOver, taxRate, maintenance, accountManager, tutorialActive]);
 
   useEffect(() => {
     if (accountManager) return;
@@ -337,13 +347,19 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
         if (inv.t <= 1) {
           setBalance(b => b + Math.floor(inv.a * (1 + inv.r)));
           playKaChing(); // Ka-ching sound when investment returns!
+          
+          // Tutorial: Check if first investment completed
+          if (tutorialActive && tutorialStep === 'wait-investment' && inv.id === tutorialInvestmentId) {
+            setTutorialStep('click-store');
+          }
+          
           return null;
         }
         return { ...inv, t: inv.t - 1 };
       }).filter(Boolean) as Array<{id: number, a: number, t: number, r: number}>);
     }, 1000);
     return () => clearInterval(t);
-  }, [accountManager]);
+  }, [accountManager, tutorialActive, tutorialStep, tutorialInvestmentId]);
 
 
   useEffect(() => {
@@ -385,11 +401,45 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
 
   const invest = (amt: number) => {
     const a = parseInt(amt.toString());
-    if (a > balance || a < 1000000 || (balance - a) < 5000000) return;
+    
+    // Calculate required buffer based on items owned
+    const requiredBuffer = owned.length <= 2 ? 10000000 : 11000000;
+    
+    // Safety checks with educational messages
+    if (a > balance) {
+      alert('⚠️ Insufficient Balance\n\nYou cannot invest more than your current balance.\n\nCurrent balance: ' + fmt(balance) + '\nTrying to invest: ' + fmt(a));
+      return;
+    }
+    
+    if ((balance - a) < requiredBuffer) {
+      const itemsText = owned.length <= 2 ? 'first 2 items' : '3+ items';
+      alert(`⚠️ Investment Blocked!\n\nYou must keep at least ${fmt(requiredBuffer)} as a safety buffer.\n\nWhy? You own ${itemsText}, which means:\n• Living expenses: ${fmt(Math.floor(balance * 0.25))}/30s\n• Maintenance: ${fmt(maintenance)}/30s\n• Total expenses: ${fmt(Math.floor(balance * 0.25) + maintenance)}/30s\n\n💡 Keep enough buffer to cover expenses while waiting for investment returns!\n\nCurrent balance: ${fmt(balance)}\nAfter investing: ${fmt(balance - a)}\nRequired buffer: ${fmt(requiredBuffer)}`);
+      return;
+    }
+    
+    if (a < 1000000 || (balance - a) < 5000000) return;
     
     setBalance(balance - a);
-    setInvestments([...investments, { id: Date.now(), a, t: 60, r: returnRate }]);
+    const investmentId = Date.now();
+    setInvestments([...investments, { id: investmentId, a, t: 60, r: returnRate }]);
     playDeposit(); // Sound effect for making an investment
+    
+    // Tutorial: Track first investment
+    if (tutorialActive && tutorialStep === 'make-investment' && a === 40000000) {
+      setTutorialInvestmentId(investmentId);
+      setTutorialStep('wait-investment');
+    }
+    
+    // Tutorial: Second investment completes tutorial
+    if (tutorialActive && tutorialStep === 'click-invest-again') {
+      setTutorialActive(false);
+      setTutorialStep('completed');
+      
+      // Show completion message
+      setTimeout(() => {
+        alert('🎉 Tutorial Complete!\n\nGreat job! You now know the basics:\n\n✅ Make investments (30% returns)\n✅ Buy luxury items\n✅ Manage your balance\n\n🏆 Goal: Collect all 20 items to win!\n\n💡 Remember:\n• Keep balance above ₦5M\n• Buy items before profit drops to 0%\n• Living expenses deduct every 30s\n\nGood luck, and have fun building your wealth! 💰');
+      }, 500);
+    }
   };
 
   const buy = (item: any) => {
@@ -400,6 +450,12 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
     setPurchased([...purchased, item.id]);
     setReturnRate(0.30);
     setDecayTimer(420);
+    
+    // Tutorial: Check if bought iPhone
+    if (tutorialActive && tutorialStep === 'buy-iphone' && item.id === 1) {
+      setTutorialStep('click-invest-again');
+      setScreen('home'); // Navigate back to home
+    }
   };
 
   const toggleManager = () => {
@@ -693,6 +749,108 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
               <div className="text-sm">Returns: {(returnRate * 100).toFixed(0)}%</div>
             </div>
             
+            {/* Expenses Notification on Invest Page */}
+            {showExpensesNotification && (
+              <div className={`bg-chart-5/10 rounded-xl p-4 border-2 ${expensesExpanded ? 'border-chart-5/20' : 'border-destructive animate-pulse'}`}>
+                <div className="flex items-start gap-2 mb-2">
+                  <span className="text-lg">🔔</span>
+                  <div className="flex-1">
+                    <div className="text-sm font-semibold text-foreground">
+                      {fmt(lastExpensesDeducted.total)} was debited!
+                    </div>
+                  </div>
+                </div>
+                
+                {!expensesExpanded ? (
+                  <button
+                    onClick={() => setExpensesExpanded(true)}
+                    className="w-full bg-chart-5/20 text-foreground px-3 py-1.5 rounded-lg text-xs font-medium hover-elevate active-elevate-2"
+                    data-testid="button-see-why"
+                  >
+                    See Why
+                  </button>
+                ) : (
+                  <div className="space-y-3">
+                    <div className="text-xs font-semibold text-foreground mb-2">▼ Breakdown:</div>
+                    <div className="space-y-1.5 text-xs">
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground flex items-center gap-1">
+                          <span>🍽️</span> Food & Dining
+                        </span>
+                        <span className="font-semibold">{fmt(Math.floor(lastExpensesDeducted.livingExpenses * 0.16))}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground flex items-center gap-1">
+                          <span>👔</span> Clothing & Fashion
+                        </span>
+                        <span className="font-semibold">{fmt(Math.floor(lastExpensesDeducted.livingExpenses * 0.08))}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground flex items-center gap-1">
+                          <span>🎬</span> Entertainment
+                        </span>
+                        <span className="font-semibold">{fmt(Math.floor(lastExpensesDeducted.livingExpenses * 0.12))}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground flex items-center gap-1">
+                          <span>✈️</span> Travel
+                        </span>
+                        <span className="font-semibold">{fmt(Math.floor(lastExpensesDeducted.livingExpenses * 0.12))}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground flex items-center gap-1">
+                          <span>🚗</span> Transportation
+                        </span>
+                        <span className="font-semibold">{fmt(Math.floor(lastExpensesDeducted.livingExpenses * 0.20))}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground flex items-center gap-1">
+                          <span>👨‍👩‍👧</span> Family Support
+                        </span>
+                        <span className="font-semibold">{fmt(Math.floor(lastExpensesDeducted.livingExpenses * 0.20))}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground flex items-center gap-1">
+                          <span>🚨</span> Emergency Fund
+                        </span>
+                        <span className="font-semibold">{fmt(Math.floor(lastExpensesDeducted.livingExpenses * 0.12))}</span>
+                      </div>
+                      <div className="flex justify-between items-center pt-1.5 mt-1.5 border-t border-chart-5/30">
+                        <span className="text-muted-foreground flex items-center gap-1">
+                          <span>🔧</span> Maintenance
+                        </span>
+                        <span className="font-semibold">{fmt(lastExpensesDeducted.maintenance)}</span>
+                      </div>
+                    </div>
+
+                    <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-2 mt-3">
+                      <div className="text-xs text-foreground">
+                        <span className="font-semibold">⚠️ Keep enough balance to cover expenses.</span>
+                        <div className="mt-1">
+                          It's game over if your balance goes below {fmt(5000000)}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="text-xs text-muted-foreground mt-2">
+                      Next deduction in {taxTimer}s ⏱️
+                    </div>
+
+                    <button
+                      onClick={() => {
+                        setShowExpensesNotification(false);
+                        setExpensesExpanded(false);
+                      }}
+                      className="w-full bg-primary text-primary-foreground px-3 py-2 rounded-lg text-xs font-medium hover-elevate active-elevate-2 mt-3"
+                      data-testid="button-got-it"
+                    >
+                      Got It
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+            
             {/* Investment Summary */}
             <div className="bg-chart-2/10 rounded-xl p-4 border border-chart-2/20">
               <div className="text-sm font-semibold text-foreground mb-2">Investment Summary</div>
@@ -712,13 +870,14 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
               {[1000000, 10000000, 40000000, 100000000].map(a => {
                 // Format the button label for smaller amounts
                 const label = `${currency}${Math.round(a * conversionRate / (conversionRate === 1 ? 1000000 : 1000))}${conversionRate === 1 ? 'M' : 'K'}`;
+                const shouldHighlight = tutorialActive && tutorialStep === 'make-investment' && a === 40000000;
                 
                 return (
                   <button 
                     key={a} 
                     onClick={() => invest(a)} 
-                    disabled={returnRate === 0 || a > balance || (balance - a) < 5000000} 
-                    className="py-6 font-semibold bg-card border-2 border-card-border rounded-xl disabled:opacity-50 hover-elevate active-elevate-2"
+                    disabled={returnRate === 0 || a > balance || (balance - a) < 5000000 || (tutorialActive && tutorialStep === 'make-investment' && a !== 40000000)} 
+                    className={`py-6 font-semibold bg-card border-2 border-card-border rounded-xl disabled:opacity-50 hover-elevate active-elevate-2 ${shouldHighlight ? 'tutorial-highlight' : ''}`}
                     data-testid={`button-invest-${a}`}
                   >
                     {label}
@@ -778,9 +937,10 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
             <div className="space-y-3">
               {items.filter(i => !purchased.includes(i.id) && (selectedCategory === 'All' || i.cat === selectedCategory)).map(i => {
                 const totalCost = Math.floor(i.price * 1.25);
+                const shouldHighlight = tutorialActive && tutorialStep === 'buy-iphone' && i.id === 1;
                 
                 return (
-                  <div key={i.id} className="bg-card rounded-xl overflow-hidden border border-card-border" data-testid={`item-${i.id}`}>
+                  <div key={i.id} className={`bg-card rounded-xl overflow-hidden border border-card-border ${shouldHighlight ? 'tutorial-highlight' : ''}`} data-testid={`item-${i.id}`}>
                     <img 
                       src={i.img} 
                       alt={i.name}
@@ -794,7 +954,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                       </div>
                       <button 
                         onClick={() => buy(i)} 
-                        disabled={balance < totalCost} 
+                        disabled={balance < totalCost || (tutorialActive && tutorialStep === 'buy-iphone' && i.id !== 1)} 
                         className="bg-chart-3 text-white px-6 py-2 rounded-lg disabled:opacity-50 hover-elevate active-elevate-2 whitespace-nowrap"
                         data-testid={`button-buy-${i.id}`}
                       >
@@ -1045,22 +1205,152 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
             { id: 'luxury', icon: ShoppingBag, label: 'Store' },
             { id: 'portfolio', icon: PieChart, label: 'Portfolio' },
             { id: 'profile', icon: User, label: 'Profile' },
-          ].map(({ id, icon: Icon, label }) => (
+          ].map(({ id, icon: Icon, label }) => {
+            const shouldHighlight = tutorialActive && (
+              (tutorialStep === 'click-invest' && id === 'invest') ||
+              (tutorialStep === 'click-store' && id === 'luxury') ||
+              (tutorialStep === 'click-invest-again' && id === 'invest')
+            );
+            
+            return (
               <button 
                 key={id} 
-                onClick={() => setScreen(id)}
-                className={`flex flex-col items-center gap-1 transition-colors ${
+                onClick={() => {
+                  if (tutorialActive && tutorialStep === 'click-invest' && id === 'invest') {
+                    setScreen(id);
+                    setTutorialStep('make-investment');
+                  } else if (tutorialActive && tutorialStep === 'click-store' && id === 'luxury') {
+                    setScreen(id);
+                    setTutorialStep('buy-iphone');
+                  } else if (tutorialActive && tutorialStep === 'click-invest-again' && id === 'invest') {
+                    setScreen(id);
+                  } else if (!tutorialActive || tutorialStep === 'wait-investment' || tutorialStep === 'buy-iphone') {
+                    setScreen(id);
+                  }
+                }}
+                className={`flex flex-col items-center gap-1 transition-colors rounded-lg ${
                   screen === id ? 'text-primary' : 'text-muted-foreground'
-                }`}
+                } ${shouldHighlight ? 'tutorial-highlight' : ''}`}
                 data-testid={`nav-${id}`}
               >
                 <Icon className="w-5 h-5" />
                 <span className="text-xs">{label}</span>
               </button>
-            ))}
+            );
+          })}
         </div>
       </nav>
 
+
+      {/* Tutorial Overlay */}
+      {tutorialActive && (
+        <div className="fixed inset-0 tutorial-overlay-bg flex items-end justify-center pb-24" style={{ zIndex: 90 }}>
+          <div className="bg-gradient-to-br from-primary to-primary/80 rounded-2xl p-6 mx-4 max-w-sm w-full shadow-2xl border-2 border-primary/50">
+            {tutorialStep === 'click-invest' && (
+              <div className="text-white">
+                <div className="text-3xl mb-3 text-center">👋</div>
+                <h3 className="text-xl font-bold mb-3 text-center">Welcome to Sọ́ágỌ́!</h3>
+                <p className="text-sm mb-4 text-center opacity-90">
+                  Let's start your journey to collect all 20 luxury items!
+                </p>
+                <div className="bg-white/20 rounded-xl p-4 mb-4">
+                  <p className="text-sm font-semibold mb-2">📍 Step 1: Make Your First Investment</p>
+                  <p className="text-xs opacity-90">
+                    Click the <strong>Invest</strong> button below to begin. You'll earn 30% returns!
+                  </p>
+                </div>
+                <div className="flex items-center gap-2 text-xs opacity-75">
+                  <Clock className="w-4 h-4" />
+                  <span>Tutorial pauses expense timers</span>
+                </div>
+              </div>
+            )}
+            
+            {tutorialStep === 'make-investment' && (
+              <div className="text-white">
+                <div className="text-3xl mb-3 text-center">💰</div>
+                <h3 className="text-xl font-bold mb-3 text-center">Invest ₦40M</h3>
+                <div className="bg-white/20 rounded-xl p-4 mb-4">
+                  <p className="text-sm font-semibold mb-2">📍 Step 2: Choose Investment Amount</p>
+                  <p className="text-xs opacity-90 mb-3">
+                    Click the <strong>₦40M</strong> button to invest 40 million Naira.
+                  </p>
+                  <div className="bg-white/30 rounded-lg p-2 text-xs">
+                    <strong>💡 Why ₦40M?</strong> This leaves you with enough buffer (₦10M+) to safely cover expenses while waiting for returns!
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {tutorialStep === 'wait-investment' && (
+              <div className="text-white">
+                <div className="text-3xl mb-3 text-center">⏳</div>
+                <h3 className="text-xl font-bold mb-3 text-center">Great! Now Wait...</h3>
+                <div className="bg-white/20 rounded-xl p-4 mb-4">
+                  <p className="text-sm font-semibold mb-2">📍 Step 3: Wait for Returns</p>
+                  <p className="text-xs opacity-90 mb-3">
+                    Your investment is growing! Watch the timer count down. You'll receive ₦12M profit (30% of ₦40M) when it completes.
+                  </p>
+                  <div className="bg-white/30 rounded-lg p-2 text-xs">
+                    <strong>⚡ Pro Tip:</strong> Investments take 60 seconds. Use this time wisely to plan your next move!
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {tutorialStep === 'click-store' && (
+              <div className="text-white">
+                <div className="text-3xl mb-3 text-center">🎉</div>
+                <h3 className="text-xl font-bold mb-3 text-center">Investment Complete!</h3>
+                <p className="text-sm mb-4 text-center opacity-90">
+                  You earned ₦12M! Your balance is now higher.
+                </p>
+                <div className="bg-white/20 rounded-xl p-4 mb-4">
+                  <p className="text-sm font-semibold mb-2">📍 Step 4: Buy Your First Item</p>
+                  <p className="text-xs opacity-90">
+                    Click the <strong>Store</strong> button below to visit the luxury store.
+                  </p>
+                </div>
+              </div>
+            )}
+            
+            {tutorialStep === 'buy-iphone' && (
+              <div className="text-white">
+                <div className="text-3xl mb-3 text-center">📱</div>
+                <h3 className="text-xl font-bold mb-3 text-center">Buy iPhone 15 Pro Max</h3>
+                <div className="bg-white/20 rounded-xl p-4 mb-4">
+                  <p className="text-sm font-semibold mb-2">📍 Step 5: Purchase the iPhone</p>
+                  <p className="text-xs opacity-90 mb-3">
+                    Scroll down and buy the <strong>iPhone 15 Pro Max</strong>. This is your first luxury item!
+                  </p>
+                  <div className="bg-white/30 rounded-lg p-2 text-xs">
+                    <strong>⚠️ Note:</strong> Items cost 25% more than listed price (sales tax). The iPhone costs ₦1.25M total.
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {tutorialStep === 'click-invest-again' && (
+              <div className="text-white">
+                <div className="text-3xl mb-3 text-center">🎯</div>
+                <h3 className="text-xl font-bold mb-3 text-center">Almost Done!</h3>
+                <p className="text-sm mb-4 text-center opacity-90">
+                  Perfect! You bought your first item. Now let's practice investing again.
+                </p>
+                <div className="bg-white/20 rounded-xl p-4 mb-4">
+                  <p className="text-sm font-semibold mb-2">📍 Final Step: Invest Again</p>
+                  <p className="text-xs opacity-90 mb-3">
+                    Click <strong>Invest</strong> tab and make any investment to complete the tutorial!
+                  </p>
+                  <div className="bg-white/30 rounded-lg p-2 text-xs">
+                    <strong>💡 Remember:</strong> Keep investing to grow your wealth and collect all 20 items to win!
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Game Over Modal */}
       {gameOver && !showAdSimulation && (
