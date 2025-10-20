@@ -122,11 +122,28 @@ Preferred communication style: Simple, everyday language.
 - Jets (Cessna, Bombardier, Gulfstream, Boeing)
 - Yachts (Sport, Luxury, Mega, Superyacht)
 
-**Monetization Flow**
-- Game-over modal with restart/continue options
-- Ad simulation screen with 30-second countdown
-- Continue option unlocked after watching ad
-- Visual hierarchy emphasizing decision consequences (red for loss, emerald for recovery)
+**Game Over System (October 2025)**
+- **Game Over Modal with Detailed Expense Breakdown**:
+  - Triggers when balance drops below ₦5M after expenses/maintenance deduction
+  - Shows 💸 emoji and "Game Over!" title in red
+  - **Expense Breakdown Section**:
+    - Balance before deduction
+    - Living expenses (25% of balance, shown as negative in red)
+    - Maintenance cost (sum of all items, shown as negative in red)
+    - Balance after deduction (shows it went below ₦5M threshold)
+  - **Warning Message**: Yellow alert box reminding player to keep enough balance for expenses next time
+  - **Two Action Options**:
+    - "Start Afresh": Clears all game data, returns to welcome page with pre-filled player info, starts fresh with ₦50M
+    - "Continue (Ads)": Shows 30-second ad simulation, then wipes ALL purchases but keeps current balance intact
+- **Ad Simulation Screen**:
+  - 30-second countdown with progress bar
+  - Premium feature ad content with 🎬 icon
+  - Skip button unlocks after countdown completes
+- **Continue After Ad**:
+  - Wipes all owned items and purchases (maintenance reset to 0)
+  - Balance remains UNCHANGED (no recovery funds added)
+  - Profit rate restored to 30% with 7-minute timer reset
+  - Player continues with same balance but without items
 
 **Sound Effects (October 2025)**
 - **Ka-ching Sound**: Plays when investment returns are collected (MP3 audio file: cashier ka-ching sound effect)

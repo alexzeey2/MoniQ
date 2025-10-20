@@ -158,6 +158,14 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
   const [expensesExpanded, setExpensesExpanded] = useState(false);
   const [expensesAutoHideTimer, setExpensesAutoHideTimer] = useState(0);
 
+  // Game over details
+  const [gameOverDetails, setGameOverDetails] = useState({
+    livingExpenses: 0,
+    maintenanceCost: 0,
+    balanceBeforeDeduction: 0,
+    balanceAfterDeduction: 0,
+  });
+
   const STORAGE_KEY = 'naijaWealthSim_gameState';
   const PLAYER_DATA_KEY = 'naijaWealthSim_playerData';
 
@@ -285,7 +293,17 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
           const total = tax + maintenance;
           const newBal = Math.max(5000000, balance - total);
           setBalance(newBal);
-          if (newBal <= 5000000) setGameOver(true);
+          
+          if (newBal <= 5000000) {
+            // Capture game over details
+            setGameOverDetails({
+              livingExpenses: tax,
+              maintenanceCost: maintenance,
+              balanceBeforeDeduction: balance,
+              balanceAfterDeduction: newBal,
+            });
+            setGameOver(true);
+          }
           
           // Show expenses notification immediately when expenses are deducted
           setShowExpensesNotification(true);
@@ -408,17 +426,15 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
   };
 
   const handleAdComplete = () => {
-    const totalInvested = investments.reduce((sum, inv) => sum + inv.a, 0);
-    const recoveredFunds = Math.floor(totalInvested * 0.5);
-    
-    setBalance(prev => prev + recoveredFunds);
+    // Wipe all purchases but keep balance intact
     setOwned([]);
     setPurchased([]);
-    setInvestments([]);
     setMaintenance(0);
     
     setShowAdSimulation(false);
     setGameOver(false);
+    setReturnRate(0.30);
+    setDecayTimer(420);
     setAdCountdown(30);
   };
 
@@ -1036,26 +1052,38 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
 
       {/* Game Over Modal */}
       {gameOver && !showAdSimulation && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-6" style={{ zIndex: 60 }}>
-          <div className="bg-card rounded-2xl p-8 max-w-sm w-full border border-card-border">
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-6" style={{ zIndex: 60 }}>
+          <div className="bg-card rounded-2xl p-8 max-w-sm w-full border-2 border-destructive">
             <div className="text-6xl mb-4 text-center">💸</div>
-            <h2 className="text-2xl font-bold mb-2 text-center text-foreground">Game Over!</h2>
-            <p className="text-sm text-center text-muted-foreground mb-6">
-              Your balance dropped below {currency}{Math.round(5000000 * conversionRate / (conversionRate === 1 ? 1000000 : 1000))}{conversionRate === 1 ? 'M' : 'K'}. Choose your next move:
-            </p>
+            <h2 className="text-2xl font-bold mb-2 text-center text-destructive">Game Over!</h2>
+            
+            {/* Expense Breakdown */}
+            <div className="bg-destructive/10 border border-destructive/30 rounded-xl p-4 mb-4 space-y-2">
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-muted-foreground">Balance before:</span>
+                <span className="font-semibold text-foreground">{fmt(gameOverDetails.balanceBeforeDeduction)}</span>
+              </div>
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-muted-foreground">Living expenses:</span>
+                <span className="font-semibold text-destructive">-{fmt(gameOverDetails.livingExpenses)}</span>
+              </div>
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-muted-foreground">Maintenance cost:</span>
+                <span className="font-semibold text-destructive">-{fmt(gameOverDetails.maintenanceCost)}</span>
+              </div>
+              <div className="border-t border-destructive/30 pt-2 mt-2">
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-muted-foreground">Balance after:</span>
+                  <span className="font-bold text-destructive">{fmt(gameOverDetails.balanceAfterDeduction)}</span>
+                </div>
+              </div>
+            </div>
 
-            {/* Consequence Cards */}
-            <div className="grid grid-cols-2 gap-3 mb-6">
-              <div className="bg-destructive/10 border border-destructive/30 rounded-xl p-4 text-center">
-                <div className="text-3xl mb-2">🔄</div>
-                <div className="font-semibold text-sm text-foreground mb-1">Restart</div>
-                <div className="text-xs text-destructive">Start fresh with {currency}{Math.round(50000000 * conversionRate / (conversionRate === 1 ? 1000000 : 1000))}{conversionRate === 1 ? 'M' : 'K'}</div>
-              </div>
-              <div className="bg-primary/10 border border-primary/30 rounded-xl p-4 text-center">
-                <div className="text-3xl mb-2">📺</div>
-                <div className="font-semibold text-sm text-foreground mb-1">Continue (Ad)</div>
-                <div className="text-xs text-primary">Watch 30s ad • Keep 50% of investments • Lose all items</div>
-              </div>
+            {/* Warning Message */}
+            <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3 mb-6">
+              <p className="text-xs text-foreground text-center">
+                ⚠️ Your balance went below {fmt(5000000)}! Keep enough balance to sustain your living expenses and maintenance costs next time.
+              </p>
             </div>
 
             {/* Action Buttons */}
@@ -1066,7 +1094,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                 data-testid="button-restart"
               >
                 <RotateCcw className="w-4 h-4" />
-                Restart
+                Start Afresh
               </button>
               <button 
                 onClick={handleContinueWithAd}
@@ -1074,7 +1102,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                 data-testid="button-continue-ad"
               >
                 <Play className="w-4 h-4" />
-                Continue (Ad)
+                Continue (Ads)
               </button>
             </div>
           </div>
