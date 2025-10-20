@@ -157,6 +157,11 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
   const [showExpensesNotification, setShowExpensesNotification] = useState(false);
   const [expensesExpanded, setExpensesExpanded] = useState(false);
   const [expensesAutoHideTimer, setExpensesAutoHideTimer] = useState(0);
+  const [lastExpensesDeducted, setLastExpensesDeducted] = useState({
+    livingExpenses: 0,
+    maintenance: 0,
+    total: 0,
+  });
 
   // Game over details
   const [gameOverDetails, setGameOverDetails] = useState({
@@ -304,6 +309,13 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
             });
             setGameOver(true);
           }
+          
+          // Capture actual deducted amounts for expenses notification
+          setLastExpensesDeducted({
+            livingExpenses: tax,
+            maintenance: maintenance,
+            total: total,
+          });
           
           // Show expenses notification immediately when expenses are deducted
           setShowExpensesNotification(true);
@@ -525,7 +537,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                   <span className="text-lg">🔔</span>
                   <div className="flex-1">
                     <div className="text-sm font-semibold text-foreground">
-                      {fmt(Math.floor(balance * taxRate + maintenance))} was debited!
+                      {fmt(lastExpensesDeducted.total)} was debited!
                     </div>
                   </div>
                 </div>
@@ -546,49 +558,49 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                         <span className="text-muted-foreground flex items-center gap-1">
                           <span>🍽️</span> Food & Dining
                         </span>
-                        <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.16))}</span>
+                        <span className="font-semibold">{fmt(Math.floor(lastExpensesDeducted.livingExpenses * 0.16))}</span>
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-muted-foreground flex items-center gap-1">
                           <span>👔</span> Clothing & Fashion
                         </span>
-                        <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.08))}</span>
+                        <span className="font-semibold">{fmt(Math.floor(lastExpensesDeducted.livingExpenses * 0.08))}</span>
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-muted-foreground flex items-center gap-1">
                           <span>🎬</span> Entertainment
                         </span>
-                        <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.12))}</span>
+                        <span className="font-semibold">{fmt(Math.floor(lastExpensesDeducted.livingExpenses * 0.12))}</span>
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-muted-foreground flex items-center gap-1">
                           <span>✈️</span> Travel
                         </span>
-                        <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.12))}</span>
+                        <span className="font-semibold">{fmt(Math.floor(lastExpensesDeducted.livingExpenses * 0.12))}</span>
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-muted-foreground flex items-center gap-1">
                           <span>🚗</span> Transportation
                         </span>
-                        <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.20))}</span>
+                        <span className="font-semibold">{fmt(Math.floor(lastExpensesDeducted.livingExpenses * 0.20))}</span>
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-muted-foreground flex items-center gap-1">
                           <span>👨‍👩‍👧</span> Family Support
                         </span>
-                        <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.20))}</span>
+                        <span className="font-semibold">{fmt(Math.floor(lastExpensesDeducted.livingExpenses * 0.20))}</span>
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-muted-foreground flex items-center gap-1">
                           <span>🚨</span> Emergency Fund
                         </span>
-                        <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.12))}</span>
+                        <span className="font-semibold">{fmt(Math.floor(lastExpensesDeducted.livingExpenses * 0.12))}</span>
                       </div>
                       <div className="flex justify-between items-center pt-1.5 mt-1.5 border-t border-chart-5/30">
                         <span className="text-muted-foreground flex items-center gap-1">
                           <span>🔧</span> Maintenance
                         </span>
-                        <span className="font-semibold">{fmt(maintenance)}</span>
+                        <span className="font-semibold">{fmt(lastExpensesDeducted.maintenance)}</span>
                       </div>
                     </div>
 
@@ -829,7 +841,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                     <span className="text-lg">🔔</span>
                     <div className="flex-1">
                       <div className="text-sm font-semibold text-foreground">
-                        {fmt(Math.floor(balance * taxRate + maintenance))} was debited!
+                        {fmt(lastExpensesDeducted.total)} was debited!
                       </div>
                     </div>
                   </div>
@@ -850,49 +862,49 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                           <span className="text-muted-foreground flex items-center gap-1">
                             <span>🍽️</span> Food & Dining
                           </span>
-                          <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.16))}</span>
+                          <span className="font-semibold">{fmt(Math.floor(lastExpensesDeducted.livingExpenses * 0.16))}</span>
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="text-muted-foreground flex items-center gap-1">
                             <span>👔</span> Clothing & Fashion
                           </span>
-                          <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.08))}</span>
+                          <span className="font-semibold">{fmt(Math.floor(lastExpensesDeducted.livingExpenses * 0.08))}</span>
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="text-muted-foreground flex items-center gap-1">
                             <span>🎬</span> Entertainment
                           </span>
-                          <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.12))}</span>
+                          <span className="font-semibold">{fmt(Math.floor(lastExpensesDeducted.livingExpenses * 0.12))}</span>
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="text-muted-foreground flex items-center gap-1">
                             <span>✈️</span> Travel
                           </span>
-                          <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.12))}</span>
+                          <span className="font-semibold">{fmt(Math.floor(lastExpensesDeducted.livingExpenses * 0.12))}</span>
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="text-muted-foreground flex items-center gap-1">
                             <span>🚗</span> Transportation
                           </span>
-                          <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.20))}</span>
+                          <span className="font-semibold">{fmt(Math.floor(lastExpensesDeducted.livingExpenses * 0.20))}</span>
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="text-muted-foreground flex items-center gap-1">
                             <span>👨‍👩‍👧</span> Family Support
                           </span>
-                          <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.20))}</span>
+                          <span className="font-semibold">{fmt(Math.floor(lastExpensesDeducted.livingExpenses * 0.20))}</span>
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="text-muted-foreground flex items-center gap-1">
                             <span>🚨</span> Emergency Fund
                           </span>
-                          <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.12))}</span>
+                          <span className="font-semibold">{fmt(Math.floor(lastExpensesDeducted.livingExpenses * 0.12))}</span>
                         </div>
                         <div className="flex justify-between items-center pt-1.5 mt-1.5 border-t border-chart-5/30">
                           <span className="text-muted-foreground flex items-center gap-1">
                             <span>🔧</span> Maintenance
                           </span>
-                          <span className="font-semibold">{fmt(maintenance)}</span>
+                          <span className="font-semibold">{fmt(lastExpensesDeducted.maintenance)}</span>
                         </div>
                       </div>
 

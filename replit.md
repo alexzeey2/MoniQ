@@ -163,11 +163,15 @@ Preferred communication style: Simple, everyday language.
   - Expenses Notification: Dynamic popup system for living expenses breakdown
     - **Timing**: Appears EXACTLY when the 30-second expenses countdown completes and money is deducted
     - **Synchronization**: Triggered directly in taxTimer callback when expenses are deducted (perfect timing)
+    - **Historical Amounts**: Shows ACTUAL amounts deducted (stored in state), NOT recalculated based on current balance
+      - Prevents bug where amounts change when investments return while notification is open
+      - Example: If ₦5M was deducted, notification shows ₦5M even if balance later increases to ₦70M
+      - Each notification cycle captures and displays its own deduction amounts
     - Auto-hides after 10 seconds if not interacted with
     - Auto-hide paused when expanded (user clicked "See Why")
     - Glowing red border animation when first appears (animate-pulse)
     - Collapsed state: Shows total debited amount (₦ or $) with "See Why" button
-    - Expanded state: Full breakdown of 7 expense categories with emojis:
+    - Expanded state: Full breakdown of 7 expense categories with emojis (percentages of captured living expenses):
       - 🍽️ Food & Dining (16%)
       - 👔 Clothing & Fashion (8%)
       - 🎬 Entertainment (12%)
@@ -175,7 +179,7 @@ Preferred communication style: Simple, everyday language.
       - 🚗 Transportation (20%)
       - 👨‍👩‍👧‍👦 Family Support (20%)
       - 🚨 Emergency Fund (12%)
-      - 🔧 Maintenance costs (separate line)
+      - 🔧 Maintenance costs (captured value at deduction time)
   - "How to Play" button at bottom for easy access
   - Removed: Level badges, profit rate tracking, investments summary, item maintenance alerts
   - Clean focus on balance management and core actions
