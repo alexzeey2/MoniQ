@@ -125,10 +125,11 @@ Preferred communication style: Simple, everyday language.
 **Sound Effects (October 2025)**
 - **Ka-ching Sound**: Plays when investment returns are collected (MP3 audio file: cashier ka-ching sound effect)
 - **Deposit Sound**: Plays when making an investment deposit (Web Audio API generated tone)
-- **Background Music**: Plays continuously in a loop throughout gameplay (MP3: finance-money-trading-investment audio track)
+- **Background Music**: Alternates between two tracks every 4 loops each
+  - Track 1: finance-money-trading-investment (MP3)
+  - Track 2: dynamics-of-success (MP3)
   - Starts automatically after user completes signup
   - Volume: 30% to not overpower sound effects
-  - Loops seamlessly for ambient atmosphere
   - Handles browser autoplay policies with fallback retry on user interaction
 
 **Home Page Design (October 2025)**
@@ -136,12 +137,17 @@ Preferred communication style: Simple, everyday language.
   - Balance card with living expenses timer
   - Account Manager activation/deactivation card
   - Living Expenses information card (25% every 30s)
-  - Next Expenses section: Shows 25% living expenses split into 7 realistic categories with currency amounts:
-    - Food & Dining (16%)
-    - Clothing & Fashion (8%)
-    - Entertainment (12%)
-    - Travel (12%)
-    - Transportation (20%)
+  - Expenses Notification: Dynamic popup system for living expenses breakdown
+    - Appears 30 seconds after game starts (or after previous dismissal)
+    - Auto-hides after 10 seconds if not interacted with
+    - Glowing red border animation when first appears (animate-pulse)
+    - Collapsed state: Shows total debited amount (₦ or $) with "See Why" button
+    - Expanded state: Full breakdown of 7 expense categories with emojis:
+      - 🍽️ Food & Dining (16%)
+      - 👔 Clothing & Fashion (8%)
+      - 🎬 Entertainment (12%)
+      - ✈️ Travel (12%)
+      - 🚗 Transportation (20%)
     - Family Support (20%)
     - Emergency Fund (12%)
   - "How to Play" button at bottom for easy access

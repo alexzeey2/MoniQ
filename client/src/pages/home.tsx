@@ -153,6 +153,12 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
   const [showAdSimulation, setShowAdSimulation] = useState(false);
   const [adCountdown, setAdCountdown] = useState(30);
   
+  // Expenses notification state
+  const [showExpensesNotification, setShowExpensesNotification] = useState(false);
+  const [expensesExpanded, setExpensesExpanded] = useState(false);
+  const [expensesShowTimer, setExpensesShowTimer] = useState(0);
+  const [expensesAutoHideTimer, setExpensesAutoHideTimer] = useState(0);
+  
   // Guided Spotlight Tutorial State
   const [guidedTutorialStep, setGuidedTutorialStep] = useState(0); // 0 = not started, 1+ = active steps
   const [tutorialComplete, setTutorialComplete] = useState(false);
@@ -393,6 +399,42 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
     }
   }, [showAdSimulation, adCountdown]);
 
+  // Expenses notification timer - show after 30s
+  useEffect(() => {
+    if (gameOver || accountManager || showExpensesNotification) return;
+    
+    const timer = setInterval(() => {
+      setExpensesShowTimer(prev => {
+        if (prev >= 30) {
+          setShowExpensesNotification(true);
+          setExpensesExpanded(false);
+          setExpensesAutoHideTimer(0);
+          return 0;
+        }
+        return prev + 1;
+      });
+    }, 1000);
+    
+    return () => clearInterval(timer);
+  }, [gameOver, accountManager, showExpensesNotification]);
+
+  // Auto-hide notification after 10s if not dismissed
+  useEffect(() => {
+    if (!showExpensesNotification || expensesExpanded) return;
+    
+    const timer = setInterval(() => {
+      setExpensesAutoHideTimer(prev => {
+        if (prev >= 10) {
+          setShowExpensesNotification(false);
+          setExpensesShowTimer(0);
+          return 0;
+        }
+        return prev + 1;
+      });
+    }, 1000);
+    
+    return () => clearInterval(timer);
+  }, [showExpensesNotification, expensesExpanded]);
 
   // Tutorial progression effects
   useEffect(() => {
@@ -601,49 +643,107 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
               </div>
             </div>
 
-            <div className="bg-chart-5/10 rounded-xl p-4 border border-chart-5/20">
-              <div className="text-sm font-semibold text-foreground mb-3">Next Expenses (in {taxTimer}s)</div>
-              <div className="space-y-1.5 text-xs">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">1. Food & Dining:</span>
-                  <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.16))}</span>
+            {showExpensesNotification && (
+              <div className={`bg-chart-5/10 rounded-xl p-4 border-2 ${expensesExpanded ? 'border-chart-5/20' : 'border-destructive animate-pulse'}`}>
+                <div className="flex items-start gap-2 mb-2">
+                  <span className="text-lg">🔔</span>
+                  <div className="flex-1">
+                    <div className="text-sm font-semibold text-foreground">
+                      {fmt(Math.floor(balance * taxRate + maintenance))} was debited!
+                    </div>
+                  </div>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">2. Clothing & Fashion:</span>
-                  <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.08))}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">3. Entertainment:</span>
-                  <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.12))}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">4. Travel:</span>
-                  <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.12))}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">5. Transportation:</span>
-                  <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.20))}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">6. Family Support:</span>
-                  <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.20))}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">7. Emergency Fund:</span>
-                  <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.12))}</span>
-                </div>
-                <div className="flex justify-between pt-2 border-t border-chart-5/30">
-                  <span className="text-foreground font-medium">Total Living Expenses:</span>
-                  <span className="font-bold">-{fmt(Math.floor(balance * taxRate))}</span>
-                </div>
-                {maintenance > 0 && (
-                  <div className="flex justify-between pt-1">
-                    <span className="text-foreground font-medium">+ Maintenance:</span>
-                    <span className="font-bold">-{fmt(maintenance)}</span>
+                
+                {!expensesExpanded ? (
+                  <button
+                    onClick={() => setExpensesExpanded(true)}
+                    className="w-full bg-chart-5/20 text-foreground px-3 py-1.5 rounded-lg text-xs font-medium hover-elevate active-elevate-2"
+                    data-testid="button-see-why"
+                  >
+                    See Why
+                  </button>
+                ) : (
+                  <div className="space-y-3">
+                    <div className="text-xs font-semibold text-foreground mb-2">▼ Breakdown:</div>
+                    <div className="space-y-1.5 text-xs">
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground flex items-center gap-1">
+                          <span>🍽️</span> Food & Dining
+                        </span>
+                        <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.16))}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground flex items-center gap-1">
+                          <span>👔</span> Clothing & Fashion
+                        </span>
+                        <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.08))}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground flex items-center gap-1">
+                          <span>🎬</span> Entertainment
+                        </span>
+                        <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.12))}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground flex items-center gap-1">
+                          <span>✈️</span> Travel
+                        </span>
+                        <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.12))}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground flex items-center gap-1">
+                          <span>🚗</span> Transportation
+                        </span>
+                        <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.20))}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground flex items-center gap-1">
+                          <span>👨‍👩‍👧</span> Family Support
+                        </span>
+                        <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.20))}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground flex items-center gap-1">
+                          <span>🚨</span> Emergency Fund
+                        </span>
+                        <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.12))}</span>
+                      </div>
+                      <div className="flex justify-between items-center pt-1.5 mt-1.5 border-t border-chart-5/30">
+                        <span className="text-muted-foreground flex items-center gap-1">
+                          <span>🔧</span> Maintenance
+                        </span>
+                        <span className="font-semibold">{fmt(maintenance)}</span>
+                      </div>
+                    </div>
+
+                    <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-2 mt-3">
+                      <div className="text-xs text-foreground">
+                        <span className="font-semibold">⚠️ Keep enough balance to cover expenses.</span>
+                        <div className="mt-1">
+                          It's game over if your balance goes below {fmt(5000000)}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="text-xs text-muted-foreground mt-2">
+                      Next deduction in {taxTimer}s ⏱️
+                    </div>
+
+                    <button
+                      onClick={() => {
+                        setShowExpensesNotification(false);
+                        setExpensesExpanded(false);
+                        setExpensesShowTimer(0);
+                      }}
+                      className="w-full bg-primary text-primary-foreground px-3 py-2 rounded-lg text-xs font-medium hover-elevate active-elevate-2 mt-3"
+                      data-testid="button-got-it"
+                    >
+                      Got It
+                    </button>
                   </div>
                 )}
               </div>
-            </div>
+            )}
 
             <button 
               onClick={() => setShowGuide(true)} 
@@ -836,49 +936,107 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                   </div>
                 </div>
               </div>
-              <div className="bg-chart-5/10 rounded-xl p-4 border border-chart-5/20">
-                <div className="text-sm font-semibold text-foreground mb-3">Next Expenses (in {taxTimer}s)</div>
-                <div className="space-y-1.5 text-xs">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">1. Food & Dining:</span>
-                    <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.16))}</span>
+              {showExpensesNotification && (
+                <div className={`bg-chart-5/10 rounded-xl p-4 border-2 ${expensesExpanded ? 'border-chart-5/20' : 'border-destructive animate-pulse'}`}>
+                  <div className="flex items-start gap-2 mb-2">
+                    <span className="text-lg">🔔</span>
+                    <div className="flex-1">
+                      <div className="text-sm font-semibold text-foreground">
+                        {fmt(Math.floor(balance * taxRate + maintenance))} was debited!
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">2. Clothing & Fashion:</span>
-                    <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.08))}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">3. Entertainment:</span>
-                    <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.12))}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">4. Travel:</span>
-                    <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.12))}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">5. Transportation:</span>
-                    <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.20))}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">6. Family Support:</span>
-                    <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.20))}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">7. Emergency Fund:</span>
-                    <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.12))}</span>
-                  </div>
-                  <div className="flex justify-between pt-2 border-t border-chart-5/30">
-                    <span className="text-foreground font-medium">Total Living Expenses:</span>
-                    <span className="font-bold">-{fmt(Math.floor(balance * taxRate))}</span>
-                  </div>
-                  {maintenance > 0 && (
-                    <div className="flex justify-between pt-1">
-                      <span className="text-foreground font-medium">+ Maintenance:</span>
-                      <span className="font-bold">-{fmt(maintenance)}</span>
+                  
+                  {!expensesExpanded ? (
+                    <button
+                      onClick={() => setExpensesExpanded(true)}
+                      className="w-full bg-chart-5/20 text-foreground px-3 py-1.5 rounded-lg text-xs font-medium hover-elevate active-elevate-2"
+                      data-testid="button-see-why"
+                    >
+                      See Why
+                    </button>
+                  ) : (
+                    <div className="space-y-3">
+                      <div className="text-xs font-semibold text-foreground mb-2">▼ Breakdown:</div>
+                      <div className="space-y-1.5 text-xs">
+                        <div className="flex justify-between items-center">
+                          <span className="text-muted-foreground flex items-center gap-1">
+                            <span>🍽️</span> Food & Dining
+                          </span>
+                          <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.16))}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-muted-foreground flex items-center gap-1">
+                            <span>👔</span> Clothing & Fashion
+                          </span>
+                          <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.08))}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-muted-foreground flex items-center gap-1">
+                            <span>🎬</span> Entertainment
+                          </span>
+                          <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.12))}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-muted-foreground flex items-center gap-1">
+                            <span>✈️</span> Travel
+                          </span>
+                          <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.12))}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-muted-foreground flex items-center gap-1">
+                            <span>🚗</span> Transportation
+                          </span>
+                          <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.20))}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-muted-foreground flex items-center gap-1">
+                            <span>👨‍👩‍👧</span> Family Support
+                          </span>
+                          <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.20))}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-muted-foreground flex items-center gap-1">
+                            <span>🚨</span> Emergency Fund
+                          </span>
+                          <span className="font-semibold">{fmt(Math.floor(balance * taxRate * 0.12))}</span>
+                        </div>
+                        <div className="flex justify-between items-center pt-1.5 mt-1.5 border-t border-chart-5/30">
+                          <span className="text-muted-foreground flex items-center gap-1">
+                            <span>🔧</span> Maintenance
+                          </span>
+                          <span className="font-semibold">{fmt(maintenance)}</span>
+                        </div>
+                      </div>
+
+                      <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-2 mt-3">
+                        <div className="text-xs text-foreground">
+                          <span className="font-semibold">⚠️ Keep enough balance to cover expenses.</span>
+                          <div className="mt-1">
+                            It's game over if your balance goes below {fmt(5000000)}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="text-xs text-muted-foreground mt-2">
+                        Next deduction in {taxTimer}s ⏱️
+                      </div>
+
+                      <button
+                        onClick={() => {
+                          setShowExpensesNotification(false);
+                          setExpensesExpanded(false);
+                          setExpensesShowTimer(0);
+                        }}
+                        className="w-full bg-primary text-primary-foreground px-3 py-2 rounded-lg text-xs font-medium hover-elevate active-elevate-2 mt-3"
+                        data-testid="button-got-it"
+                      >
+                        Got It
+                      </button>
                     </div>
                   )}
                 </div>
-              </div>
+              )}
             </div>
           </div>
         )}
