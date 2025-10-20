@@ -144,8 +144,10 @@ Preferred communication style: Simple, everyday language.
   - Account Manager activation/deactivation card
   - Living Expenses information card (25% every 30s)
   - Expenses Notification: Dynamic popup system for living expenses breakdown
-    - Appears 30 seconds after game starts (or after previous dismissal)
+    - **Timing**: Appears EXACTLY when the 30-second expenses countdown completes and money is deducted
+    - **Synchronization**: Triggered directly in taxTimer callback when expenses are deducted (perfect timing)
     - Auto-hides after 10 seconds if not interacted with
+    - Auto-hide paused when expanded (user clicked "See Why")
     - Glowing red border animation when first appears (animate-pulse)
     - Collapsed state: Shows total debited amount (₦ or $) with "See Why" button
     - Expanded state: Full breakdown of 7 expense categories with emojis:
@@ -154,8 +156,9 @@ Preferred communication style: Simple, everyday language.
       - 🎬 Entertainment (12%)
       - ✈️ Travel (12%)
       - 🚗 Transportation (20%)
-    - Family Support (20%)
-    - Emergency Fund (12%)
+      - 👨‍👩‍👧‍👦 Family Support (20%)
+      - 🚨 Emergency Fund (12%)
+      - 🔧 Maintenance costs (separate line)
   - "How to Play" button at bottom for easy access
   - Removed: Level badges, profit rate tracking, investments summary, item maintenance alerts
   - Clean focus on balance management and core actions

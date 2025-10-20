@@ -156,7 +156,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
   // Expenses notification state
   const [showExpensesNotification, setShowExpensesNotification] = useState(false);
   const [expensesExpanded, setExpensesExpanded] = useState(false);
-  const [expensesShowTimer, setExpensesShowTimer] = useState(0);
   const [expensesAutoHideTimer, setExpensesAutoHideTimer] = useState(0);
 
   const STORAGE_KEY = 'naijaWealthSim_gameState';
@@ -287,6 +286,12 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
           const newBal = Math.max(5000000, balance - total);
           setBalance(newBal);
           if (newBal <= 5000000) setGameOver(true);
+          
+          // Show expenses notification immediately when expenses are deducted
+          setShowExpensesNotification(true);
+          setExpensesExpanded(false);
+          setExpensesAutoHideTimer(0);
+          
           return 30;
         }
         return p - 1;
@@ -325,25 +330,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
     }
   }, [showAdSimulation, adCountdown]);
 
-  // Expenses notification timer - show after 30s
-  useEffect(() => {
-    if (gameOver || accountManager || showExpensesNotification) return;
-    
-    const timer = setInterval(() => {
-      setExpensesShowTimer(prev => {
-        if (prev >= 30) {
-          setShowExpensesNotification(true);
-          setExpensesExpanded(false);
-          setExpensesAutoHideTimer(0);
-          return 0;
-        }
-        return prev + 1;
-      });
-    }, 1000);
-    
-    return () => clearInterval(timer);
-  }, [gameOver, accountManager, showExpensesNotification]);
-
   // Auto-hide notification after 10s if not dismissed
   useEffect(() => {
     if (!showExpensesNotification || expensesExpanded) return;
@@ -352,7 +338,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
       setExpensesAutoHideTimer(prev => {
         if (prev >= 10) {
           setShowExpensesNotification(false);
-          setExpensesShowTimer(0);
           return 0;
         }
         return prev + 1;
@@ -608,7 +593,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                       onClick={() => {
                         setShowExpensesNotification(false);
                         setExpensesExpanded(false);
-                        setExpensesShowTimer(0);
                       }}
                       className="w-full bg-primary text-primary-foreground px-3 py-2 rounded-lg text-xs font-medium hover-elevate active-elevate-2 mt-3"
                       data-testid="button-got-it"
@@ -913,7 +897,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                         onClick={() => {
                           setShowExpensesNotification(false);
                           setExpensesExpanded(false);
-                          setExpensesShowTimer(0);
                         }}
                         className="w-full bg-primary text-primary-foreground px-3 py-2 rounded-lg text-xs font-medium hover-elevate active-elevate-2 mt-3"
                         data-testid="button-got-it"
