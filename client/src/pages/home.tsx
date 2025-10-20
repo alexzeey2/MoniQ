@@ -206,9 +206,13 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
         setManagerCost(gameState.managerCost ?? 20000000);
         setTutorialActive(false); // Tutorial already done for returning players
       } else {
-        // New player - start tutorial
+        // New player - start tutorial with clean state
         setTutorialActive(true);
         setTutorialStep('click-invest');
+        setPurchased([]);
+        setOwned([]);
+        setBalance(50000000);
+        localStorage.removeItem(STORAGE_KEY); // Clear any partial/invalid data
       }
     } catch (error) {
       console.error('Failed to load game state:', error);
@@ -405,13 +409,15 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
     // Calculate required buffer based on items owned
     const requiredBuffer = owned.length <= 2 ? 10000000 : 11000000;
     
-    // Safety checks with educational messages
+    // Safety checks with educational messages (bypassed during tutorial completion)
+    const isTutorialFinalStep = tutorialActive && tutorialStep === 'click-invest-again';
+    
     if (a > balance) {
       alert('⚠️ Insufficient Balance\n\nYou cannot invest more than your current balance.\n\nCurrent balance: ' + fmt(balance) + '\nTrying to invest: ' + fmt(a));
       return;
     }
     
-    if ((balance - a) < requiredBuffer) {
+    if (!isTutorialFinalStep && (balance - a) < requiredBuffer) {
       const itemsText = owned.length <= 2 ? 'first 2 items' : '3+ items';
       alert(`⚠️ Investment Blocked!\n\nYou must keep at least ${fmt(requiredBuffer)} as a safety buffer.\n\nWhy? You own ${itemsText}, which means:\n• Living expenses: ${fmt(Math.floor(balance * 0.25))}/30s\n• Maintenance: ${fmt(maintenance)}/30s\n• Total expenses: ${fmt(Math.floor(balance * 0.25) + maintenance)}/30s\n\n💡 Keep enough buffer to cover expenses while waiting for investment returns!\n\nCurrent balance: ${fmt(balance)}\nAfter investing: ${fmt(balance - a)}\nRequired buffer: ${fmt(requiredBuffer)}`);
       return;
@@ -935,7 +941,14 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
               ))}
             </div>
             <div className="space-y-3">
-              {items.filter(i => !purchased.includes(i.id) && (selectedCategory === 'All' || i.cat === selectedCategory)).map(i => {
+              {items.filter(i => {
+                // Tutorial override: force-show only iPhone during buy-iphone step
+                if (tutorialActive && tutorialStep === 'buy-iphone') {
+                  return i.id === 1;
+                }
+                // Normal filtering
+                return !purchased.includes(i.id) && (selectedCategory === 'All' || i.cat === selectedCategory);
+              }).map(i => {
                 const totalCost = Math.floor(i.price * 1.25);
                 const shouldHighlight = tutorialActive && tutorialStep === 'buy-iphone' && i.id === 1;
                 
@@ -1222,6 +1235,10 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                   } else if (tutorialActive && tutorialStep === 'click-store' && id === 'luxury') {
                     setScreen(id);
                     setTutorialStep('buy-iphone');
+                  } else if (tutorialActive && tutorialStep === 'wait-investment' && id === 'luxury') {
+                    // Allow skipping the wait by going directly to store
+                    setScreen(id);
+                    setTutorialStep('buy-iphone');
                   } else if (tutorialActive && tutorialStep === 'click-invest-again' && id === 'invest') {
                     setScreen(id);
                   } else if (!tutorialActive || tutorialStep === 'wait-investment' || tutorialStep === 'buy-iphone') {
@@ -1245,7 +1262,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
       {/* Tutorial Overlay */}
       {tutorialActive && (
         <div className="fixed inset-0 tutorial-overlay-bg flex items-end justify-center pb-24" style={{ zIndex: 90 }}>
-          <div className="bg-gradient-to-br from-primary to-primary/80 rounded-2xl p-6 mx-4 max-w-sm w-full shadow-2xl border-2 border-primary/50">
+          <div className="tutorial-card bg-gradient-to-br from-primary to-primary/80 rounded-2xl p-6 mx-4 max-w-sm w-full shadow-2xl border-2 border-primary/50">
             {tutorialStep === 'click-invest' && (
               <div className="text-white">
                 <div className="text-3xl mb-3 text-center">👋</div>
@@ -1324,7 +1341,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                     Scroll down and buy the <strong>iPhone 15 Pro Max</strong>. This is your first luxury item!
                   </p>
                   <div className="bg-white/30 rounded-lg p-2 text-xs">
-                    <strong>⚠️ Note:</strong> Items cost 25% more than listed price (sales tax). The iPhone costs ₦1.25M total.
+                    <strong>⚠️ Note:</strong> Items cost 25% more than listed price (sales tax). The iPhone costs ₦3.125M total (₦2.5M + 25%).
                   </div>
                 </div>
               </div>
