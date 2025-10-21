@@ -406,23 +406,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
   const invest = (amt: number) => {
     const a = parseInt(amt.toString());
     
-    // Calculate required buffer based on items owned
-    const requiredBuffer = owned.length <= 2 ? 10000000 : 11000000;
-    
-    // Safety checks with educational messages (bypassed during tutorial completion)
-    const isTutorialFinalStep = tutorialActive && tutorialStep === 'click-invest-again';
-    
-    if (a > balance) {
-      alert('⚠️ Insufficient Balance\n\nYou cannot invest more than your current balance.\n\nCurrent balance: ' + fmt(balance) + '\nTrying to invest: ' + fmt(a));
-      return;
-    }
-    
-    if (!isTutorialFinalStep && (balance - a) < requiredBuffer) {
-      const itemsText = owned.length <= 2 ? 'first 2 items' : '3+ items';
-      alert(`⚠️ Investment Blocked!\n\nYou must keep at least ${fmt(requiredBuffer)} as a safety buffer.\n\nWhy? You own ${itemsText}, which means:\n• Living expenses: ${fmt(Math.floor(balance * 0.25))}/30s\n• Maintenance: ${fmt(maintenance)}/30s\n• Total expenses: ${fmt(Math.floor(balance * 0.25) + maintenance)}/30s\n\n💡 Keep enough buffer to cover expenses while waiting for investment returns!\n\nCurrent balance: ${fmt(balance)}\nAfter investing: ${fmt(balance - a)}\nRequired buffer: ${fmt(requiredBuffer)}`);
-      return;
-    }
-    
+    // Basic validation: minimum investment 1M and must keep game-over threshold (5M)
     if (a < 1000000 || (balance - a) < 5000000) return;
     
     setBalance(balance - a);
