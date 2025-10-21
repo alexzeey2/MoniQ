@@ -1264,10 +1264,18 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
               (tutorialStep === 'click-home-after-completion' && id === 'home')
             );
             
+            // Disable non-highlighted buttons during wait-investment and buy-iphone steps
+            const isDisabled = tutorialActive && (
+              (tutorialStep === 'wait-investment' && id !== 'luxury') ||
+              (tutorialStep === 'buy-iphone' && id !== 'luxury')
+            );
+            
             return (
               <button 
                 key={id} 
                 onClick={() => {
+                  if (isDisabled) return; // Prevent navigation during tutorial waiting phases
+                  
                   if (tutorialActive && tutorialStep === 'click-invest' && id === 'invest') {
                     setScreen(id);
                     setTutorialStep('make-investment');
@@ -1275,21 +1283,24 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                     setScreen(id);
                     setTutorialStep('buy-iphone');
                   } else if (tutorialActive && tutorialStep === 'wait-investment' && id === 'luxury') {
-                    // Allow skipping the wait by going directly to store
+                    // Allow going to store during wait
                     setScreen(id);
                     setTutorialStep('buy-iphone');
+                  } else if (tutorialActive && tutorialStep === 'buy-iphone' && id === 'luxury') {
+                    // Stay on store page
+                    return;
                   } else if (tutorialActive && tutorialStep === 'click-invest-again' && id === 'invest') {
                     setScreen(id);
                   } else if (tutorialActive && tutorialStep === 'click-home-after-completion' && id === 'home') {
                     setScreen(id);
                     setTutorialStep('view-expenses-info');
-                  } else if (!tutorialActive || tutorialStep === 'wait-investment' || tutorialStep === 'buy-iphone') {
+                  } else if (!tutorialActive) {
                     setScreen(id);
                   }
                 }}
                 className={`flex flex-col items-center gap-1 transition-colors rounded-lg ${
                   screen === id ? 'text-primary' : 'text-muted-foreground'
-                } ${shouldHighlight ? 'tutorial-highlight' : ''}`}
+                } ${shouldHighlight ? 'tutorial-highlight' : ''} ${isDisabled ? 'opacity-30 cursor-not-allowed' : ''}`}
                 data-testid={`nav-${id}`}
               >
                 <Icon className="w-5 h-5" />
