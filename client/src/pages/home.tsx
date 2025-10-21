@@ -155,9 +155,10 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
   
   // Tutorial state
   const [tutorialActive, setTutorialActive] = useState(false);
-  const [tutorialStep, setTutorialStep] = useState<'click-invest' | 'make-investment' | 'wait-investment' | 'click-store' | 'buy-iphone' | 'click-invest-again' | 'completed'>('click-invest');
+  const [tutorialStep, setTutorialStep] = useState<'click-invest' | 'make-investment' | 'wait-investment' | 'click-store' | 'buy-iphone' | 'click-invest-again' | 'click-home-after-completion' | 'view-expenses-info' | 'view-countdown' | 'show-final-message' | 'completed'>('click-invest');
   const [tutorialInvestmentId, setTutorialInvestmentId] = useState<number | null>(null);
   const [showTutorialComplete, setShowTutorialComplete] = useState(false);
+  const [showFinalMessage, setShowFinalMessage] = useState(false);
   
   // Expenses notification state
   const [showExpensesNotification, setShowExpensesNotification] = useState(false);
@@ -305,8 +306,8 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
   }, [gameOver, accountManager]);
 
   useEffect(() => {
-    // Pause timers during tutorial, but start them when completion popup appears
-    if (gameOver || accountManager || (tutorialActive && !showTutorialComplete)) return;
+    // Pause timers during tutorial, start them when countdown glows
+    if (gameOver || accountManager || (tutorialActive && tutorialStep !== 'view-countdown' && tutorialStep !== 'show-final-message' && tutorialStep !== 'completed')) return;
     const t = setInterval(() => {
       setTaxTimer(p => {
         if (p <= 1) {
@@ -392,6 +393,41 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
     }
   }, [showTutorialComplete]);
 
+  // Tutorial: Handle expenses info and countdown glowing sequence
+  useEffect(() => {
+    if (tutorialActive && tutorialStep === 'view-expenses-info') {
+      // Glow living expenses info for 3s
+      const timer = setTimeout(() => {
+        setTutorialStep('view-countdown');
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [tutorialActive, tutorialStep]);
+
+  // Tutorial: Show final message and complete tutorial
+  useEffect(() => {
+    if (tutorialActive && tutorialStep === 'view-countdown') {
+      // Show final message after a brief moment
+      const timer = setTimeout(() => {
+        setShowFinalMessage(true);
+        setTutorialStep('show-final-message');
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [tutorialActive, tutorialStep]);
+
+  // Auto-hide final message after 5s and complete tutorial
+  useEffect(() => {
+    if (showFinalMessage) {
+      const timer = setTimeout(() => {
+        setShowFinalMessage(false);
+        setTutorialActive(false);
+        setTutorialStep('completed');
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [showFinalMessage]);
+
   // Auto-hide notification after 10s if not dismissed
   useEffect(() => {
     if (!showExpensesNotification || expensesExpanded) return;
@@ -432,13 +468,10 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
       setTutorialStep('wait-investment');
     }
     
-    // Tutorial: Second investment completes tutorial
+    // Tutorial: Second investment shows completion popup
     if (tutorialActive && tutorialStep === 'click-invest-again') {
-      setTutorialActive(false);
-      setTutorialStep('completed');
-      
-      // Show completion popup (will auto-hide after 5s and start timers)
       setShowTutorialComplete(true);
+      setTutorialStep('click-home-after-completion');
     }
   };
 
@@ -518,7 +551,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                 <div className="text-3xl font-bold" data-testid="text-balance">{fmt(balance)}</div>
               </div>
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-sm bg-white/10 rounded-lg px-3 py-2">
+                <div className={`flex items-center gap-2 text-sm bg-white/10 rounded-lg px-3 py-2 ${tutorialActive && tutorialStep === 'view-countdown' ? 'tutorial-highlight' : ''}`}>
                   <Clock className="w-4 h-4" />
                   <span>{accountManager ? 'Paused' : `Living Expenses ${taxTimer}s`}</span>
                 </div>
@@ -575,7 +608,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
               </div>
             )}
 
-            <div className="bg-chart-5/10 border border-chart-5/20 rounded-xl p-4">
+            <div className={`bg-chart-5/10 border border-chart-5/20 rounded-xl p-4 ${tutorialActive && tutorialStep === 'view-expenses-info' ? 'tutorial-highlight' : ''}`} data-testid="card-living-expenses-info">
               <div className="flex items-start gap-3">
                 <AlertCircle className="w-5 h-5 text-chart-5 flex-shrink-0 mt-0.5" />
                 <div className="flex-1">
@@ -1227,7 +1260,8 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
             const shouldHighlight = tutorialActive && (
               (tutorialStep === 'click-invest' && id === 'invest') ||
               (tutorialStep === 'click-store' && id === 'luxury') ||
-              (tutorialStep === 'click-invest-again' && id === 'invest')
+              (tutorialStep === 'click-invest-again' && id === 'invest') ||
+              (tutorialStep === 'click-home-after-completion' && id === 'home')
             );
             
             return (
@@ -1246,6 +1280,9 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                     setTutorialStep('buy-iphone');
                   } else if (tutorialActive && tutorialStep === 'click-invest-again' && id === 'invest') {
                     setScreen(id);
+                  } else if (tutorialActive && tutorialStep === 'click-home-after-completion' && id === 'home') {
+                    setScreen(id);
+                    setTutorialStep('view-expenses-info');
                   } else if (!tutorialActive || tutorialStep === 'wait-investment' || tutorialStep === 'buy-iphone') {
                     setScreen(id);
                   }
@@ -1271,6 +1308,19 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
               <div className="text-3xl mb-2">🎉</div>
               <h3 className="text-lg font-bold">Great job!</h3>
               <p className="text-sm opacity-90 mt-1">Now you know the basics</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Final Tutorial Message */}
+      {showFinalMessage && (
+        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 animate-in slide-in-from-bottom-10">
+          <div className="bg-gradient-to-br from-chart-1 to-chart-1/80 rounded-2xl p-6 mx-4 max-w-sm shadow-2xl border-2 border-chart-1/50">
+            <div className="text-white text-center">
+              <div className="text-3xl mb-2">🏆</div>
+              <h3 className="text-lg font-bold">Buy all the items to win the game!</h3>
+              <p className="text-sm opacity-90 mt-1">Good luck!</p>
             </div>
           </div>
         </div>
