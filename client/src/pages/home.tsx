@@ -1264,9 +1264,9 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
               (tutorialStep === 'click-home-after-completion' && id === 'home')
             );
             
-            // Disable non-highlighted buttons during wait-investment and buy-iphone steps
+            // Disable all buttons during wait-investment, and non-store buttons during buy-iphone
             const isDisabled = tutorialActive && (
-              (tutorialStep === 'wait-investment' && id !== 'luxury') ||
+              (tutorialStep === 'wait-investment') ||
               (tutorialStep === 'buy-iphone' && id !== 'luxury')
             );
             
@@ -1282,13 +1282,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                   } else if (tutorialActive && tutorialStep === 'click-store' && id === 'luxury') {
                     setScreen(id);
                     setTutorialStep('buy-iphone');
-                  } else if (tutorialActive && tutorialStep === 'wait-investment' && id === 'luxury') {
-                    // Allow going to store during wait
-                    setScreen(id);
-                    setTutorialStep('buy-iphone');
-                  } else if (tutorialActive && tutorialStep === 'buy-iphone' && id === 'luxury') {
-                    // Stay on store page
-                    return;
                   } else if (tutorialActive && tutorialStep === 'click-invest-again' && id === 'invest') {
                     setScreen(id);
                   } else if (tutorialActive && tutorialStep === 'click-home-after-completion' && id === 'home') {
