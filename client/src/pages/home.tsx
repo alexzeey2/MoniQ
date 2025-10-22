@@ -527,7 +527,12 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
   };
 
   const handleAdComplete = () => {
-    // Wipe all purchases but keep balance intact
+    // Pull out invested money and add it back to balance
+    const totalInvested = investments.reduce((sum, inv) => sum + inv.a, 0);
+    
+    // Wipe all purchases but keep balance intact, return invested money, and add ₦50M bonus
+    setBalance(balance + totalInvested + 50000000);
+    setInvestments([]); // Clear all investments
     setOwned([]);
     setPurchased([]);
     setMaintenance(0);
@@ -1360,31 +1365,32 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
             </div>
 
             {/* Warning Message */}
-            <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3 mb-6">
+            <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3 mb-4">
               <p className="text-xs text-foreground text-center">
                 ⚠️ Your balance went below {fmt(5000000)}! Keep enough balance to sustain your living expenses and maintenance costs next time.
               </p>
             </div>
 
-            {/* Action Buttons */}
-            <div className="grid grid-cols-2 gap-3">
-              <button 
-                onClick={handleRestart}
-                className="flex items-center justify-center gap-2 bg-destructive text-destructive-foreground py-3 rounded-xl font-semibold hover-elevate active-elevate-2"
-                data-testid="button-restart"
-              >
-                <RotateCcw className="w-4 h-4" />
-                Start Afresh
-              </button>
-              <button 
-                onClick={handleContinueWithAd}
-                className="flex items-center justify-center gap-2 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-3 rounded-xl font-semibold hover-elevate active-elevate-2"
-                data-testid="button-continue-ad"
-              >
-                <Play className="w-4 h-4" />
-                Continue (Ads)
-              </button>
+            {/* Continue Info */}
+            <div className="bg-primary/10 border border-primary/30 rounded-lg p-4 mb-6">
+              <p className="text-sm text-foreground mb-2 text-center font-semibold">Continue by watching an ad:</p>
+              <ul className="text-xs text-muted-foreground space-y-1">
+                <li>✅ Keep your current balance</li>
+                <li>✅ Get invested money back</li>
+                <li>✅ Receive {fmt(50000000)} bonus</li>
+                <li>❌ Lose all purchased items</li>
+              </ul>
             </div>
+
+            {/* Action Button */}
+            <button 
+              onClick={handleContinueWithAd}
+              className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-4 rounded-xl font-bold text-lg hover-elevate active-elevate-2"
+              data-testid="button-continue-ad"
+            >
+              <Play className="w-5 h-5" />
+              Continue (Ad)
+            </button>
           </div>
         </div>
       )}
