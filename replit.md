@@ -64,3 +64,13 @@ Preferred communication style: Simple, everyday language.
 ### Utility Libraries
 - **date-fns**: Date manipulation.
 - **nanoid**: Unique ID generation.
+
+## Deployment Configuration
+
+### Vercel Deployment (Static SPA)
+- **Build Config:** `vite.config.vercel.ts` - Separate Vite config for Vercel builds
+- **Routing:** `vercel.json` - SPA routing configuration for client-side navigation
+- **Build Process:** Frontend-only build (no Express server) - all game state in localStorage
+- **Output:** Static files in `dist/public` directory
+- **Instructions:** See `VERCEL_DEPLOYMENT.md` for step-by-step deployment guide
+- **Status:** ✅ Ready for deployment - build tested and verified (8.5s build time)

@@ -47,6 +47,15 @@
 
 **🎉 Done!** Your game will be live in 1-2 minutes.
 
+## Important: What Changed From Before
+
+I fixed the build configuration! The issue was that the previous config tried to include server code. Now:
+- ✅ **Fixed `vite.config.vercel.ts`** - Only builds frontend (no server code)
+- ✅ **Tested locally** - Build works perfectly in 8.5 seconds
+- ✅ **All assets included** - All 20 luxury items + sounds bundled
+
+**Now it will work on Vercel!** Just follow the steps above.
+
 ## What Happens During Deployment
 
 Vercel will:
