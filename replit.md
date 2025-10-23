@@ -67,11 +67,13 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
-### October 23, 2025 - Bug Fixes & Vercel Preparation
-- **Game Over Balance Fix:** Game over screen now displays the actual remaining balance after expense deductions (can be negative or below ₦5M), instead of showing the clamped ₦5M minimum. This provides players with accurate information about their financial situation.
-- **Investment Return Bug Fix:** Fixed critical bug where investment returns weren't being credited to balance. Root cause was useEffect dependency array causing interval recreation during tutorial state changes. Solution uses refs (tutorialActiveRef, tutorialStepRef, tutorialInvestmentIdRef) to maintain stable values across re-renders while allowing proper tutorial progression.
+### October 23, 2025 - Critical Bug Fixes & Tutorial Improvements
+- **White Screen Fix:** Fixed critical bug where Store page wouldn't render on game start. Root cause was screen state mismatch - initialized to 'store' but rendering condition checked for 'luxury'. Changed all references throughout the codebase to consistently use 'store' for the Store page navigation and rendering.
+- **Tutorial Restart Fix:** Fixed tutorial not restarting after game over. The handleTryAgain function now properly clears localStorage, resets tutorial state (tutorialActive = true, tutorialStep = 'click-invest'), clears completion flags, and resets screen to Store page for a complete fresh start.
+- **Game Over Balance Fix:** Game over screen now displays the actual remaining balance after expense deductions (can be negative or below ₦5M), instead of showing the clamped ₦5M minimum.
+- **Investment Return Bug Fix:** Fixed critical bug where investment returns weren't being credited to balance. Solution uses refs (tutorialActiveRef, tutorialStepRef, tutorialInvestmentIdRef) to maintain stable values across re-renders while allowing proper tutorial progression.
 - **Code Quality:** Removed debug console logging, cleaned up state management, verified no regressions through comprehensive E2E testing.
-- **Deployment Readiness:** Verified Vercel configuration (vite.config.vercel.ts, vercel.json) and confirmed build process works correctly. App is production-ready for deployment.
+- **Deployment Readiness:** Verified Vercel configuration and confirmed build process works correctly. App is production-ready for deployment.
 
 ## Deployment Configuration
 
