@@ -67,20 +67,21 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
-### October 23, 2025 - Critical Bug Fixes & Tutorial Improvements
+### October 23, 2025 - Critical Bug Fixes & Vercel Deployment Fix
+- **Vercel Deployment Fix:** Fixed Vercel deployment configuration. Root cause was overcomplicated `vercel.json` with too many custom settings that interfered with Vercel's auto-detection. Simplified to minimal configuration (buildCommand, outputDirectory, SPA rewrites only). Build tested successfully: 9.58s, 30MB total output including all 20 luxury items + 3 music files.
 - **White Screen Fix:** Fixed critical bug where Store page wouldn't render on game start. Root cause was screen state mismatch - initialized to 'store' but rendering condition checked for 'luxury'. Changed all references throughout the codebase to consistently use 'store' for the Store page navigation and rendering.
 - **Tutorial Restart Fix:** Fixed tutorial not restarting after game over. The handleTryAgain function now properly clears localStorage, resets tutorial state (tutorialActive = true, tutorialStep = 'click-invest'), clears completion flags, and resets screen to Store page for a complete fresh start.
 - **Game Over Balance Fix:** Game over screen now displays the actual remaining balance after expense deductions (can be negative or below ₦5M), instead of showing the clamped ₦5M minimum.
 - **Investment Return Bug Fix:** Fixed critical bug where investment returns weren't being credited to balance. Solution uses refs (tutorialActiveRef, tutorialStepRef, tutorialInvestmentIdRef) to maintain stable values across re-renders while allowing proper tutorial progression.
 - **Code Quality:** Removed debug console logging, cleaned up state management, verified no regressions through comprehensive E2E testing.
-- **Deployment Readiness:** Verified Vercel configuration and confirmed build process works correctly. App is production-ready for deployment.
 
 ## Deployment Configuration
 
 ### Vercel Deployment (Static SPA)
-- **Build Config:** `vite.config.vercel.ts` - Separate Vite config for Vercel builds
-- **Routing:** `vercel.json` - SPA routing configuration for client-side navigation
+- **Build Config:** Uses existing `vite.config.ts` (works for both dev and production)
+- **Routing:** `vercel.json` - Simplified configuration with SPA routing
 - **Build Process:** Frontend-only build (no Express server) - all game state in localStorage
-- **Output:** Static files in `dist/public` directory
+- **Build Command:** `vite build` (outputs to `dist/public`)
+- **Output:** Static files in `dist/public` directory (30MB total with all assets)
 - **Instructions:** See `VERCEL_DEPLOYMENT.md` for step-by-step deployment guide
-- **Status:** ✅ Ready for deployment - build tested and verified (7.66s build time)
+- **Status:** ✅ Ready for deployment - simplified config, build tested (9.58s build time)
