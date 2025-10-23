@@ -65,6 +65,14 @@ Preferred communication style: Simple, everyday language.
 - **date-fns**: Date manipulation.
 - **nanoid**: Unique ID generation.
 
+## Recent Changes
+
+### October 23, 2025 - Bug Fixes & Vercel Preparation
+- **Game Over Balance Fix:** Game over screen now displays the actual remaining balance after expense deductions (can be negative or below ₦5M), instead of showing the clamped ₦5M minimum. This provides players with accurate information about their financial situation.
+- **Investment Return Bug Fix:** Fixed critical bug where investment returns weren't being credited to balance. Root cause was useEffect dependency array causing interval recreation during tutorial state changes. Solution uses refs (tutorialActiveRef, tutorialStepRef, tutorialInvestmentIdRef) to maintain stable values across re-renders while allowing proper tutorial progression.
+- **Code Quality:** Removed debug console logging, cleaned up state management, verified no regressions through comprehensive E2E testing.
+- **Deployment Readiness:** Verified Vercel configuration (vite.config.vercel.ts, vercel.json) and confirmed build process works correctly. App is production-ready for deployment.
+
 ## Deployment Configuration
 
 ### Vercel Deployment (Static SPA)
@@ -73,4 +81,4 @@ Preferred communication style: Simple, everyday language.
 - **Build Process:** Frontend-only build (no Express server) - all game state in localStorage
 - **Output:** Static files in `dist/public` directory
 - **Instructions:** See `VERCEL_DEPLOYMENT.md` for step-by-step deployment guide
-- **Status:** ✅ Ready for deployment - build tested and verified (8.5s build time)
+- **Status:** ✅ Ready for deployment - build tested and verified (7.66s build time)
