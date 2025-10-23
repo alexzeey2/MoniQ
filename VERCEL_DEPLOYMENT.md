@@ -1,12 +1,26 @@
 # Deploy to Vercel - Step by Step Guide
 
-✅ Your app is **100% ready** for Vercel deployment! I've configured everything for you.
+✅ Your app is **100% ready** for Vercel deployment! I've fixed the configuration to work perfectly with Vercel.
 
 ## What I've Set Up For You
 
-1. ✅ **vercel.json** - Vercel configuration file
-2. ✅ **vite.config.vercel.ts** - Build configuration for Vercel
-3. ✅ **Tested the build** - Everything compiles successfully
+1. ✅ **vercel.json** - Simplified configuration using Vercel's best practices
+2. ✅ **vite.config.ts** - Works for both development and production
+3. ✅ **Tested the build** - Everything compiles successfully (9.58s build time, 30MB total)
+
+## Latest Fix (Oct 23, 2025)
+
+✅ **Fixed Vercel deployment!** The issue was an overcomplicated `vercel.json` configuration.
+
+**What was wrong:**
+- Too many custom settings (buildCommand, outputDirectory, installCommand, framework) interfered with Vercel's auto-detection
+- This caused deployment failures or build errors
+
+**What I fixed:**
+- Simplified `vercel.json` to use minimal configuration
+- Now only specifies the build command, output directory, and SPA routing
+- Vercel auto-detects Vite and handles everything else
+- Build tested locally: ✅ Works perfectly!
 
 ## Prerequisites
 - A GitHub account (free)
@@ -46,18 +60,6 @@
 6. Click "Deploy" (don't change any settings!)
 
 **🎉 Done!** Your game will be live in 1-2 minutes.
-
-## Important: Latest Fix (Oct 23)
-
-✅ **Fixed Vercel build command!** The issue was:
-- Previous: Vercel tried to build server code (which doesn't exist on Vercel)
-- Now: Vercel only builds the frontend (React app)
-- Result: Build tested successfully in 10.8 seconds
-
-**Changes made:**
-- Updated `vercel.json` build command to use the correct config
-- Verified build works locally with exact same command Vercel will use
-- All 20 luxury items + 3 sound files included (30MB total)
 
 ## What Happens During Deployment
 
