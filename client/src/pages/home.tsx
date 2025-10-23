@@ -29,11 +29,14 @@ let bgMusic: HTMLAudioElement | null = null;
 let currentTrack: 1 | 2 = 1;
 let loopCount = 0;
 
+// Sound effect instances (reusable)
+const kaChingAudio = new Audio(kaChingSound);
+kaChingAudio.volume = 0.5;
+
 // Sound effect utilities
 const playKaChing = () => {
-  const audio = new Audio(kaChingSound);
-  audio.volume = 0.5;
-  audio.play().catch(err => console.log('Audio play failed:', err));
+  kaChingAudio.currentTime = 0; // Reset to start for consistent timing
+  kaChingAudio.play().catch(err => console.log('Audio play failed:', err));
 };
 
 const switchBackgroundTrack = () => {
