@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Home, TrendingUp, ShoppingBag, User, ArrowLeft, Clock, AlertCircle, PieChart, Shield, ShieldOff, Zap, RotateCcw, Play } from 'lucide-react';
 import iphoneImg from '@assets/Iphone_15_Pro_Max_1760488588844.png';
 import macbookImg from '@assets/MacBook_Pro_M3_1760488589069.png';
@@ -186,6 +186,18 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
   const [showTutorialComplete, setShowTutorialComplete] = useState(false);
   const [showFinalMessage, setShowFinalMessage] = useState(false);
   
+  // Refs for stable values in intervals
+  const tutorialActiveRef = useRef(tutorialActive);
+  const tutorialStepRef = useRef(tutorialStep);
+  const tutorialInvestmentIdRef = useRef(tutorialInvestmentId);
+  
+  // Update refs when state changes
+  useEffect(() => {
+    tutorialActiveRef.current = tutorialActive;
+    tutorialStepRef.current = tutorialStep;
+    tutorialInvestmentIdRef.current = tutorialInvestmentId;
+  }, [tutorialActive, tutorialStep, tutorialInvestmentId]);
+  
   // Expenses notification state
   const [showExpensesNotification, setShowExpensesNotification] = useState(false);
   const [expensesExpanded, setExpensesExpanded] = useState(false);
@@ -339,16 +351,17 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
         if (p <= 1) {
           const tax = Math.floor(balance * taxRate);
           const total = tax + maintenance;
-          const newBal = Math.max(5000000, balance - total);
+          const actualBalanceAfter = balance - total; // Actual balance after deduction (could be negative or below 5M)
+          const newBal = Math.max(5000000, actualBalanceAfter);
           setBalance(newBal);
           
           if (newBal <= 5000000) {
-            // Capture game over details
+            // Capture game over details with actual balance after deduction
             setGameOverDetails({
               livingExpenses: tax,
               maintenanceCost: maintenance,
               balanceBeforeDeduction: balance,
-              balanceAfterDeduction: newBal,
+              balanceAfterDeduction: actualBalanceAfter, // Show actual balance, not clamped value
             });
             stopBackgroundMusic(); // Stop music when game over
             setGameOver(true);
@@ -377,23 +390,28 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
   useEffect(() => {
     if (accountManager) return;
     const t = setInterval(() => {
-      setInvestments(p => p.map(inv => {
-        if (inv.t <= 1) {
-          setBalance(b => b + Math.floor(inv.a * (1 + inv.r)));
-          playKaChing(); // Ka-ching sound when investment returns!
-          
-          // Tutorial: Check if first investment completed
-          if (tutorialActive && tutorialStep === 'wait-investment' && inv.id === tutorialInvestmentId) {
-            setTutorialStep('click-store');
+      setInvestments(p => {
+        const updatedInvestments = p.map(inv => {
+          if (inv.t <= 1) {
+            // Credit balance with principal + profit
+            setBalance(b => b + Math.floor(inv.a * (1 + inv.r)));
+            playKaChing(); // Ka-ching sound when investment returns!
+            
+            // Tutorial: Check if first investment completed using refs for stable values
+            if (tutorialActiveRef.current && tutorialStepRef.current === 'wait-investment' && inv.id === tutorialInvestmentIdRef.current) {
+              setTimeout(() => setTutorialStep('click-store'), 100);
+            }
+            
+            return null;
           }
-          
-          return null;
-        }
-        return { ...inv, t: inv.t - 1 };
-      }).filter(Boolean) as Array<{id: number, a: number, t: number, r: number}>);
+          return { ...inv, t: inv.t - 1 };
+        }).filter(Boolean) as Array<{id: number, a: number, t: number, r: number}>;
+        
+        return updatedInvestments;
+      });
     }, 1000);
     return () => clearInterval(t);
-  }, [accountManager, tutorialActive, tutorialStep, tutorialInvestmentId]);
+  }, [accountManager]);
 
   // Auto-hide tutorial completion popup after 5s
   useEffect(() => {
