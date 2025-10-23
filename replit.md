@@ -67,8 +67,8 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
-### October 23, 2025 - Critical Bug Fixes & Vercel Deployment Fix
-- **Vercel Deployment Fix:** Fixed Vercel deployment configuration. Root cause was overcomplicated `vercel.json` with too many custom settings that interfered with Vercel's auto-detection. Simplified to minimal configuration (buildCommand, outputDirectory, SPA rewrites only). Build tested successfully: 9.58s, 30MB total output including all 20 luxury items + 3 music files.
+### October 23, 2025 - Critical Bug Fixes & Vercel ERR_CONNECTION_REFUSED Fix
+- **Vercel ERR_CONNECTION_REFUSED Fix:** Fixed "site can't be reached" error after successful deployment. Root cause: old `vite.config.vercel.ts` file + server files being included in deployment confused Vercel. Solution: Deleted old config, created `.vercelignore` to exclude server code (only blocks server/, dist/index.js), simplified `vercel.json`. Build tested with production environment: 8.55s, 30MB total output including all 20 luxury items + 3 music files.
 - **White Screen Fix:** Fixed critical bug where Store page wouldn't render on game start. Root cause was screen state mismatch - initialized to 'store' but rendering condition checked for 'luxury'. Changed all references throughout the codebase to consistently use 'store' for the Store page navigation and rendering.
 - **Tutorial Restart Fix:** Fixed tutorial not restarting after game over. The handleTryAgain function now properly clears localStorage, resets tutorial state (tutorialActive = true, tutorialStep = 'click-invest'), clears completion flags, and resets screen to Store page for a complete fresh start.
 - **Game Over Balance Fix:** Game over screen now displays the actual remaining balance after expense deductions (can be negative or below ₦5M), instead of showing the clamped ₦5M minimum.

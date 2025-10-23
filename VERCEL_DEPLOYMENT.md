@@ -10,17 +10,21 @@
 
 ## Latest Fix (Oct 23, 2025)
 
-✅ **Fixed Vercel deployment!** The issue was an overcomplicated `vercel.json` configuration.
+✅ **Fixed ERR_CONNECTION_REFUSED error!** The issue was conflicting config files and server code being included in deployment.
 
 **What was wrong:**
-- Too many custom settings (buildCommand, outputDirectory, installCommand, framework) interfered with Vercel's auto-detection
-- This caused deployment failures or build errors
+- Old `vite.config.vercel.ts` file confused Vercel's build process
+- Server files might have been included in deployment
+- This caused "ERR_CONNECTION_REFUSED" even though deployment showed as successful
 
 **What I fixed:**
-- Simplified `vercel.json` to use minimal configuration
-- Now only specifies the build command, output directory, and SPA routing
-- Vercel auto-detects Vite and handles everything else
-- Build tested locally: ✅ Works perfectly!
+1. Deleted old `vite.config.vercel.ts` - not needed anymore
+2. Created `.vercelignore` to exclude server files:
+   - Blocks `server/` directory
+   - Blocks compiled server code (`dist/index.js`)
+   - Keeps essential config files (vite.config.ts, tailwind.config.ts, etc.)
+3. Simplified `vercel.json` to minimal configuration
+4. Build tested with production environment: ✅ Works perfectly!
 
 ## Prerequisites
 - A GitHub account (free)
@@ -60,6 +64,28 @@
 6. Click "Deploy" (don't change any settings!)
 
 **🎉 Done!** Your game will be live in 1-2 minutes.
+
+### Important: If You Had a Previous Failed Deployment
+
+If you previously deployed and saw "ERR_CONNECTION_REFUSED", you need to:
+
+1. **Push the new fixes to GitHub:**
+   ```bash
+   git add .
+   git commit -m "Fix Vercel deployment - remove server code"
+   git push
+   ```
+
+2. **Redeploy on Vercel:**
+   - Go to your Vercel dashboard
+   - Find your project
+   - Click "Deployments" tab
+   - Click "Redeploy" on the latest deployment
+   - OR Vercel will auto-deploy when it detects the new GitHub push
+
+3. **Wait 1-2 minutes** for the new deployment to finish
+
+4. **Visit your site again** - it should work now! 🎮
 
 ## What Happens During Deployment
 
