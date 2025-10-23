@@ -2,7 +2,7 @@
 
 ## Overview
 
-NaijaWealthSim (Sọ́ágỌ́) is a mobile-first wealth simulation game where players start with ₦50M and build their fortune through strategic investments and luxury purchases. The game features dynamic currency conversion, taxes, maintenance costs, profit decay, and game-over scenarios with ad-based continuation. The primary objective is to collect all 20 luxury items while managing finances. The application is a single-page React app with an Express.js backend, designed for mobile devices with international currency support.
+NaijaWealthSim (Sọ́ágỌ́) is a mobile-first wealth simulation game where players start with ₦50M and build their fortune through strategic investments and luxury purchases. The game features dynamic currency conversion, taxes, maintenance costs, profit decay, and game-over scenarios. The primary objective is to collect all 20 luxury items while managing finances. Players land on the Store page by default when starting or returning to the game. The application is a single-page React app with an Express.js backend, designed for mobile devices with international currency support.
 
 ## User Preferences
 

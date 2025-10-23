@@ -161,7 +161,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
   const [currency, setCurrency] = useState('₦');
   const [conversionRate, setConversionRate] = useState(1);
 
-  const [screen, setScreen] = useState('home');
+  const [screen, setScreen] = useState('store');
   const [balance, setBalance] = useState(50000000);
   const [investments, setInvestments] = useState<Array<{id: number, a: number, t: number, r: number}>>([]);
   const [owned, setOwned] = useState<Array<any>>([]);
