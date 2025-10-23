@@ -551,6 +551,9 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
   };
 
   const handleTryAgain = () => {
+    // Clear localStorage for completely fresh start
+    localStorage.removeItem(STORAGE_KEY);
+    
     // Reset everything - fresh start with ₦50M
     setBalance(50000000);
     setInvestments([]);
@@ -562,6 +565,15 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
     setReturnRate(0.30);
     setDecayTimer(420);
     setGameOver(false);
+    
+    // Restart tutorial for new game
+    setTutorialActive(true);
+    setTutorialStep('click-invest');
+    setShowTutorialComplete(false);
+    setShowFinalMessage(false);
+    
+    // Reset to default Store page
+    setScreen('store');
     
     // Restart background music
     startBackgroundMusic();
@@ -786,7 +798,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                   </div>
 
                   <button 
-                    onClick={() => setScreen('luxury')}
+                    onClick={() => setScreen('store')}
                     className="w-full bg-gradient-to-r from-chart-3 to-chart-5 text-white py-3 rounded-xl font-semibold hover-elevate active-elevate-2"
                     data-testid="button-go-to-store"
                   >
@@ -984,7 +996,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
           </div>
         )}
 
-        {screen === 'luxury' && (
+        {screen === 'store' && (
           <div className="p-6 space-y-4">
             <button 
               onClick={() => setScreen('home')} 
@@ -1281,13 +1293,13 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
           {[
             { id: 'home', icon: Home, label: 'Home' },
             { id: 'invest', icon: TrendingUp, label: 'Invest' },
-            { id: 'luxury', icon: ShoppingBag, label: 'Store' },
+            { id: 'store', icon: ShoppingBag, label: 'Store' },
             { id: 'portfolio', icon: PieChart, label: 'Portfolio' },
             { id: 'profile', icon: User, label: 'Profile' },
           ].map(({ id, icon: Icon, label }) => {
             const shouldHighlight = tutorialActive && (
               (tutorialStep === 'click-invest' && id === 'invest') ||
-              (tutorialStep === 'click-store' && id === 'luxury') ||
+              (tutorialStep === 'click-store' && id === 'store') ||
               (tutorialStep === 'click-invest-again' && id === 'invest') ||
               (tutorialStep === 'click-home-after-completion' && id === 'home')
             );
@@ -1295,7 +1307,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
             // Disable all buttons during wait-investment, and non-store buttons during buy-iphone
             const isDisabled = tutorialActive && (
               (tutorialStep === 'wait-investment') ||
-              (tutorialStep === 'buy-iphone' && id !== 'luxury')
+              (tutorialStep === 'buy-iphone' && id !== 'store')
             );
             
             return (
@@ -1307,7 +1319,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                   if (tutorialActive && tutorialStep === 'click-invest' && id === 'invest') {
                     setScreen(id);
                     setTutorialStep('make-investment');
-                  } else if (tutorialActive && tutorialStep === 'click-store' && id === 'luxury') {
+                  } else if (tutorialActive && tutorialStep === 'click-store' && id === 'store') {
                     setScreen(id);
                     setTutorialStep('buy-iphone');
                   } else if (tutorialActive && tutorialStep === 'click-invest-again' && id === 'invest') {
