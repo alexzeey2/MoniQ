@@ -21,12 +21,14 @@ import luxuryYachtImg from '@assets/Luxury_Yacht_1760488589022.png';
 import megaYachtImg from '@assets/Mega_Yacht_1760488589112.png';
 import superyachtImg from '@assets/Superyacht_1760488589340.png';
 import kaChingSound from '@assets/cashier-quotka-chingquot-sound-effect-129698_1760655284960.mp3';
-import backgroundMusic1 from '@assets/finance-money-trading-investment-413270_1760680811791.mp3';
-import backgroundMusic2 from '@assets/dynamics-of-success-185722_1760813144268.mp3';
+import music1 from '@assets/whip-afro-dancehall-music-110235_1761254522364.mp3';
+import music2 from '@assets/exciting-no-copyright-music-334839_1761254644856.mp3';
+import music3 from '@assets/fun-exciting-travel-background-music-350761_1761254717151.mp3';
 
-// Background music instances
+// Background music system
 let bgMusic: HTMLAudioElement | null = null;
-let currentTrack: 1 | 2 = 1;
+let musicPlaylist: string[] = [];
+let currentTrackIndex = 0;
 let loopCount = 0;
 
 // Sound effect instances (reusable)
@@ -39,26 +41,44 @@ const playKaChing = () => {
   kaChingAudio.play().catch(err => console.log('Audio play failed:', err));
 };
 
-const switchBackgroundTrack = () => {
+// Shuffle array function
+const shuffleArray = (array: string[]) => {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+};
+
+const stopBackgroundMusic = () => {
+  if (bgMusic) {
+    bgMusic.pause();
+    bgMusic.currentTime = 0;
+    bgMusic = null;
+  }
+};
+
+const playNextTrack = () => {
   if (bgMusic) {
     bgMusic.pause();
     bgMusic = null;
   }
   
-  // Switch to the other track
-  currentTrack = currentTrack === 1 ? 2 : 1;
+  // Move to next track
+  currentTrackIndex = (currentTrackIndex + 1) % musicPlaylist.length;
   loopCount = 0;
   
-  const trackUrl = currentTrack === 1 ? backgroundMusic1 : backgroundMusic2;
+  const trackUrl = musicPlaylist[currentTrackIndex];
   bgMusic = new Audio(trackUrl);
   bgMusic.volume = 0.3;
   
   // Listen for when the track ends
   bgMusic.addEventListener('ended', () => {
     loopCount++;
-    if (loopCount >= 4) {
-      // Switch to the other track after 4 loops
-      switchBackgroundTrack();
+    if (loopCount >= 2) {
+      // Play next track after 2 loops
+      playNextTrack();
     } else {
       // Play the same track again
       bgMusic?.play().catch(err => console.log('Loop play failed:', err));
@@ -70,16 +90,21 @@ const switchBackgroundTrack = () => {
 
 const startBackgroundMusic = () => {
   if (!bgMusic) {
-    const trackUrl = backgroundMusic1;
+    // Create shuffled playlist
+    musicPlaylist = shuffleArray([music1, music2, music3]);
+    currentTrackIndex = 0;
+    loopCount = 0;
+    
+    const trackUrl = musicPlaylist[currentTrackIndex];
     bgMusic = new Audio(trackUrl);
     bgMusic.volume = 0.3;
     
     // Listen for when the track ends
     bgMusic.addEventListener('ended', () => {
       loopCount++;
-      if (loopCount >= 4) {
-        // Switch to the other track after 4 loops
-        switchBackgroundTrack();
+      if (loopCount >= 2) {
+        // Play next track after 2 loops
+        playNextTrack();
       } else {
         // Play the same track again
         bgMusic?.play().catch(err => console.log('Loop play failed:', err));
@@ -153,8 +178,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
   const [decayTimer, setDecayTimer] = useState(420);
   const [adTimer, setAdTimer] = useState(60);
   const [showGuide, setShowGuide] = useState(false);
-  const [showAdSimulation, setShowAdSimulation] = useState(false);
-  const [adCountdown, setAdCountdown] = useState(30);
   
   // Tutorial state
   const [tutorialActive, setTutorialActive] = useState(false);
@@ -327,6 +350,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
               balanceBeforeDeduction: balance,
               balanceAfterDeduction: newBal,
             });
+            stopBackgroundMusic(); // Stop music when game over
             setGameOver(true);
           }
           
@@ -370,21 +394,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
     }, 1000);
     return () => clearInterval(t);
   }, [accountManager, tutorialActive, tutorialStep, tutorialInvestmentId]);
-
-
-  useEffect(() => {
-    if (showAdSimulation && adCountdown > 0) {
-      const timer = setInterval(() => {
-        setAdCountdown(prev => {
-          if (prev <= 1) {
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-      return () => clearInterval(timer);
-    }
-  }, [showAdSimulation, adCountdown]);
 
   // Auto-hide tutorial completion popup after 5s
   useEffect(() => {
@@ -509,7 +518,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
     localStorage.removeItem(STORAGE_KEY);
     
     setGameOver(false);
-    setShowAdSimulation(false);
     
     // Return to welcome page (player data will be pre-filled)
     onReturnToWelcome();
@@ -524,27 +532,21 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
     onReturnToWelcome();
   };
 
-  const handleContinueWithAd = () => {
-    setShowAdSimulation(true);
-    setAdCountdown(30);
-  };
-
-  const handleAdComplete = () => {
-    // Pull out invested money and add it back to balance
-    const totalInvested = investments.reduce((sum, inv) => sum + inv.a, 0);
-    
-    // Wipe all purchases but keep balance intact, return invested money, and add ₦50M bonus
-    setBalance(balance + totalInvested + 50000000);
-    setInvestments([]); // Clear all investments
+  const handleTryAgain = () => {
+    // Reset everything - fresh start with ₦50M
+    setBalance(50000000);
+    setInvestments([]);
     setOwned([]);
     setPurchased([]);
     setMaintenance(0);
-    
-    setShowAdSimulation(false);
-    setGameOver(false);
+    setAccountManager(false);
+    setManagerCost(20000000);
     setReturnRate(0.30);
     setDecayTimer(420);
-    setAdCountdown(30);
+    setGameOver(false);
+    
+    // Restart background music
+    startBackgroundMusic();
   };
 
 
@@ -1339,7 +1341,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
       )}
 
       {/* Game Over Modal */}
-      {gameOver && !showAdSimulation && (
+      {gameOver && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-6" style={{ zIndex: 60 }}>
           <div className="bg-card rounded-2xl p-8 max-w-sm w-full border-2 border-destructive">
             <div className="text-6xl mb-4 text-center">💸</div>
@@ -1375,72 +1377,24 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
             </div>
 
             {/* Continue Info */}
-            <div className="bg-primary/10 border border-primary/30 rounded-lg p-4 mb-6">
-              <p className="text-sm text-foreground mb-2 text-center font-semibold">Continue by watching an ad:</p>
-              <ul className="text-xs text-muted-foreground space-y-1">
-                <li>✅ Keep your current balance</li>
-                <li>✅ Get invested money back</li>
-                <li>✅ Receive {fmt(50000000)} bonus</li>
-                <li>❌ Lose all purchased items</li>
+            <div className="bg-destructive/10 border border-destructive/30 rounded-lg p-4 mb-6">
+              <p className="text-sm text-foreground text-center font-semibold">Starting fresh:</p>
+              <ul className="text-xs text-muted-foreground space-y-1 mt-2">
+                <li>🔄 Reset to {fmt(50000000)}</li>
+                <li>❌ Lose all items & investments</li>
+                <li>🎯 Try to win this time!</li>
               </ul>
             </div>
 
             {/* Action Button */}
             <button 
-              onClick={handleContinueWithAd}
+              onClick={handleTryAgain}
               className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-4 rounded-xl font-bold text-lg hover-elevate active-elevate-2"
-              data-testid="button-continue-ad"
+              data-testid="button-try-again"
             >
-              <Play className="w-5 h-5" />
-              Continue (Ad)
+              <RotateCcw className="w-5 h-5" />
+              Try Again
             </button>
-          </div>
-        </div>
-      )}
-
-      {/* Ad Simulation Screen */}
-      {showAdSimulation && (
-        <div className="fixed inset-0 bg-black flex items-center justify-center p-4" style={{ zIndex: 70 }}>
-          <div className="max-w-md w-full">
-            {/* Ad Container */}
-            <div className="relative aspect-video bg-gradient-to-r from-chart-2 to-chart-3 rounded-xl overflow-hidden shadow-2xl">
-              {/* Ad Content */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-6">
-                <div className="text-6xl mb-4">🎬</div>
-                <div className="text-xl font-bold mb-2">Premium Feature</div>
-                <div className="text-sm opacity-80">Unlock exclusive benefits</div>
-              </div>
-
-              {/* Countdown Timer or Skip Button */}
-              {adCountdown > 0 ? (
-                <div className="absolute top-4 right-4 bg-black/70 backdrop-blur px-3 py-1 rounded-full">
-                  <div className={`text-white text-lg font-bold tabular-nums ${adCountdown <= 5 ? 'animate-pulse' : ''}`}>
-                    0:{adCountdown.toString().padStart(2, '0')}
-                  </div>
-                </div>
-              ) : (
-                <button
-                  onClick={handleAdComplete}
-                  className="absolute top-4 right-4 bg-white/90 hover:bg-white text-foreground px-4 py-2 rounded-full font-semibold shadow-lg transition-all hover:scale-105"
-                  data-testid="button-skip-ad"
-                >
-                  Skip ✕
-                </button>
-              )}
-
-              {/* Progress Bar */}
-              <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20">
-                <div 
-                  className="h-full bg-primary transition-all duration-1000 ease-linear"
-                  style={{ width: `${((30 - adCountdown) / 30) * 100}%` }}
-                ></div>
-              </div>
-            </div>
-
-            {/* Ad Info Text */}
-            <div className="text-center mt-4 text-white/60 text-sm">
-              {adCountdown > 0 ? `You can skip in ${adCountdown} seconds` : 'Click Skip to continue'}
-            </div>
           </div>
         </div>
       )}
