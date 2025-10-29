@@ -29,16 +29,13 @@ import music3 from '@assets/fun-exciting-travel-background-music-350761_17612547
 let bgMusic: HTMLAudioElement | null = null;
 let musicPlaylist: string[] = [];
 let currentTrackIndex = 0;
-let loopCount = 0;
+let currentTrackPlayCount = 0;
 
-// Sound effect instances (reusable)
-const kaChingAudio = new Audio(kaChingSound);
-kaChingAudio.volume = 0.5;
-
-// Sound effect utilities
+// Sound effect utilities - create new instance each time for concurrent plays
 const playKaChing = () => {
-  kaChingAudio.currentTime = 0; // Reset to start for consistent timing
-  kaChingAudio.play().catch(err => console.log('Audio play failed:', err));
+  const audio = new Audio(kaChingSound);
+  audio.volume = 0.5;
+  audio.play().catch(err => console.log('Ka-ching sound failed:', err));
 };
 
 // Shuffle array function
@@ -55,37 +52,39 @@ const stopBackgroundMusic = () => {
   if (bgMusic) {
     bgMusic.pause();
     bgMusic.currentTime = 0;
+    bgMusic.removeEventListener('ended', handleTrackEnded);
     bgMusic = null;
   }
 };
 
-const playNextTrack = () => {
-  if (bgMusic) {
-    bgMusic.pause();
-    bgMusic = null;
-  }
+const handleTrackEnded = () => {
+  currentTrackPlayCount++;
   
-  // Move to next track
-  currentTrackIndex = (currentTrackIndex + 1) % musicPlaylist.length;
-  loopCount = 0;
-  
-  const trackUrl = musicPlaylist[currentTrackIndex];
-  bgMusic = new Audio(trackUrl);
-  bgMusic.volume = 0.3;
-  
-  // Listen for when the track ends
-  bgMusic.addEventListener('ended', () => {
-    loopCount++;
-    if (loopCount >= 2) {
-      // Play next track after 2 loops
-      playNextTrack();
-    } else {
-      // Play the same track again
-      bgMusic?.play().catch(err => console.log('Loop play failed:', err));
+  if (currentTrackPlayCount >= 2) {
+    // Played twice, move to next track
+    currentTrackIndex = (currentTrackIndex + 1) % musicPlaylist.length;
+    currentTrackPlayCount = 0;
+    
+    // Clean up old audio
+    if (bgMusic) {
+      bgMusic.removeEventListener('ended', handleTrackEnded);
     }
-  });
-  
-  bgMusic.play().catch(err => console.log('Track play failed:', err));
+    
+    // Create new audio for next track
+    const trackUrl = musicPlaylist[currentTrackIndex];
+    bgMusic = new Audio(trackUrl);
+    bgMusic.volume = 0.3;
+    bgMusic.loop = false;
+    bgMusic.addEventListener('ended', handleTrackEnded);
+    
+    bgMusic.play().catch(err => console.log('Next track play failed:', err));
+  } else {
+    // Play same track again
+    if (bgMusic) {
+      bgMusic.currentTime = 0;
+      bgMusic.play().catch(err => console.log('Loop play failed:', err));
+    }
+  }
 };
 
 const startBackgroundMusic = () => {
@@ -93,23 +92,15 @@ const startBackgroundMusic = () => {
     // Create shuffled playlist
     musicPlaylist = shuffleArray([music1, music2, music3]);
     currentTrackIndex = 0;
-    loopCount = 0;
+    currentTrackPlayCount = 0;
     
     const trackUrl = musicPlaylist[currentTrackIndex];
     bgMusic = new Audio(trackUrl);
     bgMusic.volume = 0.3;
+    bgMusic.loop = false;
     
     // Listen for when the track ends
-    bgMusic.addEventListener('ended', () => {
-      loopCount++;
-      if (loopCount >= 2) {
-        // Play next track after 2 loops
-        playNextTrack();
-      } else {
-        // Play the same track again
-        bgMusic?.play().catch(err => console.log('Loop play failed:', err));
-      }
-    });
+    bgMusic.addEventListener('ended', handleTrackEnded);
     
     // Try to play with user interaction context
     const playPromise = bgMusic.play();
