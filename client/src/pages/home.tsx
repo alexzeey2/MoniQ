@@ -226,7 +226,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const gameState = JSON.parse(saved);
-        setBalance(gameState.balance ?? 50000000);
+        setBalance(gameState.balance ?? 60000000);
         setInvestments(gameState.investments ?? []);
         setOwned(gameState.owned ?? []);
         setPurchased(gameState.purchased ?? []);
@@ -240,7 +240,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
         setTutorialStep('click-invest');
         setPurchased([]);
         setOwned([]);
-        setBalance(50000000);
+        setBalance(60000000);
         localStorage.removeItem(STORAGE_KEY); // Clear any partial/invalid data
       }
     } catch (error) {
@@ -526,8 +526,8 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
     // Clear localStorage for completely fresh start
     localStorage.removeItem(STORAGE_KEY);
     
-    // Reset everything - fresh start with ₦50M
-    setBalance(50000000);
+    // Reset everything - fresh start with ₦60M
+    setBalance(60000000);
     setInvestments([]);
     setOwned([]);
     setPurchased([]);
@@ -983,7 +983,8 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                         loop 
                         muted 
                         playsInline
-                        className="w-full h-64 object-cover shadow-lg"
+                        preload="auto"
+                        className="w-full h-64 object-cover shadow-lg bg-muted"
                       />
                     ) : (
                       <img 
@@ -1216,7 +1217,8 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                         loop 
                         muted 
                         playsInline
-                        className="w-full h-32 object-cover"
+                        preload="auto"
+                        className="w-full h-32 object-cover bg-muted"
                       />
                     ) : (
                       <img 

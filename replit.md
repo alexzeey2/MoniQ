@@ -2,7 +2,7 @@
 
 ## Overview
 
-NaijaWealthSim (Sọ́ágỌ́) is a mobile-first wealth simulation game where players start with ₦50M and build their fortune through strategic investments and luxury purchases. The game features dynamic currency conversion, taxes, maintenance costs, profit decay, and game-over scenarios. The primary objective is to collect all 20 luxury items while managing finances. Players land on the Store page by default when starting or returning to the game. The application is a single-page React app with an Express.js backend, designed for mobile devices with international currency support.
+NaijaWealthSim (Sọ́ágỌ́) is a mobile-first wealth simulation game where players start with ₦60M and build their fortune through strategic investments and luxury purchases. The game features dynamic currency conversion, taxes, maintenance costs, profit decay, and game-over scenarios. The primary objective is to collect all 20 luxury items while managing finances. Players land on the Store page by default when starting or returning to the game. The application is a single-page React app with an Express.js backend, designed for mobile devices with international currency support.
 
 ## User Preferences
 
@@ -31,7 +31,7 @@ Preferred communication style: Simple, everyday language.
 - **Economic Systems:** Fixed 25% tax, per-item maintenance (20% of item price), Account Manager feature. Profit rate stays at 30% permanently.
 - **Luxury Items:** Categorized into Gadgets, Cars (video format), Houses, Jets, and Yachts. All items priced 3× higher with 20% maintenance costs.
 - **Silent Tutorial System:** Auto-starts for new players with visual (glowing button) guidance. Flow: Invest nav glows → ₦40M button glows → investment card glows with "wait for return" message (other nav buttons disabled until investment returns) → Store nav glows (after investment completes) → iPhone buy button glows (other nav buttons disabled while in store) → Invest nav glows (no amount highlighted) → second investment made → completion popup "Great job! Now you know the basics" (5s auto-hide) → Home nav glows → user clicks home → Living Expenses info card glows (3s) → countdown timer glows and starts → final message "Buy all the items to win the game! Good luck!" (5s auto-hide) → tutorial complete. Investment validation: minimum ₦1M, must keep ₦5M after investing (no safety buffer blocking).
-- **Game Over System:** Triggers when balance drops below ₦5M, displays detailed expense breakdown, stops background music. Single "Try Again" button that resets everything: fresh start with ₦50M, loses all items and investments.
+- **Game Over System:** Triggers when balance drops below ₦5M, displays detailed expense breakdown, stops background music. Single "Try Again" button that resets everything: fresh start with ₦60M, loses all items and investments.
 - **Sound Effects:** Ka-ching for investment returns, deposit sound, shuffled background music (3 tracks, each plays 2 times before switching).
 - **Home Page Design:** Simplified layout with Balance card, Account Manager card, Living Expenses info card with dynamic notification system showing detailed, historical expense breakdown.
 - **"How to Play" Guide:** Explains game objective, investment steps, permanent 30% profit rate, and winning strategies.
