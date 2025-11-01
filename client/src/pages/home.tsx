@@ -166,7 +166,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
   const [managerCost, setManagerCost] = useState(20000000);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [returnRate, setReturnRate] = useState(0.30);
-  const [decayTimer, setDecayTimer] = useState(420);
   const [adTimer, setAdTimer] = useState(60);
   const [showGuide, setShowGuide] = useState(false);
   
@@ -216,7 +215,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
       investments,
       owned,
       purchased,
-      returnRate,
       accountManager,
       managerCost,
     };
@@ -232,7 +230,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
         setInvestments(gameState.investments ?? []);
         setOwned(gameState.owned ?? []);
         setPurchased(gameState.purchased ?? []);
-        setReturnRate(gameState.returnRate ?? 0.30);
+        setReturnRate(0.30); // Always reset to 30% (profit rate reduction removed)
         setAccountManager(gameState.accountManager ?? false);
         setManagerCost(gameState.managerCost ?? 20000000);
         setTutorialActive(false); // Tutorial already done for returning players
@@ -251,26 +249,26 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
   };
 
   const items = [
-    { id: 1, name: 'iPhone 15 Pro Max', price: 2500000, cat: 'Gadgets', img: iphoneImg, m: 50000 },
-    { id: 2, name: 'MacBook Pro M3', price: 4800000, cat: 'Gadgets', img: macbookImg, m: 80000 },
-    { id: 3, name: 'Apple Vision Pro', price: 6500000, cat: 'Gadgets', img: visionProImg, m: 120000 },
-    { id: 4, name: 'Luxury Watch', price: 25000000, cat: 'Gadgets', img: watchImg, m: 300000 },
+    { id: 1, name: 'iPhone 15 Pro Max', price: 7500000, cat: 'Gadgets', img: iphoneImg, m: 1500000 },
+    { id: 2, name: 'MacBook Pro M3', price: 14400000, cat: 'Gadgets', img: macbookImg, m: 2880000 },
+    { id: 3, name: 'Apple Vision Pro', price: 19500000, cat: 'Gadgets', img: visionProImg, m: 3900000 },
+    { id: 4, name: 'Luxury Watch', price: 75000000, cat: 'Gadgets', img: watchImg, m: 15000000 },
     { id: 6, name: 'Mercedes G-Wagon', price: 360000000, cat: 'Cars', img: mercedesImg, m: 72000000 },
     { id: 7, name: 'Lamborghini Urus', price: 750000000, cat: 'Cars', img: lamborghiniImg, m: 150000000 },
     { id: 8, name: 'Rolls Royce', price: 1350000000, cat: 'Cars', img: rollsRoyceImg, m: 270000000 },
     { id: 9, name: 'Bugatti Chiron', price: 2550000000, cat: 'Cars', img: bugattiImg, m: 510000000 },
-    { id: 10, name: 'Ikoyi Duplex', price: 380000000, cat: 'Houses', img: duplexImg, m: 4000000 },
-    { id: 11, name: 'Lekki Penthouse', price: 650000000, cat: 'Houses', img: penthouseImg, m: 7000000 },
-    { id: 12, name: 'Banana Island Villa', price: 1200000000, cat: 'Houses', img: villaImg, m: 12000000 },
-    { id: 13, name: 'Private Island', price: 3500000000, cat: 'Houses', img: privateIslandImg, m: 35000000 },
-    { id: 14, name: 'Cessna Citation', price: 1800000000, cat: 'Jets', img: cessnaCitationImg, m: 18000000 },
-    { id: 15, name: 'Bombardier Global', price: 3200000000, cat: 'Jets', img: bombardierImg, m: 32000000 },
-    { id: 16, name: 'Gulfstream G650', price: 5500000000, cat: 'Jets', img: gulfstreamImg, m: 55000000 },
-    { id: 17, name: 'Boeing Jet', price: 12000000000, cat: 'Jets', img: boeingJetImg, m: 120000000 },
-    { id: 18, name: 'Sport Yacht', price: 2500000000, cat: 'Yachts', img: sportYachtImg, m: 25000000 },
-    { id: 19, name: 'Luxury Yacht', price: 4800000000, cat: 'Yachts', img: luxuryYachtImg, m: 48000000 },
-    { id: 20, name: 'Mega Yacht', price: 9500000000, cat: 'Yachts', img: megaYachtImg, m: 95000000 },
-    { id: 21, name: 'Superyacht', price: 18000000000, cat: 'Yachts', img: superyachtImg, m: 180000000 },
+    { id: 10, name: 'Ikoyi Duplex', price: 1140000000, cat: 'Houses', img: duplexImg, m: 228000000 },
+    { id: 11, name: 'Lekki Penthouse', price: 1950000000, cat: 'Houses', img: penthouseImg, m: 390000000 },
+    { id: 12, name: 'Banana Island Villa', price: 3600000000, cat: 'Houses', img: villaImg, m: 720000000 },
+    { id: 13, name: 'Private Island', price: 10500000000, cat: 'Houses', img: privateIslandImg, m: 2100000000 },
+    { id: 14, name: 'Cessna Citation', price: 5400000000, cat: 'Jets', img: cessnaCitationImg, m: 1080000000 },
+    { id: 15, name: 'Bombardier Global', price: 9600000000, cat: 'Jets', img: bombardierImg, m: 1920000000 },
+    { id: 16, name: 'Gulfstream G650', price: 16500000000, cat: 'Jets', img: gulfstreamImg, m: 3300000000 },
+    { id: 17, name: 'Boeing Jet', price: 36000000000, cat: 'Jets', img: boeingJetImg, m: 7200000000 },
+    { id: 18, name: 'Sport Yacht', price: 7500000000, cat: 'Yachts', img: sportYachtImg, m: 1500000000 },
+    { id: 19, name: 'Luxury Yacht', price: 14400000000, cat: 'Yachts', img: luxuryYachtImg, m: 2880000000 },
+    { id: 20, name: 'Mega Yacht', price: 28500000000, cat: 'Yachts', img: megaYachtImg, m: 5700000000 },
+    { id: 21, name: 'Superyacht', price: 54000000000, cat: 'Yachts', img: superyachtImg, m: 10800000000 },
   ];
 
   const categories = ['All', 'Gadgets', 'Cars', 'Houses', 'Jets', 'Yachts'];
@@ -298,26 +296,11 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
 
   useEffect(() => {
     saveGameState();
-  }, [balance, investments, owned, purchased, returnRate, accountManager, managerCost]);
+  }, [balance, investments, owned, purchased, accountManager, managerCost]);
 
   useEffect(() => {
     setMaintenance(owned.reduce((s, i) => s + i.m, 0));
   }, [owned]);
-
-  useEffect(() => {
-    if (gameOver || accountManager) return;
-    const t = setInterval(() => {
-      setDecayTimer(p => {
-        if (p <= 1) {
-          // After 7 minutes (420 seconds), drop rate to 0% instantly
-          setReturnRate(0);
-          return 0;
-        }
-        return p - 1;
-      });
-    }, 1000);
-    return () => clearInterval(t);
-  }, [gameOver, accountManager]);
 
   useEffect(() => {
     if (gameOver || accountManager) return;
@@ -502,8 +485,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
     setBalance(balance - cost);
     setOwned([...owned, { ...item, price: item.price, m: item.m }]);
     setPurchased([...purchased, item.id]);
-    setReturnRate(0.30);
-    setDecayTimer(420);
     
     // Tutorial: Check if bought iPhone
     if (tutorialActive && tutorialStep === 'buy-iphone' && item.id === 1) {
@@ -553,8 +534,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
     setMaintenance(0);
     setAccountManager(false);
     setManagerCost(20000000);
-    setReturnRate(0.30);
-    setDecayTimer(420);
     setGameOver(false);
     
     // Restart tutorial for new game
@@ -773,32 +752,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
         
         {screen === 'invest' && (
           <div className="p-6 space-y-4 relative">
-            {/* Investment Blocked Modal - Only on Invest Screen */}
-            {returnRate === 0 && (
-              <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-6" style={{ zIndex: 60 }}>
-                <div className="bg-card rounded-2xl p-8 max-w-sm w-full border-2 border-destructive">
-                  <div className="text-center mb-6">
-                    <div className="text-5xl mb-3">⚠️</div>
-                    <h2 className="text-xl font-bold text-destructive mb-4">INVESTMENT BLOCKED</h2>
-                    <p className="text-sm text-foreground mb-2">
-                      Your profit rate dropped to 0%!
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      Buy an item from the Store to restore it back to 30% and continue investing.
-                    </p>
-                  </div>
-
-                  <button 
-                    onClick={() => setScreen('store')}
-                    className="w-full bg-gradient-to-r from-chart-3 to-chart-5 text-white py-3 rounded-xl font-semibold hover-elevate active-elevate-2"
-                    data-testid="button-go-to-store"
-                  >
-                    Go to Store
-                  </button>
-                </div>
-              </div>
-            )}
-
             <button 
               onClick={() => setScreen('home')} 
               className="flex items-center gap-2 text-muted-foreground hover-elevate active-elevate-2 rounded-lg px-2 py-1"
@@ -940,7 +893,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                   <button 
                     key={a} 
                     onClick={() => invest(a)} 
-                    disabled={returnRate === 0 || a > balance || (balance - a) < 5000000 || (tutorialActive && tutorialStep === 'make-investment' && a !== 40000000)} 
+                    disabled={a > balance || (balance - a) < 5000000 || (tutorialActive && tutorialStep === 'make-investment' && a !== 40000000)} 
                     className={`py-6 font-semibold bg-card border-2 border-card-border rounded-xl disabled:opacity-50 hover-elevate active-elevate-2 ${shouldHighlight ? 'tutorial-highlight' : ''}`}
                     data-testid={`button-invest-${a}`}
                   >
@@ -953,7 +906,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
             {/* 1 Billion Button - Full Width */}
             <button 
               onClick={() => invest(1000000000)} 
-              disabled={returnRate === 0 || 1000000000 > balance || (balance - 1000000000) < 5000000} 
+              disabled={1000000000 > balance || (balance - 1000000000) < 5000000} 
               className="w-full py-6 font-semibold bg-card border-2 border-card-border rounded-xl disabled:opacity-50 hover-elevate active-elevate-2"
               data-testid="button-invest-1000000000"
             >
@@ -1467,13 +1420,10 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
               
               <div>
                 <div className="font-bold text-lg mb-2">⚡ Profit Rate System</div>
-                <p className="text-muted-foreground mb-2">Your profit rate starts at <strong>30%</strong> and stays there for <strong>7 minutes</strong>.</p>
-                <div className="bg-destructive/20 border border-destructive/30 rounded-lg p-3 mt-2">
-                  <p className="text-destructive text-xs font-semibold mb-1">⚠️ CRITICAL:</p>
-                  <p className="text-destructive text-xs">After 7 minutes, your profit rate drops to <strong>0% instantly</strong>. You CANNOT invest when rate is 0%!</p>
-                </div>
-                <div className="bg-primary/20 border border-primary/30 rounded-lg p-2 mt-2 text-xs">
-                  <strong>Solution:</strong> Buy ANY item from the Store to reset your profit back to 30% and restart the 7-minute timer!
+                <p className="text-muted-foreground mb-2">Your profit rate is <strong>30%</strong> for all investments!</p>
+                <div className="bg-primary/20 border border-primary/30 rounded-lg p-3 mt-2">
+                  <p className="text-primary text-xs font-semibold">💡 Tip:</p>
+                  <p className="text-primary text-xs">Keep investing to grow your balance and buy all 20 items to win!</p>
                 </div>
               </div>
               
@@ -1486,11 +1436,11 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
               
               <div>
                 <div className="font-bold text-lg mb-2">💡 Winning Strategy</div>
-                <p className="text-muted-foreground">• <strong>Invest fast:</strong> 30% returns for 7 minutes!</p>
-                <p className="text-muted-foreground">• <strong>Before 7 mins:</strong> Buy a cheap item to reset profit timer</p>
+                <p className="text-muted-foreground">• <strong>Invest smart:</strong> Always get 30% returns in 60 seconds!</p>
+                <p className="text-muted-foreground">• <strong>Start small:</strong> Buy cheaper items first to build your collection</p>
                 <p className="text-muted-foreground">• <strong>Use Account Manager:</strong> Pause timers when needed ({currency}{Math.round(20000000 * conversionRate / (conversionRate === 1 ? 1000000 : 1000))}{conversionRate === 1 ? 'M' : 'K'})</p>
                 <p className="text-muted-foreground">• <strong>Watch your balance:</strong> Living expenses take 25% every 30s</p>
-                <p className="text-muted-foreground">• <strong>Never hit 0% profit:</strong> You can't invest = guaranteed loss!</p>
+                <p className="text-muted-foreground">• <strong>Keep investing:</strong> Regular investments help maintain your balance!</p>
               </div>
             </div>
             <div className="p-4 border-t border-border">
