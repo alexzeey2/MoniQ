@@ -101,7 +101,7 @@ export default function Welcome({ onStartGame }: WelcomeProps) {
           <div className="space-y-3">
             <div className="bg-blue-50 dark:bg-blue-950 rounded-md p-4 space-y-1">
               <p className="font-semibold text-blue-700 dark:text-blue-300">🎯 YOUR MISSION:</p>
-              <p className="text-muted-foreground">Buy all 20 luxury items to advance to the next level. Reach Level 10 to master the game!</p>
+              <p className="text-muted-foreground">Buy all 18 luxury items to win the game!</p>
             </div>
 
             <div className="bg-emerald-50 dark:bg-emerald-950 rounded-md p-4 space-y-1">

@@ -140,10 +140,10 @@ const playDeposit = () => {
 };
 
 interface NaijaWealthSimProps {
-  onReturnToWelcome: () => void;
+  onReturnToWelcome?: () => void;
 }
 
-export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProps) {
+export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProps = {}) {
   // Player data
   const [playerName, setPlayerName] = useState('');
   const [playerCountry, setPlayerCountry] = useState('Nigeria');
@@ -505,8 +505,12 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
     
     setGameOver(false);
     
-    // Return to welcome page (player data will be pre-filled)
-    onReturnToWelcome();
+    // Reload page to start fresh (player data will be pre-filled)
+    if (onReturnToWelcome) {
+      onReturnToWelcome();
+    } else {
+      window.location.reload();
+    }
   };
 
   const changePlayer = () => {
@@ -514,8 +518,12 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(PLAYER_DATA_KEY);
     
-    // Return to welcome page
-    onReturnToWelcome();
+    // Reload page to start fresh
+    if (onReturnToWelcome) {
+      onReturnToWelcome();
+    } else {
+      window.location.reload();
+    }
   };
 
   const handleTryAgain = () => {
@@ -979,7 +987,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                         loop 
                         muted 
                         playsInline
-                        preload="auto"
+                        preload="metadata"
                         className="w-full h-64 object-cover shadow-lg bg-muted"
                       />
                     ) : (
@@ -1213,7 +1221,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                         loop 
                         muted 
                         playsInline
-                        preload="auto"
+                        preload="metadata"
                         className="w-full h-32 object-cover bg-muted"
                       />
                     ) : (
