@@ -4,10 +4,10 @@ import iphoneImg from '@assets/Iphone_15_Pro_Max_1760488588844.png';
 import macbookImg from '@assets/MacBook_Pro_M3_1760488589069.png';
 import visionProImg from '@assets/Apple_Vision_Pro_1760488588518.png';
 import watchImg from '@assets/Luxury_Watch_1760488588988.png';
-import mercedesImg from '@assets/Mercedes_G-wagon_1760488589156.png';
-import lamborghiniImg from '@assets/Lamborghini_Urus_1760488588886.png';
-import rollsRoyceImg from '@assets/Rolls_Royce_1760488589256.png';
-import bugattiImg from '@assets/Bugatti_Chiron_1760488588652.png';
+import mercedesImg from '@assets/Mercedes G-Wagon_1761982502720.mp4';
+import lamborghiniImg from '@assets/Lamborghini Urus_1761982502820.mp4';
+import rollsRoyceImg from '@assets/Rolls Royce_1761982502890.mp4';
+import bugattiImg from '@assets/Bugatti Chiron_1761982502946.mp4';
 import duplexImg from '@assets/Ikoyi_Duplex_1760488588798.png';
 import penthouseImg from '@assets/Lekki_Penthouse_1760488588932.png';
 import villaImg from '@assets/Banana_Island_Villa_1760488588460.png';
@@ -255,10 +255,10 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
     { id: 2, name: 'MacBook Pro M3', price: 4800000, cat: 'Gadgets', img: macbookImg, m: 80000 },
     { id: 3, name: 'Apple Vision Pro', price: 6500000, cat: 'Gadgets', img: visionProImg, m: 120000 },
     { id: 4, name: 'Luxury Watch', price: 25000000, cat: 'Gadgets', img: watchImg, m: 300000 },
-    { id: 6, name: 'Mercedes G-Wagon', price: 120000000, cat: 'Cars', img: mercedesImg, m: 1500000 },
-    { id: 7, name: 'Lamborghini Urus', price: 250000000, cat: 'Cars', img: lamborghiniImg, m: 3000000 },
-    { id: 8, name: 'Rolls Royce', price: 450000000, cat: 'Cars', img: rollsRoyceImg, m: 5500000 },
-    { id: 9, name: 'Bugatti Chiron', price: 850000000, cat: 'Cars', img: bugattiImg, m: 10000000 },
+    { id: 6, name: 'Mercedes G-Wagon', price: 360000000, cat: 'Cars', img: mercedesImg, m: 72000000 },
+    { id: 7, name: 'Lamborghini Urus', price: 750000000, cat: 'Cars', img: lamborghiniImg, m: 150000000 },
+    { id: 8, name: 'Rolls Royce', price: 1350000000, cat: 'Cars', img: rollsRoyceImg, m: 270000000 },
+    { id: 9, name: 'Bugatti Chiron', price: 2550000000, cat: 'Cars', img: bugattiImg, m: 510000000 },
     { id: 10, name: 'Ikoyi Duplex', price: 380000000, cat: 'Houses', img: duplexImg, m: 4000000 },
     { id: 11, name: 'Lekki Penthouse', price: 650000000, cat: 'Houses', img: penthouseImg, m: 7000000 },
     { id: 12, name: 'Banana Island Villa', price: 1200000000, cat: 'Houses', img: villaImg, m: 12000000 },
@@ -1023,11 +1023,22 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                 
                 return (
                   <div key={i.id} className={`bg-card rounded-xl overflow-hidden border border-card-border ${shouldHighlight ? 'tutorial-highlight' : ''}`} data-testid={`item-${i.id}`}>
-                    <img 
-                      src={i.img} 
-                      alt={i.name}
-                      className="w-full h-64 object-cover shadow-lg"
-                    />
+                    {i.cat === 'Cars' ? (
+                      <video 
+                        src={i.img} 
+                        autoPlay 
+                        loop 
+                        muted 
+                        playsInline
+                        className="w-full h-64 object-cover shadow-lg"
+                      />
+                    ) : (
+                      <img 
+                        src={i.img} 
+                        alt={i.name}
+                        className="w-full h-64 object-cover shadow-lg"
+                      />
+                    )}
                     <div className="p-4 flex items-center justify-between gap-4">
                       <div className="flex-1">
                         <div className="font-semibold mb-1">{i.name}</div>
@@ -1245,11 +1256,22 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
               <div className="grid grid-cols-2 gap-3">
                 {owned.map((i, idx) => (
                   <div key={idx} className="bg-card rounded-xl overflow-hidden border border-card-border">
-                    <img 
-                      src={i.img} 
-                      alt={i.name}
-                      className="w-full h-32 object-cover"
-                    />
+                    {i.cat === 'Cars' ? (
+                      <video 
+                        src={i.img} 
+                        autoPlay 
+                        loop 
+                        muted 
+                        playsInline
+                        className="w-full h-32 object-cover"
+                      />
+                    ) : (
+                      <img 
+                        src={i.img} 
+                        alt={i.name}
+                        className="w-full h-32 object-cover"
+                      />
+                    )}
                     <div className="p-3 text-center">
                       <div className="text-sm font-semibold">{i.name}</div>
                       <div className="text-xs text-muted-foreground mt-1">{fmt(i.price)}</div>
