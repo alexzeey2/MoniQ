@@ -2,8 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import { Home, TrendingUp, ShoppingBag, User, ArrowLeft, Clock, AlertCircle, PieChart, Shield, ShieldOff, Zap, RotateCcw, Play } from 'lucide-react';
 import iphoneImg from '@assets/Iphone_15_Pro_Max_1760488588844.png';
 import macbookImg from '@assets/MacBook_Pro_M3_1760488589069.png';
-import visionProImg from '@assets/Apple_Vision_Pro_1760488588518.png';
-import watchImg from '@assets/Luxury_Watch_1760488588988.png';
 import mercedesImg from '@assets/Mercedes G-Wagon_1761982502720.mp4';
 import lamborghiniImg from '@assets/Lamborghini Urus_1761982502820.mp4';
 import rollsRoyceImg from '@assets/Rolls Royce_1761982502890.mp4';
@@ -251,8 +249,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
   const items = [
     { id: 1, name: 'iPhone 15 Pro Max', price: 7500000, cat: 'Gadgets', img: iphoneImg, m: 1500000 },
     { id: 2, name: 'MacBook Pro M3', price: 14400000, cat: 'Gadgets', img: macbookImg, m: 2880000 },
-    { id: 3, name: 'Apple Vision Pro', price: 19500000, cat: 'Gadgets', img: visionProImg, m: 3900000 },
-    { id: 4, name: 'Luxury Watch', price: 75000000, cat: 'Gadgets', img: watchImg, m: 15000000 },
     { id: 6, name: 'Mercedes G-Wagon', price: 360000000, cat: 'Cars', img: mercedesImg, m: 72000000 },
     { id: 7, name: 'Lamborghini Urus', price: 750000000, cat: 'Cars', img: lamborghiniImg, m: 150000000 },
     { id: 8, name: 'Rolls Royce', price: 1350000000, cat: 'Cars', img: rollsRoyceImg, m: 270000000 },
@@ -1187,7 +1183,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                 </div>
                 <div className="bg-card/30 rounded-lg p-2">
                   <div className="text-muted-foreground">Items</div>
-                  <div className="font-bold text-lg">{owned.length}/20</div>
+                  <div className="font-bold text-lg">{owned.length}/18</div>
                 </div>
                 <div className="bg-card/30 rounded-lg p-2">
                   <div className="text-muted-foreground">Investments</div>
@@ -1408,8 +1404,8 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
             <div className="overflow-y-auto p-6 space-y-4 text-sm">
               <div>
                 <div className="font-bold text-lg mb-2">🎯 Game Objective</div>
-                <p className="text-muted-foreground mb-2">Build your wealth by buying ALL 20 luxury items!</p>
-                <p className="text-muted-foreground">Start: {currency}{Math.round(50000000 * conversionRate / (conversionRate === 1 ? 1000000 : 1000))}{conversionRate === 1 ? 'M' : 'K'} | Lose if balance drops below {currency}{Math.round(5000000 * conversionRate / (conversionRate === 1 ? 1000000 : 1000))}{conversionRate === 1 ? 'M' : 'K'}</p>
+                <p className="text-muted-foreground mb-2">Build your wealth by buying ALL 18 luxury items!</p>
+                <p className="text-muted-foreground">Start: {currency}{Math.round(60000000 * conversionRate / (conversionRate === 1 ? 1000000 : 1000))}{conversionRate === 1 ? 'M' : 'K'} | Lose if balance drops below {currency}{Math.round(5000000 * conversionRate / (conversionRate === 1 ? 1000000 : 1000))}{conversionRate === 1 ? 'M' : 'K'}</p>
               </div>
               
               <div>
@@ -1425,13 +1421,13 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                 <p className="text-muted-foreground mb-2">Your profit rate is <strong>30%</strong> for all investments!</p>
                 <div className="bg-primary/20 border border-primary/30 rounded-lg p-3 mt-2">
                   <p className="text-primary text-xs font-semibold">💡 Tip:</p>
-                  <p className="text-primary text-xs">Keep investing to grow your balance and buy all 20 items to win!</p>
+                  <p className="text-primary text-xs">Keep investing to grow your balance and buy all 18 items to win!</p>
                 </div>
               </div>
               
               <div>
                 <div className="font-bold text-lg mb-2">🏆 Winning Goal</div>
-                <p className="text-muted-foreground mb-2">• Collect ALL 20 luxury items to win!</p>
+                <p className="text-muted-foreground mb-2">• Collect ALL 18 luxury items to win!</p>
                 <p className="text-muted-foreground mb-2">• Keep your balance above the minimum</p>
                 <p className="text-muted-foreground">• Manage investments and expenses wisely</p>
               </div>
