@@ -27,15 +27,14 @@ Preferred communication style: Simple, everyday language.
 
 ### Game Mechanics Architecture
 - **Player Onboarding:** Welcome/signup, dynamic currency conversion (Nigeria: ₦, Others: $ at 1:1500), data persisted in localStorage.
-- **Core Game State:** Balance tracking, investment system (30% return, 7-minute decay), owned items, timers, win condition (20 luxury items).
-- **Economic Systems:** Fixed 25% tax, per-item maintenance, profit decay (30% for 7 mins, then 0%), Account Manager feature. Investments are blocked if profit rate is 0% until a luxury item is purchased.
-- **Luxury Items:** Categorized into Gadgets, Cars, Houses, Jets, and Yachts.
+- **Core Game State:** Balance tracking, investment system (30% return, 60-second wait), owned items, timers, win condition (20 luxury items).
+- **Economic Systems:** Fixed 25% tax, per-item maintenance (20% of item price), Account Manager feature. Profit rate stays at 30% permanently.
+- **Luxury Items:** Categorized into Gadgets, Cars (video format), Houses, Jets, and Yachts. All items priced 3× higher with 20% maintenance costs.
 - **Silent Tutorial System:** Auto-starts for new players with visual (glowing button) guidance. Flow: Invest nav glows → ₦40M button glows → investment card glows with "wait for return" message (other nav buttons disabled until investment returns) → Store nav glows (after investment completes) → iPhone buy button glows (other nav buttons disabled while in store) → Invest nav glows (no amount highlighted) → second investment made → completion popup "Great job! Now you know the basics" (5s auto-hide) → Home nav glows → user clicks home → Living Expenses info card glows (3s) → countdown timer glows and starts → final message "Buy all the items to win the game! Good luck!" (5s auto-hide) → tutorial complete. Investment validation: minimum ₦1M, must keep ₦5M after investing (no safety buffer blocking).
 - **Game Over System:** Triggers when balance drops below ₦5M, displays detailed expense breakdown, stops background music. Single "Try Again" button that resets everything: fresh start with ₦50M, loses all items and investments.
 - **Sound Effects:** Ka-ching for investment returns, deposit sound, shuffled background music (3 tracks, each plays 2 times before switching).
 - **Home Page Design:** Simplified layout with Balance card, Account Manager card, Living Expenses info card with dynamic notification system showing detailed, historical expense breakdown.
-- **Investment Blocking System:** Profit rate is 30% for 7 minutes, then instantly drops to 0%. A modal warns players, and investments are blocked until an item is purchased, which resets the rate and timer.
-- **"How to Play" Guide:** Explains game objective, investment steps, profit rate system, critical warnings, and winning strategies.
+- **"How to Play" Guide:** Explains game objective, investment steps, permanent 30% profit rate, and winning strategies.
 
 ## External Dependencies
 
@@ -66,6 +65,24 @@ Preferred communication style: Simple, everyday language.
 - **nanoid**: Unique ID generation.
 
 ## Recent Changes
+
+### November 1, 2025 - Price Increases & Game Balance Overhaul
+- **All Item Prices Tripled (3×):**
+  - Gadgets: iPhone ₦7.5M, MacBook ₦14.4M, Vision Pro ₦19.5M, Watch ₦75M
+  - Cars: Mercedes ₦360M, Lamborghini ₦750M, Rolls Royce ₦1.35B, Bugatti ₦2.55B
+  - Houses: Duplex ₦1.14B, Penthouse ₦1.95B, Villa ₦3.6B, Private Island ₦10.5B
+  - Jets: Cessna ₦5.4B, Bombardier ₦9.6B, Gulfstream ₦16.5B, Boeing ₦36B
+  - Yachts: Sport ₦7.5B, Luxury ₦14.4B, Mega ₦28.5B, Superyacht ₦54B
+- **Maintenance Costs Increased:** All items now have 20% maintenance (₦1.5M - ₦10.8B per 30 seconds)
+- **Profit Rate Reduction System Removed:** 
+  - Removed 7-minute decay timer (decayTimer state variable)
+  - Profit rate stays at 30% permanently - never drops to 0%
+  - Removed investment blocking modal that appeared at 0% profit
+  - Players can invest freely anytime without forced purchases
+  - returnRate no longer persisted to localStorage to prevent legacy saves from loading at 0%
+- **Car Video Display:** Cars now render as `<video>` elements (autoPlay, loop, muted, playsInline) in both Store and Portfolio
+- **Tutorial Updates:** Removed all references to 7-minute timer, simplified to permanent 30% profit rate system
+- **Legacy Save Compatibility:** Old saves with returnRate = 0 now correctly load with 30% profit rate
 
 ### October 23, 2025 - Critical Bug Fixes & Vercel ERR_CONNECTION_REFUSED Fix
 - **Vercel ERR_CONNECTION_REFUSED Fix:** Fixed "site can't be reached" error after successful deployment. Root cause: old `vite.config.vercel.ts` file + server files being included in deployment confused Vercel. Solution: Deleted old config, created `.vercelignore` to exclude server code (only blocks server/, dist/index.js), simplified `vercel.json`. Build tested with production environment: 8.55s, 30MB total output including all 20 luxury items + 3 music files.
