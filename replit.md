@@ -71,6 +71,7 @@ Preferred communication style: Simple, everyday language.
 - **Win Condition Updated:** Players now need to collect 18 luxury items to win (reduced from 20)
 - **Starting Balance Increased:** New and returning players now start with ₦60M (increased from ₦50M)
 - **Updated Item Count:** All UI references and documentation updated to reflect 18-item goal
+- **Store Default View:** Cars category now displays by default when entering the Store page (instead of "All")
 
 ### November 1, 2025 - Price Increases & Game Balance Overhaul
 - **All Item Prices Tripled (3×):**

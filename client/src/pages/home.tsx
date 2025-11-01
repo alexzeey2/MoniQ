@@ -162,7 +162,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
   const [purchased, setPurchased] = useState<number[]>([]);
   const [accountManager, setAccountManager] = useState(false);
   const [managerCost, setManagerCost] = useState(20000000);
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedCategory, setSelectedCategory] = useState('Cars');
   const [returnRate, setReturnRate] = useState(0.30);
   const [adTimer, setAdTimer] = useState(60);
   const [showGuide, setShowGuide] = useState(false);
