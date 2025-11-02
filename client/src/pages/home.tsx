@@ -19,9 +19,8 @@ import luxuryYachtImg from '@assets/Luxury_Yacht_1760488589022.png';
 import megaYachtImg from '@assets/Mega_Yacht_1760488589112.png';
 import superyachtImg from '@assets/Superyacht_1760488589340.png';
 import kaChingSound from '@assets/cashier-quotka-chingquot-sound-effect-129698_1760655284960.mp3';
-import music1 from '@assets/whip-afro-dancehall-music-110235_1761254522364.mp3';
-import music2 from '@assets/exciting-no-copyright-music-334839_1761254644856.mp3';
-import music3 from '@assets/fun-exciting-travel-background-music-350761_1761254717151.mp3';
+import music1 from '@assets/faty-278997_1762087119221.mp3';
+import music2 from '@assets/finance-money-trading-investment-413270_1762087146097.mp3';
 
 // Background music system
 let bgMusic: HTMLAudioElement | null = null;
@@ -88,7 +87,7 @@ const handleTrackEnded = () => {
 const startBackgroundMusic = () => {
   if (!bgMusic) {
     // Create shuffled playlist
-    musicPlaylist = shuffleArray([music1, music2, music3]);
+    musicPlaylist = shuffleArray([music1, music2]);
     currentTrackIndex = 0;
     currentTrackPlayCount = 0;
     

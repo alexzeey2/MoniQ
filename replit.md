@@ -32,7 +32,7 @@ Preferred communication style: Simple, everyday language.
 - **Luxury Items:** Categorized into Gadgets, Cars, Houses, Jets, and Yachts. All items priced 3× higher with 20% maintenance costs.
 - **Silent Tutorial System:** Auto-starts for new players with visual (glowing button) guidance. Flow: Invest nav glows → ₦40M button glows → investment card glows with "wait for return" message (other nav buttons disabled until investment returns) → Store nav glows (after investment completes) → iPhone buy button glows (other nav buttons disabled while in store) → Invest nav glows (no amount highlighted) → second investment made → completion popup "Great job! Now you know the basics" (5s auto-hide) → Home nav glows → user clicks home → Living Expenses info card glows (3s) → countdown timer glows and starts → final message "Buy all the items to win the game! Good luck!" (5s auto-hide) → tutorial complete. Investment validation: minimum ₦1M, must keep ₦5M after investing (no safety buffer blocking).
 - **Game Over System:** Triggers when balance drops below ₦5M, displays detailed expense breakdown, stops background music. Single "Try Again" button that resets everything: fresh start with ₦60M, loses all items and investments.
-- **Sound Effects:** Ka-ching for investment returns, deposit sound, shuffled background music (3 tracks, each plays 2 times before switching).
+- **Sound Effects:** Ka-ching for investment returns, deposit sound, shuffled background music (2 tracks, each plays 2 times before switching).
 - **Home Page Design:** Simplified layout with Balance card, Account Manager card, Living Expenses info card with dynamic notification system showing detailed, historical expense breakdown.
 - **"How to Play" Guide:** Explains game objective, investment steps, permanent 30% profit rate, and winning strategies.
 
@@ -65,6 +65,13 @@ Preferred communication style: Simple, everyday language.
 - **nanoid**: Unique ID generation.
 
 ## Recent Changes
+
+### November 2, 2025 - Background Music Updated
+- **Music Tracks Replaced:** Old 3 background music tracks removed and replaced with 2 new tracks
+  - Track 1: faty-278997_1762087119221.mp3
+  - Track 2: finance-money-trading-investment-413270_1762087146097.mp3
+- **Music System:** Each track plays twice in a loop before shuffling to the next track (same behavior as before)
+- **Old Tracks Removed:** whip-afro-dancehall-music-110235, exciting-no-copyright-music-334839, fun-exciting-travel-background-music-350761
 
 ### November 2, 2025 - All Cars Now Display as YouTube Videos
 - **Car Display Upgraded:** All 4 cars now render as embedded YouTube videos instead of static images
