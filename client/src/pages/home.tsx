@@ -19,6 +19,7 @@ import luxuryYachtImg from '@assets/Luxury_Yacht_1760488589022.png';
 import megaYachtImg from '@assets/Mega_Yacht_1760488589112.png';
 import superyachtImg from '@assets/Superyacht_1760488589340.png';
 import kaChingSound from '@assets/cashier-quotka-chingquot-sound-effect-129698_1760655284960.mp3';
+import gameOverSound from '@assets/sound-effect-woman-giggling-and-laughing-320487_1762089909425.mp3';
 import music1 from '@assets/faty-278997_1762087119221.mp3';
 import music2 from '@assets/finance-money-trading-investment-413270_1762087146097.mp3';
 
@@ -33,6 +34,12 @@ const playKaChing = () => {
   const audio = new Audio(kaChingSound);
   audio.volume = 0.5;
   audio.play().catch(err => console.log('Ka-ching sound failed:', err));
+};
+
+const playGameOver = () => {
+  const audio = new Audio(gameOverSound);
+  audio.volume = 0.6;
+  audio.play().catch(err => console.log('Game over sound failed:', err));
 };
 
 // Shuffle array function
@@ -333,6 +340,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
               balanceAfterDeduction: actualBalanceAfter, // Show actual balance, not clamped value
             });
             stopBackgroundMusic(); // Stop music when game over
+            playGameOver(); // Play game over sound effect
             setGameOver(true);
           }
           
