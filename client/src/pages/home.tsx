@@ -252,7 +252,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
     { id: 6, name: 'Mercedes G-Wagon', price: 360000000, cat: 'Cars', img: mercedesImg, m: 72000000 },
     { id: 7, name: 'Lamborghini Urus', price: 750000000, cat: 'Cars', img: lamborghiniImg, m: 150000000 },
     { id: 8, name: 'Rolls Royce', price: 1350000000, cat: 'Cars', img: rollsRoyceImg, m: 270000000 },
-    { id: 9, name: 'Bugatti Chiron', price: 2550000000, cat: 'Cars', img: bugattiImg, m: 510000000 },
+    { id: 9, name: 'Bugatti Chiron', price: 2550000000, cat: 'Cars', img: bugattiImg, m: 510000000, youtubeId: 'FlxAk5-gei0' },
     { id: 10, name: 'Ikoyi Duplex', price: 1140000000, cat: 'Houses', img: duplexImg, m: 228000000 },
     { id: 11, name: 'Lekki Penthouse', price: 1950000000, cat: 'Houses', img: penthouseImg, m: 390000000 },
     { id: 12, name: 'Banana Island Villa', price: 3600000000, cat: 'Houses', img: villaImg, m: 720000000 },
@@ -980,11 +980,21 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                 
                 return (
                   <div key={i.id} className={`bg-card rounded-xl overflow-hidden border border-card-border ${shouldHighlight ? 'tutorial-highlight' : ''}`} data-testid={`item-${i.id}`}>
-                    <img 
-                      src={i.img} 
-                      alt={i.name}
-                      className="w-full h-64 object-cover shadow-lg"
-                    />
+                    {i.youtubeId ? (
+                      <iframe
+                        src={`https://www.youtube.com/embed/${i.youtubeId}?autoplay=1&mute=1&loop=1&playlist=${i.youtubeId}&controls=0&modestbranding=1&rel=0&showinfo=0&vq=hd720`}
+                        className="w-full h-64 shadow-lg"
+                        allow="autoplay; encrypted-media"
+                        allowFullScreen
+                        title={i.name}
+                      />
+                    ) : (
+                      <img 
+                        src={i.img} 
+                        alt={i.name}
+                        className="w-full h-64 object-cover shadow-lg"
+                      />
+                    )}
                     <div className="p-4 flex items-center justify-between gap-4">
                       <div className="flex-1">
                         <div className="font-semibold mb-1">{i.name}</div>
@@ -1202,11 +1212,21 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
               <div className="grid grid-cols-2 gap-3">
                 {owned.map((i, idx) => (
                   <div key={idx} className="bg-card rounded-xl overflow-hidden border border-card-border">
-                    <img 
-                      src={i.img} 
-                      alt={i.name}
-                      className="w-full h-32 object-cover"
-                    />
+                    {i.youtubeId ? (
+                      <iframe
+                        src={`https://www.youtube.com/embed/${i.youtubeId}?autoplay=1&mute=1&loop=1&playlist=${i.youtubeId}&controls=0&modestbranding=1&rel=0&showinfo=0&vq=hd720`}
+                        className="w-full h-32"
+                        allow="autoplay; encrypted-media"
+                        allowFullScreen
+                        title={i.name}
+                      />
+                    ) : (
+                      <img 
+                        src={i.img} 
+                        alt={i.name}
+                        className="w-full h-32 object-cover"
+                      />
+                    )}
                     <div className="p-3 text-center">
                       <div className="text-sm font-semibold">{i.name}</div>
                       <div className="text-xs text-muted-foreground mt-1">{fmt(i.price)}</div>

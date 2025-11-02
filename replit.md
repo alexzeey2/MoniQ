@@ -66,8 +66,10 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
-### November 2, 2025 - Restored Car Images
-- **Car Display Reverted:** Changed car items back to static images (PNG format) for better loading performance and reliability across all connections
+### November 2, 2025 - Bugatti Chiron YouTube Video Integration
+- **Bugatti Chiron Display:** Replaced static image with embedded YouTube video (https://youtu.be/FlxAk5-gei0)
+- **Video Features:** Autoplay enabled, continuous loop, muted (for autoplay compliance), 720p HD quality, minimal YouTube branding (controls hidden)
+- **Other Cars:** Mercedes, Lamborghini, and Rolls Royce remain as static PNG images for optimal loading performance
 
 ### November 1, 2025 - Item Removal & Balance Adjustment
 - **Items Removed:** Apple Vision Pro (₦19.5M) and Luxury Watch (₦75M) removed from Gadgets category
