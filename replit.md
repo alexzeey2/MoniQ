@@ -66,10 +66,14 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
-### November 2, 2025 - Bugatti Chiron YouTube Video Integration
-- **Bugatti Chiron Display:** Replaced static image with embedded YouTube video (https://youtu.be/FlxAk5-gei0)
+### November 2, 2025 - All Cars Now Display as YouTube Videos
+- **Car Display Upgraded:** All 4 cars now render as embedded YouTube videos instead of static images
+  - Mercedes G-Wagon: https://youtu.be/wWyAQ1Ges1I
+  - Lamborghini Urus: https://youtu.be/igkMN2SvPGU
+  - Rolls Royce: https://youtu.be/Zg_aC8W6-n8
+  - Bugatti Chiron: https://youtu.be/FlxAk5-gei0
 - **Video Features:** Autoplay enabled, continuous loop, muted (for autoplay compliance), 720p HD quality, minimal YouTube branding (controls hidden)
-- **Other Cars:** Mercedes, Lamborghini, and Rolls Royce remain as static PNG images for optimal loading performance
+- **Display Locations:** Videos appear in both Store page and Portfolio page after purchase
 
 ### November 1, 2025 - Item Removal & Balance Adjustment
 - **Items Removed:** Apple Vision Pro (₦19.5M) and Luxury Watch (₦75M) removed from Gadgets category

@@ -249,9 +249,9 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
   const items = [
     { id: 1, name: 'iPhone 15 Pro Max', price: 7500000, cat: 'Gadgets', img: iphoneImg, m: 1500000 },
     { id: 2, name: 'MacBook Pro M3', price: 14400000, cat: 'Gadgets', img: macbookImg, m: 2880000 },
-    { id: 6, name: 'Mercedes G-Wagon', price: 360000000, cat: 'Cars', img: mercedesImg, m: 72000000 },
-    { id: 7, name: 'Lamborghini Urus', price: 750000000, cat: 'Cars', img: lamborghiniImg, m: 150000000 },
-    { id: 8, name: 'Rolls Royce', price: 1350000000, cat: 'Cars', img: rollsRoyceImg, m: 270000000 },
+    { id: 6, name: 'Mercedes G-Wagon', price: 360000000, cat: 'Cars', img: mercedesImg, m: 72000000, youtubeId: 'wWyAQ1Ges1I' },
+    { id: 7, name: 'Lamborghini Urus', price: 750000000, cat: 'Cars', img: lamborghiniImg, m: 150000000, youtubeId: 'igkMN2SvPGU' },
+    { id: 8, name: 'Rolls Royce', price: 1350000000, cat: 'Cars', img: rollsRoyceImg, m: 270000000, youtubeId: 'Zg_aC8W6-n8' },
     { id: 9, name: 'Bugatti Chiron', price: 2550000000, cat: 'Cars', img: bugattiImg, m: 510000000, youtubeId: 'FlxAk5-gei0' },
     { id: 10, name: 'Ikoyi Duplex', price: 1140000000, cat: 'Houses', img: duplexImg, m: 228000000 },
     { id: 11, name: 'Lekki Penthouse', price: 1950000000, cat: 'Houses', img: penthouseImg, m: 390000000 },
