@@ -2,10 +2,10 @@ import { useState, useEffect, useRef } from 'react';
 import { Home, TrendingUp, ShoppingBag, User, ArrowLeft, Clock, AlertCircle, PieChart, Shield, ShieldOff, Zap, RotateCcw, Play } from 'lucide-react';
 import iphoneImg from '@assets/Iphone_15_Pro_Max_1760488588844.png';
 import macbookImg from '@assets/MacBook_Pro_M3_1760488589069.png';
-import mercedesImg from '@assets/Mercedes G-Wagon_1761982502720.mp4';
-import lamborghiniImg from '@assets/Lamborghini Urus_1761982502820.mp4';
-import rollsRoyceImg from '@assets/Rolls Royce_1761982502890.mp4';
-import bugattiImg from '@assets/Bugatti Chiron_1761982502946.mp4';
+import mercedesImg from '@assets/Mercedes_G-wagon_1760488589156.png';
+import lamborghiniImg from '@assets/Lamborghini_Urus_1760488588886.png';
+import rollsRoyceImg from '@assets/Rolls_Royce_1760488589256.png';
+import bugattiImg from '@assets/Bugatti_Chiron_1760488588652.png';
 import duplexImg from '@assets/Ikoyi_Duplex_1760488588798.png';
 import penthouseImg from '@assets/Lekki_Penthouse_1760488588932.png';
 import villaImg from '@assets/Banana_Island_Villa_1760488588460.png';
@@ -980,23 +980,11 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                 
                 return (
                   <div key={i.id} className={`bg-card rounded-xl overflow-hidden border border-card-border ${shouldHighlight ? 'tutorial-highlight' : ''}`} data-testid={`item-${i.id}`}>
-                    {i.cat === 'Cars' ? (
-                      <video 
-                        src={i.img} 
-                        autoPlay 
-                        loop 
-                        muted 
-                        playsInline
-                        preload="metadata"
-                        className="w-full h-64 object-cover shadow-lg bg-muted"
-                      />
-                    ) : (
-                      <img 
-                        src={i.img} 
-                        alt={i.name}
-                        className="w-full h-64 object-cover shadow-lg"
-                      />
-                    )}
+                    <img 
+                      src={i.img} 
+                      alt={i.name}
+                      className="w-full h-64 object-cover shadow-lg"
+                    />
                     <div className="p-4 flex items-center justify-between gap-4">
                       <div className="flex-1">
                         <div className="font-semibold mb-1">{i.name}</div>
@@ -1214,23 +1202,11 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
               <div className="grid grid-cols-2 gap-3">
                 {owned.map((i, idx) => (
                   <div key={idx} className="bg-card rounded-xl overflow-hidden border border-card-border">
-                    {i.cat === 'Cars' ? (
-                      <video 
-                        src={i.img} 
-                        autoPlay 
-                        loop 
-                        muted 
-                        playsInline
-                        preload="metadata"
-                        className="w-full h-32 object-cover bg-muted"
-                      />
-                    ) : (
-                      <img 
-                        src={i.img} 
-                        alt={i.name}
-                        className="w-full h-32 object-cover"
-                      />
-                    )}
+                    <img 
+                      src={i.img} 
+                      alt={i.name}
+                      className="w-full h-32 object-cover"
+                    />
                     <div className="p-3 text-center">
                       <div className="text-sm font-semibold">{i.name}</div>
                       <div className="text-xs text-muted-foreground mt-1">{fmt(i.price)}</div>

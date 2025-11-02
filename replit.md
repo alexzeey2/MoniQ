@@ -29,7 +29,7 @@ Preferred communication style: Simple, everyday language.
 - **Player Onboarding:** Welcome/signup, dynamic currency conversion (Nigeria: ₦, Others: $ at 1:1500), data persisted in localStorage.
 - **Core Game State:** Balance tracking, investment system (30% return, 60-second wait), owned items, timers, win condition (18 luxury items).
 - **Economic Systems:** Fixed 25% tax, per-item maintenance (20% of item price), Account Manager feature. Profit rate stays at 30% permanently.
-- **Luxury Items:** Categorized into Gadgets, Cars (video format), Houses, Jets, and Yachts. All items priced 3× higher with 20% maintenance costs.
+- **Luxury Items:** Categorized into Gadgets, Cars, Houses, Jets, and Yachts. All items priced 3× higher with 20% maintenance costs.
 - **Silent Tutorial System:** Auto-starts for new players with visual (glowing button) guidance. Flow: Invest nav glows → ₦40M button glows → investment card glows with "wait for return" message (other nav buttons disabled until investment returns) → Store nav glows (after investment completes) → iPhone buy button glows (other nav buttons disabled while in store) → Invest nav glows (no amount highlighted) → second investment made → completion popup "Great job! Now you know the basics" (5s auto-hide) → Home nav glows → user clicks home → Living Expenses info card glows (3s) → countdown timer glows and starts → final message "Buy all the items to win the game! Good luck!" (5s auto-hide) → tutorial complete. Investment validation: minimum ₦1M, must keep ₦5M after investing (no safety buffer blocking).
 - **Game Over System:** Triggers when balance drops below ₦5M, displays detailed expense breakdown, stops background music. Single "Try Again" button that resets everything: fresh start with ₦60M, loses all items and investments.
 - **Sound Effects:** Ka-ching for investment returns, deposit sound, shuffled background music (3 tracks, each plays 2 times before switching).
@@ -66,13 +66,16 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### November 2, 2025 - Restored Car Images
+- **Car Display Reverted:** Changed car items back to static images (PNG format) for better loading performance and reliability across all connections
+
 ### November 1, 2025 - Item Removal & Balance Adjustment
 - **Items Removed:** Apple Vision Pro (₦19.5M) and Luxury Watch (₦75M) removed from Gadgets category
 - **Win Condition Updated:** Players now need to collect 18 luxury items to win (reduced from 20)
 - **Starting Balance Increased:** New and returning players now start with ₦60M (increased from ₦50M)
 - **Updated Item Count:** All UI references and documentation updated to reflect 18-item goal
 - **Store Default View:** Cars category now displays by default when entering the Store page (instead of "All")
-- **Video Loading Optimization:** Changed car videos from `preload="auto"` to `preload="metadata"` for faster initial playback - only loads ~3% of video data instead of entire file, dramatically improving load times on slower connections and Vercel deployments
+- **Routing Simplified:** App now lands directly on Store page (Welcome page removed from initial flow)
 
 ### November 1, 2025 - Price Increases & Game Balance Overhaul
 - **All Item Prices Tripled (3×):**
