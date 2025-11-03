@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Home, TrendingUp, ShoppingBag, User, ArrowLeft, Clock, AlertCircle, PieChart, Shield, ShieldOff, Zap, RotateCcw, Play, ExternalLink } from 'lucide-react';
+import { Home, TrendingUp, ShoppingBag, User, ArrowLeft, Clock, AlertCircle, PieChart, Zap, RotateCcw, Play, ExternalLink } from 'lucide-react';
 import { SiWhatsapp } from 'react-icons/si';
 import iphoneImg from '@assets/Iphone_15_Pro_Max_1760488588844.png';
 import macbookImg from '@assets/MacBook_Pro_M3_1760488589069.png';
@@ -167,8 +167,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
   const [maintenance, setMaintenance] = useState(0);
   const [showAd, setShowAd] = useState(false);
   const [purchased, setPurchased] = useState<number[]>([]);
-  const [accountManager, setAccountManager] = useState(false);
-  const [managerCost, setManagerCost] = useState(20000000);
   const [selectedCategory, setSelectedCategory] = useState('Cars');
   const [returnRate, setReturnRate] = useState(0.30);
   const [adTimer, setAdTimer] = useState(60);
@@ -220,8 +218,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
       investments,
       owned,
       purchased,
-      accountManager,
-      managerCost,
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(gameState));
   };
@@ -236,8 +232,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
         setOwned(gameState.owned ?? []);
         setPurchased(gameState.purchased ?? []);
         setReturnRate(0.30); // Always reset to 30% (profit rate reduction removed)
-        setAccountManager(gameState.accountManager ?? false);
-        setManagerCost(gameState.managerCost ?? 20000000);
         setTutorialActive(false); // Tutorial already done for returning players
       } else {
         // New player - start tutorial with clean state
@@ -299,14 +293,14 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
 
   useEffect(() => {
     saveGameState();
-  }, [balance, investments, owned, purchased, accountManager, managerCost]);
+  }, [balance, investments, owned, purchased]);
 
   useEffect(() => {
     setMaintenance(owned.reduce((s, i) => s + i.m, 0));
   }, [owned]);
 
   useEffect(() => {
-    if (gameOver || accountManager) return;
+    if (gameOver) return;
     const t = setInterval(() => {
       setAdTimer(p => {
         if (p <= 1) {
@@ -318,11 +312,11 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
       });
     }, 1000);
     return () => clearInterval(t);
-  }, [gameOver, accountManager]);
+  }, [gameOver]);
 
   useEffect(() => {
     // Pause timers during tutorial, start them when countdown glows
-    if (gameOver || accountManager || (tutorialActive && tutorialStep !== 'view-countdown' && tutorialStep !== 'show-final-message' && tutorialStep !== 'completed')) return;
+    if (gameOver || (tutorialActive && tutorialStep !== 'view-countdown' && tutorialStep !== 'show-final-message' && tutorialStep !== 'completed')) return;
     const t = setInterval(() => {
       setTaxTimer(p => {
         if (p <= 1) {
@@ -363,10 +357,9 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
       });
     }, 1000);
     return () => clearInterval(t);
-  }, [balance, gameOver, taxRate, maintenance, accountManager, tutorialActive, showTutorialComplete]);
+  }, [balance, gameOver, taxRate, maintenance, tutorialActive, showTutorialComplete]);
 
   useEffect(() => {
-    if (accountManager) return;
     const t = setInterval(() => {
       setInvestments(p => {
         const updatedInvestments = p.map(inv => {
@@ -389,7 +382,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
       });
     }, 1000);
     return () => clearInterval(t);
-  }, [accountManager]);
+  }, []);
 
   // Auto-hide tutorial completion popup after 5s
   useEffect(() => {
@@ -497,16 +490,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
     }
   };
 
-  const toggleManager = () => {
-    if (!accountManager && balance >= managerCost + 5000000) {
-      setBalance(balance - managerCost);
-      setAccountManager(true);
-      setManagerCost(Math.floor(managerCost * 1.50));
-    } else {
-      setAccountManager(false);
-    }
-  };
-
   const handleRestart = () => {
     // Clear game data but keep player data
     localStorage.removeItem(STORAGE_KEY);
@@ -544,8 +527,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
     setOwned([]);
     setPurchased([]);
     setMaintenance(0);
-    setAccountManager(false);
-    setManagerCost(20000000);
     setGameOver(false);
     
     // Restart tutorial for new game
@@ -572,63 +553,11 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                 <div className="text-sm opacity-80 mb-1">Balance</div>
                 <div className="text-3xl font-bold" data-testid="text-balance">{fmt(balance)}</div>
               </div>
-              <div className="flex items-center justify-between">
-                <div className={`flex items-center gap-2 text-sm bg-white/10 rounded-lg px-3 py-2 ${tutorialActive && tutorialStep === 'view-countdown' ? 'tutorial-highlight-red' : ''}`}>
-                  <Clock className="w-4 h-4" />
-                  <span>{accountManager ? 'Paused' : `Living Expenses ${taxTimer}s`}</span>
-                </div>
-                <button 
-                  onClick={toggleManager} 
-                  className={`px-3 py-2 rounded-lg ${accountManager ? 'bg-primary/50' : 'bg-white/20'}`}
-                  data-testid="button-toggle-manager"
-                >
-                  {accountManager ? <Shield className="w-4 h-4" /> : <ShieldOff className="w-4 h-4" />}
-                </button>
+              <div className={`flex items-center gap-2 text-sm bg-white/10 rounded-lg px-3 py-2 ${tutorialActive && tutorialStep === 'view-countdown' ? 'tutorial-highlight-red' : ''}`}>
+                <Clock className="w-4 h-4" />
+                <span>Living Expenses {taxTimer}s</span>
               </div>
             </div>
-
-            {!accountManager && (
-              <div className="bg-chart-2/10 border border-chart-2/20 rounded-xl p-4">
-                <div className="flex items-start gap-3">
-                  <div className="text-2xl">👨‍💼</div>
-                  <div className="flex-1">
-                    <div className="font-semibold text-foreground text-sm">Account Manager</div>
-                    <div className="text-muted-foreground text-xs mt-1 mb-2">
-                      Pause all timers. Cost: {fmt(managerCost)} (+50% each use)
-                    </div>
-                    <button
-                      onClick={toggleManager}
-                      disabled={balance < managerCost + 5000000}
-                      className="bg-chart-2 text-white px-4 py-2 rounded-lg text-xs font-medium disabled:opacity-50 hover-elevate active-elevate-2"
-                      data-testid="button-activate-manager"
-                    >
-                      Activate ({fmt(managerCost)})
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {accountManager && (
-              <div className="bg-primary/10 border border-primary/20 rounded-xl p-4">
-                <div className="flex items-start gap-3">
-                  <Shield className="w-5 h-5 text-primary mt-0.5" />
-                  <div className="flex-1">
-                    <div className="font-semibold text-foreground text-sm">Protected</div>
-                    <div className="text-muted-foreground text-xs mt-1 mb-2">
-                      All timers paused. Next: {fmt(managerCost)}
-                    </div>
-                    <button 
-                      onClick={toggleManager} 
-                      className="bg-primary text-primary-foreground px-4 py-2 rounded-lg text-xs font-medium hover-elevate active-elevate-2"
-                      data-testid="button-deactivate-manager"
-                    >
-                      Deactivate
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
 
             <div className={`bg-chart-5/10 border border-chart-5/20 rounded-xl p-4 ${tutorialActive && tutorialStep === 'view-expenses-info' ? 'tutorial-highlight' : ''}`} data-testid="card-living-expenses-info">
               <div className="flex items-start gap-3">
@@ -961,7 +890,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                     </div>
                     <div className="bg-primary/20 text-primary text-xs px-2 py-1 rounded">+{(inv.r * 100).toFixed(0)}%</div>
                   </div>
-                  <div className="text-sm text-muted-foreground">{accountManager ? 'Paused' : `${inv.t}s`}</div>
+                  <div className="text-sm text-muted-foreground">{inv.t}s</div>
                   
                   {/* Tutorial message */}
                   {shouldHighlight && (
@@ -1471,7 +1400,6 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                 <div className="font-bold text-lg mb-2">💡 Winning Strategy</div>
                 <p className="text-muted-foreground">• <strong>Invest smart:</strong> Always get 30% returns in 60 seconds!</p>
                 <p className="text-muted-foreground">• <strong>Start small:</strong> Buy cheaper items first to build your collection</p>
-                <p className="text-muted-foreground">• <strong>Use Account Manager:</strong> Pause timers when needed ({currency}{Math.round(20000000 * conversionRate / (conversionRate === 1 ? 1000000 : 1000))}{conversionRate === 1 ? 'M' : 'K'})</p>
                 <p className="text-muted-foreground">• <strong>Watch your balance:</strong> Living expenses take 25% every 30s</p>
                 <p className="text-muted-foreground">• <strong>Keep investing:</strong> Regular investments help maintain your balance!</p>
               </div>
