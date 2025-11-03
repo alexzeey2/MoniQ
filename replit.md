@@ -28,12 +28,12 @@ Preferred communication style: Simple, everyday language.
 ### Game Mechanics Architecture
 - **Player Onboarding:** Welcome/signup, dynamic currency conversion (Nigeria: ₦, Others: $ at 1:1500), data persisted in localStorage.
 - **Core Game State:** Balance tracking, investment system (30% return, 60-second wait), owned items, timers, win condition (18 luxury items).
-- **Economic Systems:** Fixed 25% tax, per-item maintenance (20% of item price), Account Manager feature. Profit rate stays at 30% permanently.
+- **Economic Systems:** Fixed 25% living expenses (25% of balance every 30s), per-item maintenance (20% of item price). Profit rate stays at 30% permanently.
 - **Luxury Items:** Categorized into Gadgets, Cars, Houses, Jets, and Yachts. All items priced 3× higher with 20% maintenance costs.
 - **Silent Tutorial System:** Auto-starts for new players with visual (glowing button) guidance. Flow: Invest nav glows → ₦40M button glows → investment card glows with "wait for return" message (other nav buttons disabled until investment returns) → Store nav glows (after investment completes) → iPhone buy button glows (other nav buttons disabled while in store) → Invest nav glows (no amount highlighted) → second investment made → completion popup "Great job! Now you know the basics" (5s auto-hide) → Home nav glows → user clicks home → Living Expenses info card glows (3s) → countdown timer glows and starts → final message "Buy all the items to win the game! Good luck!" (5s auto-hide) → tutorial complete. Investment validation: minimum ₦1M, must keep ₦5M after investing (no safety buffer blocking).
 - **Game Over System:** Triggers when balance drops below ₦5M, displays detailed expense breakdown, stops background music. Single "Try Again" button that resets everything: fresh start with ₦60M, loses all items and investments.
 - **Sound Effects:** Ka-ching for investment returns, deposit sound, game over sound (woman laughing), shuffled background music (2 tracks, each plays 2 times before switching).
-- **Home Page Design:** Simplified layout with Balance card, Account Manager card, Living Expenses info card with dynamic notification system showing detailed, historical expense breakdown, and WhatsApp Group card promoting community engagement with cash prize giveaways (₦2,000 - ₦100,000).
+- **Home Page Design:** Simplified layout with Balance card (showing balance and Living Expenses countdown), Living Expenses info card with dynamic notification system showing detailed, historical expense breakdown, and WhatsApp Group card promoting community engagement with cash prize giveaways (₦2,000 - ₦100,000).
 - **"How to Play" Guide:** Explains game objective, investment steps, permanent 30% profit rate, and winning strategies.
 
 ## External Dependencies
@@ -65,6 +65,18 @@ Preferred communication style: Simple, everyday language.
 - **nanoid**: Unique ID generation.
 
 ## Recent Changes
+
+### November 3, 2025 - Account Manager Feature Removed
+- **Feature Removal:** Completely removed the Account Manager feature from the game
+  - Removed Account Manager state variables (accountManager, managerCost)
+  - Removed toggle button from Balance card (shield icon next to Living Expenses timer)
+  - Removed "Activate Account Manager" card from Home page
+  - Removed "Protected" card that appeared when manager was active
+  - Removed "Paused" status from all timers (Living Expenses, investments)
+  - Removed Account Manager reference from "How to Play" guide
+  - Cleaned up all related code and UI components
+- **Impact:** Simplified gameplay - all timers now run continuously without the option to pause
+- **Reason:** Streamlined game mechanics for better player experience
 
 ### November 3, 2025 - Tutorial Countdown Red Highlight
 - **Tutorial UX Improvement:** Living expenses countdown timer now glows red instead of green during tutorial
