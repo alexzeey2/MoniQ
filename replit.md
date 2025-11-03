@@ -66,6 +66,14 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### November 3, 2025 - Tutorial Countdown Red Highlight
+- **Tutorial UX Improvement:** Living expenses countdown timer now glows red instead of green during tutorial
+  - Created new `tutorial-glow-red` keyframe animation with red glow (rgba(239, 68, 68))
+  - Added new `.tutorial-highlight-red` CSS class for red tutorial highlighting
+  - Applied red highlight to countdown timer during 'view-countdown' tutorial step
+  - **Reason:** Green glow was difficult to see against green balance card background
+  - **Impact:** Countdown timer is now clearly visible during tutorial, improving user experience
+
 ### November 3, 2025 - WhatsApp Card Color Update
 - **Color Scheme Redesign:** WhatsApp Group card updated from bright green to professional slate-gray
   - Background: Changed from `from-green-600 to-green-500` to `from-slate-700 to-slate-800`
