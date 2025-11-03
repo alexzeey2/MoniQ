@@ -642,19 +642,19 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-green-600 to-green-500 rounded-xl p-4 shadow-lg border-2 border-green-400" data-testid="card-whatsapp-group">
+            <div className="bg-gradient-to-br from-slate-700 to-slate-800 rounded-xl p-4 shadow-lg border-2 border-slate-600" data-testid="card-whatsapp-group">
               <div className="flex items-start gap-3">
-                <SiWhatsapp className="w-6 h-6 text-white flex-shrink-0 mt-0.5" />
+                <SiWhatsapp className="w-6 h-6 text-emerald-400 flex-shrink-0 mt-0.5" />
                 <div className="flex-1">
                   <div className="font-bold text-white text-sm mb-1">🎁 Join & Win Real Cash!</div>
-                  <div className="text-white/90 text-xs mb-3 leading-relaxed">
+                  <div className="text-slate-200 text-xs mb-3 leading-relaxed">
                     Join our WhatsApp community and stand a chance to win <span className="font-bold">₦2,000 - ₦100,000</span> in real cash prizes!
                   </div>
                   <a
                     href="https://chat.whatsapp.com/G4QPVHIbTAz54DxCH8bA5u"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 bg-white text-green-600 px-4 py-2 rounded-lg text-xs font-bold hover-elevate active-elevate-2 shadow-md"
+                    className="inline-flex items-center gap-2 bg-emerald-500 text-white px-4 py-2 rounded-lg text-xs font-bold hover-elevate active-elevate-2 shadow-md"
                     data-testid="button-join-whatsapp"
                   >
                     <SiWhatsapp className="w-4 h-4" />
