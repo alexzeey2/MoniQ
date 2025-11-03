@@ -303,6 +303,15 @@
     }
   }
 
+  @keyframes tutorial-glow-red {
+    0%, 100% {
+      box-shadow: 0 0 20px 5px rgba(239, 68, 68, 0.6), 0 0 40px 10px rgba(239, 68, 68, 0.3);
+    }
+    50% {
+      box-shadow: 0 0 30px 8px rgba(239, 68, 68, 0.8), 0 0 60px 15px rgba(239, 68, 68, 0.5);
+    }
+  }
+
   @keyframes tutorial-pulse {
     0%, 100% {
       transform: scale(1);
@@ -314,6 +323,12 @@
 
   .tutorial-highlight {
     animation: tutorial-glow 2s ease-in-out infinite, tutorial-pulse 2s ease-in-out infinite;
+    position: relative;
+    z-index: 100;
+  }
+
+  .tutorial-highlight-red {
+    animation: tutorial-glow-red 2s ease-in-out infinite, tutorial-pulse 2s ease-in-out infinite;
     position: relative;
     z-index: 100;
   }

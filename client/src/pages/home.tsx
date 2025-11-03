@@ -573,7 +573,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                 <div className="text-3xl font-bold" data-testid="text-balance">{fmt(balance)}</div>
               </div>
               <div className="flex items-center justify-between">
-                <div className={`flex items-center gap-2 text-sm bg-white/10 rounded-lg px-3 py-2 ${tutorialActive && tutorialStep === 'view-countdown' ? 'tutorial-highlight' : ''}`}>
+                <div className={`flex items-center gap-2 text-sm bg-white/10 rounded-lg px-3 py-2 ${tutorialActive && tutorialStep === 'view-countdown' ? 'tutorial-highlight-red' : ''}`}>
                   <Clock className="w-4 h-4" />
                   <span>{accountManager ? 'Paused' : `Living Expenses ${taxTimer}s`}</span>
                 </div>
