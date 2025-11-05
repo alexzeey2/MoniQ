@@ -19,6 +19,8 @@ import sportYachtImg from '@assets/Sport_Yacht_1760488589297.png';
 import luxuryYachtImg from '@assets/Luxury_Yacht_1760488589022.png';
 import megaYachtImg from '@assets/Mega_Yacht_1760488589112.png';
 import superyachtImg from '@assets/Superyacht_1760488589340.png';
+import luxuryHotelImg from '@assets/images (21)_1762319436813.jpeg';
+import buyNigeriaImg from '@assets/images (22)_1762319645078.jpeg';
 import kaChingSound from '@assets/cashier-quotka-chingquot-sound-effect-129698_1760655284960.mp3';
 import gameOverSound from '@assets/sound-effect-woman-giggling-and-laughing-320487_1762089909425.mp3';
 import music1 from '@assets/faty-278997_1762087119221.mp3';
@@ -266,9 +268,11 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
     { id: 19, name: 'Luxury Yacht', price: 14400000000, cat: 'Yachts', img: luxuryYachtImg, m: 2880000000 },
     { id: 20, name: 'Mega Yacht', price: 28500000000, cat: 'Yachts', img: megaYachtImg, m: 5700000000 },
     { id: 21, name: 'Superyacht', price: 54000000000, cat: 'Yachts', img: superyachtImg, m: 10800000000 },
+    { id: 22, name: 'Travel to the most luxurious hotel', price: 500000000000, cat: 'Lifestyle', img: luxuryHotelImg, m: 2000000000000 },
+    { id: 23, name: 'Buy Nigeria', price: 7500000000000, cat: 'Watery Money', img: buyNigeriaImg, m: 750000000000 },
   ];
 
-  const categories = ['All', 'Gadgets', 'Cars', 'Houses', 'Jets', 'Yachts'];
+  const categories = ['All', 'Gadgets', 'Cars', 'Houses', 'Jets', 'Yachts', 'Lifestyle', 'Watery Money'];
 
   useEffect(() => {
     loadGameState();
@@ -1368,7 +1372,7 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
             <div className="overflow-y-auto p-6 space-y-4 text-sm">
               <div>
                 <div className="font-bold text-lg mb-2">🎯 Game Objective</div>
-                <p className="text-muted-foreground mb-2">Build your wealth by buying ALL 18 luxury items!</p>
+                <p className="text-muted-foreground mb-2">Build your wealth by buying ALL 20 luxury items!</p>
                 <p className="text-muted-foreground">Start: {currency}{Math.round(60000000 * conversionRate / (conversionRate === 1 ? 1000000 : 1000))}{conversionRate === 1 ? 'M' : 'K'} | Lose if balance drops below {currency}{Math.round(5000000 * conversionRate / (conversionRate === 1 ? 1000000 : 1000))}{conversionRate === 1 ? 'M' : 'K'}</p>
               </div>
               
@@ -1385,13 +1389,13 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
                 <p className="text-muted-foreground mb-2">Your profit rate is <strong>30%</strong> for all investments!</p>
                 <div className="bg-primary/20 border border-primary/30 rounded-lg p-3 mt-2">
                   <p className="text-primary text-xs font-semibold">💡 Tip:</p>
-                  <p className="text-primary text-xs">Keep investing to grow your balance and buy all 18 items to win!</p>
+                  <p className="text-primary text-xs">Keep investing to grow your balance and buy all 20 items to win!</p>
                 </div>
               </div>
               
               <div>
                 <div className="font-bold text-lg mb-2">🏆 Winning Goal</div>
-                <p className="text-muted-foreground mb-2">• Collect ALL 18 luxury items to win!</p>
+                <p className="text-muted-foreground mb-2">• Collect ALL 20 luxury items to win!</p>
                 <p className="text-muted-foreground mb-2">• Keep your balance above the minimum</p>
                 <p className="text-muted-foreground">• Manage investments and expenses wisely</p>
               </div>

@@ -27,9 +27,9 @@ Preferred communication style: Simple, everyday language.
 
 ### Game Mechanics Architecture
 - **Player Onboarding:** Welcome/signup, dynamic currency conversion (Nigeria: ₦, Others: $ at 1:1500), data persisted in localStorage.
-- **Core Game State:** Balance tracking, investment system (30% return, 60-second wait), owned items, timers, win condition (18 luxury items).
+- **Core Game State:** Balance tracking, investment system (30% return, 60-second wait), owned items, timers, win condition (20 luxury items).
 - **Economic Systems:** Fixed 25% living expenses (25% of balance every 30s), per-item maintenance (20% of item price). Profit rate stays at 30% permanently.
-- **Luxury Items:** Categorized into Gadgets, Cars, Houses, Jets, and Yachts. All items priced 3× higher with 20% maintenance costs.
+- **Luxury Items:** Categorized into Gadgets, Cars, Houses, Jets, Yachts, Lifestyle, and Watery Money. All items priced 3× higher with 20% maintenance costs.
 - **Silent Tutorial System:** Auto-starts for new players with visual (glowing button) guidance. Flow: Invest nav glows → ₦40M button glows → investment card glows with "wait for return" message (other nav buttons disabled until investment returns) → Store nav glows (after investment completes) → iPhone buy button glows (other nav buttons disabled while in store) → Invest nav glows (no amount highlighted) → second investment made → completion popup "Great job! Now you know the basics" (5s auto-hide) → Home nav glows → user clicks home → Living Expenses info card glows (3s) → countdown timer glows and starts → final message "Buy all the items to win the game! Good luck!" (5s auto-hide) → tutorial complete. Investment validation: minimum ₦1M, must keep ₦5M after investing (no safety buffer blocking).
 - **Game Over System:** Triggers when balance drops below ₦5M, displays detailed expense breakdown, stops background music. Single "Try Again" button that resets everything: fresh start with ₦60M, loses all items and investments.
 - **Sound Effects:** Ka-ching for investment returns, deposit sound, game over sound (woman laughing), shuffled background music (2 tracks, each plays 2 times before switching).
@@ -65,6 +65,28 @@ Preferred communication style: Simple, everyday language.
 - **nanoid**: Unique ID generation.
 
 ## Recent Changes
+
+### November 5, 2025 - Watery Money Category & Buy Nigeria Item Added
+- **New Category:** Added "Watery Money" as the 7th category to the Store
+- **New Luxury Item:** "Buy Nigeria"
+  - Cost: ₦7.5 trillion (₦7,500,000,000,000)
+  - Maintenance: ₦750 billion (₦750,000,000,000) every 30 seconds
+  - Maintenance ratio: 10% (standard maintenance rate)
+  - Image: Water/ocean themed image
+- **Winning Condition:** Updated from 19 to 20 luxury items required to win the game
+- **Categories:** Store now has 7 categories: Gadgets, Cars, Houses, Jets, Yachts, Lifestyle, Watery Money
+- **UI Updates:** All references to "19 luxury items" updated to "20 luxury items" in the How to Play guide
+
+### November 3, 2025 - Lifestyle Category & Luxury Hotel Item Added
+- **New Category:** Added "Lifestyle" as the 6th category to the Store
+- **New Luxury Item:** "Travel to the most luxurious hotel"
+  - Cost: ₦500 billion (₦500,000,000,000)
+  - Maintenance: ₦2 trillion (₦2,000,000,000,000) every 30 seconds
+  - Maintenance ratio: 4:1 (exceptionally high - the most expensive item to maintain in the game)
+  - Image: Luxury hotel pool/resort scene
+- **Winning Condition:** Updated from 18 to 19 luxury items required to win the game
+- **Categories:** Store now has 6 categories: Gadgets, Cars, Houses, Jets, Yachts, Lifestyle
+- **UI Updates:** All references to "18 luxury items" updated to "19 luxury items" in the How to Play guide
 
 ### November 3, 2025 - Account Manager Feature Removed
 - **Feature Removal:** Completely removed the Account Manager feature from the game
