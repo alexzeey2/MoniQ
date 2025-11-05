@@ -327,10 +327,9 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
           const tax = Math.floor(balance * taxRate);
           const total = tax + maintenance;
           const actualBalanceAfter = balance - total; // Actual balance after deduction (could be negative or below 5M)
-          const newBal = Math.max(5000000, actualBalanceAfter);
-          setBalance(newBal);
           
-          if (newBal <= 5000000) {
+          // Game over if balance would drop below 5M or go negative
+          if (actualBalanceAfter < 5000000) {
             // Capture game over details with actual balance after deduction
             setGameOverDetails({
               livingExpenses: tax,
@@ -341,6 +340,9 @@ export default function NaijaWealthSim({ onReturnToWelcome }: NaijaWealthSimProp
             stopBackgroundMusic(); // Stop music when game over
             playGameOver(); // Play game over sound effect
             setGameOver(true);
+            setBalance(Math.max(0, actualBalanceAfter)); // Set to actual balance or 0 if negative
+          } else {
+            setBalance(actualBalanceAfter);
           }
           
           // Capture actual deducted amounts for expenses notification

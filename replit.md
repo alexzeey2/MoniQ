@@ -1,11 +1,9 @@
 # NaijaWealthSim (Sọ́ágỌ́) - Wealth Simulation Game
 
 ## Overview
-
-NaijaWealthSim (Sọ́ágỌ́) is a mobile-first wealth simulation game where players start with ₦60M and build their fortune through strategic investments and luxury purchases. The game features dynamic currency conversion, taxes, maintenance costs, and game-over scenarios. The primary objective is to collect all 18 luxury items while managing finances. Players land on the Store page by default when starting or returning to the game. The application is a single-page React app with an Express.js backend, designed for mobile devices with international currency support.
+NaijaWealthSim (Sọ́ágỌ́) is a mobile-first wealth simulation game where players start with ₦60M and build their fortune through strategic investments and luxury purchases. The game features dynamic currency conversion, taxes, maintenance costs, and game-over scenarios. The primary objective is to collect all 20 luxury items while managing finances. Players land on the Store page by default when starting or returning to the game. The application is a single-page React app with an Express.js backend, designed for mobile devices with international currency support.
 
 ## User Preferences
-
 Preferred communication style: Simple, everyday language.
 
 ## System Architecture
@@ -28,12 +26,12 @@ Preferred communication style: Simple, everyday language.
 ### Game Mechanics Architecture
 - **Player Onboarding:** Welcome/signup, dynamic currency conversion (Nigeria: ₦, Others: $ at 1:1500), data persisted in localStorage.
 - **Core Game State:** Balance tracking, investment system (30% return, 60-second wait), owned items, timers, win condition (20 luxury items).
-- **Economic Systems:** Fixed 25% living expenses (25% of balance every 30s), per-item maintenance (20% of item price). Profit rate stays at 30% permanently.
-- **Luxury Items:** Categorized into Gadgets, Cars, Houses, Jets, Yachts, Lifestyle, and Watery Money. All items priced 3× higher with 20% maintenance costs.
-- **Silent Tutorial System:** Auto-starts for new players with visual (glowing button) guidance. Flow: Invest nav glows → ₦40M button glows → investment card glows with "wait for return" message (other nav buttons disabled until investment returns) → Store nav glows (after investment completes) → iPhone buy button glows (other nav buttons disabled while in store) → Invest nav glows (no amount highlighted) → second investment made → completion popup "Great job! Now you know the basics" (5s auto-hide) → Home nav glows → user clicks home → Living Expenses info card glows (3s) → countdown timer glows and starts → final message "Buy all the items to win the game! Good luck!" (5s auto-hide) → tutorial complete. Investment validation: minimum ₦1M, must keep ₦5M after investing (no safety buffer blocking).
-- **Game Over System:** Triggers when balance drops below ₦5M, displays detailed expense breakdown, stops background music. Single "Try Again" button that resets everything: fresh start with ₦60M, loses all items and investments.
+- **Economic Systems:** Fixed 25% living expenses (25% of balance every 30s), per-item maintenance (20% of item price), profit rate stays at 30% permanently.
+- **Luxury Items:** Categorized into Gadgets, Cars, Houses, Jets, Yachts, Lifestyle, and Watery Money. All items priced 3× higher with 20% maintenance costs. Car items display as embedded YouTube videos.
+- **Silent Tutorial System:** Auto-starts for new players with visual (glowing button) guidance, guiding through investment and first purchase.
+- **Game Over System:** Triggers when balance drops below ₦5M or goes negative, displays detailed expense breakdown, stops background music. Balance never displays as negative (shows 0 minimum). "Try Again" button resets everything.
 - **Sound Effects:** Ka-ching for investment returns, deposit sound, game over sound (woman laughing), shuffled background music (2 tracks, each plays 2 times before switching).
-- **Home Page Design:** Simplified layout with Balance card (showing balance and Living Expenses countdown), Living Expenses info card with dynamic notification system showing detailed, historical expense breakdown, and WhatsApp Group card promoting community engagement with cash prize giveaways (₦2,000 - ₦100,000).
+- **Home Page Design:** Simplified layout with Balance card (showing balance and Living Expenses countdown), Living Expenses info card with dynamic notification system showing detailed, historical expense breakdown, and WhatsApp Group card promoting community engagement.
 - **"How to Play" Guide:** Explains game objective, investment steps, permanent 30% profit rate, and winning strategies.
 
 ## External Dependencies
@@ -63,117 +61,3 @@ Preferred communication style: Simple, everyday language.
 ### Utility Libraries
 - **date-fns**: Date manipulation.
 - **nanoid**: Unique ID generation.
-
-## Recent Changes
-
-### November 5, 2025 - Watery Money Category & Buy Nigeria Item Added
-- **New Category:** Added "Watery Money" as the 7th category to the Store
-- **New Luxury Item:** "Buy Nigeria"
-  - Cost: ₦7.5 trillion (₦7,500,000,000,000)
-  - Maintenance: ₦750 billion (₦750,000,000,000) every 30 seconds
-  - Maintenance ratio: 10% (standard maintenance rate)
-  - Image: Water/ocean themed image
-- **Winning Condition:** Updated from 19 to 20 luxury items required to win the game
-- **Categories:** Store now has 7 categories: Gadgets, Cars, Houses, Jets, Yachts, Lifestyle, Watery Money
-- **UI Updates:** All references to "19 luxury items" updated to "20 luxury items" in the How to Play guide
-
-### November 3, 2025 - Lifestyle Category & Luxury Hotel Item Added
-- **New Category:** Added "Lifestyle" as the 6th category to the Store
-- **New Luxury Item:** "Travel to the most luxurious hotel"
-  - Cost: ₦500 billion (₦500,000,000,000)
-  - Maintenance: ₦2 trillion (₦2,000,000,000,000) every 30 seconds
-  - Maintenance ratio: 4:1 (exceptionally high - the most expensive item to maintain in the game)
-  - Image: Luxury hotel pool/resort scene
-- **Winning Condition:** Updated from 18 to 19 luxury items required to win the game
-- **Categories:** Store now has 6 categories: Gadgets, Cars, Houses, Jets, Yachts, Lifestyle
-- **UI Updates:** All references to "18 luxury items" updated to "19 luxury items" in the How to Play guide
-
-### November 3, 2025 - Account Manager Feature Removed
-- **Feature Removal:** Completely removed the Account Manager feature from the game
-  - Removed Account Manager state variables (accountManager, managerCost)
-  - Removed toggle button from Balance card (shield icon next to Living Expenses timer)
-  - Removed "Activate Account Manager" card from Home page
-  - Removed "Protected" card that appeared when manager was active
-  - Removed "Paused" status from all timers (Living Expenses, investments)
-  - Removed Account Manager reference from "How to Play" guide
-  - Cleaned up all related code and UI components
-- **Impact:** Simplified gameplay - all timers now run continuously without the option to pause
-- **Reason:** Streamlined game mechanics for better player experience
-
-### November 3, 2025 - Tutorial Countdown Red Highlight
-- **Tutorial UX Improvement:** Living expenses countdown timer now glows red instead of green during tutorial
-  - Created new `tutorial-glow-red` keyframe animation with red glow (rgba(239, 68, 68))
-  - Added new `.tutorial-highlight-red` CSS class for red tutorial highlighting
-  - Applied red highlight to countdown timer during 'view-countdown' tutorial step
-  - **Reason:** Green glow was difficult to see against green balance card background
-  - **Impact:** Countdown timer is now clearly visible during tutorial, improving user experience
-
-### November 3, 2025 - WhatsApp Card Color Update
-- **Color Scheme Redesign:** WhatsApp Group card updated from bright green to professional slate-gray
-  - Background: Changed from `from-green-600 to-green-500` to `from-slate-700 to-slate-800`
-  - Border: Changed from `border-green-400` to `border-slate-600`
-  - WhatsApp Icon: Changed from white to `text-emerald-400`
-  - Join Button: Changed from white background with green text to `bg-emerald-500` with white text
-  - Text: Updated to `text-slate-200` for better readability
-- **Visual Impact:** More mature, professional appearance while maintaining WhatsApp brand identity through emerald accents
-
-### November 2, 2025 - Background Music Updated
-- **Music Tracks Replaced:** Old 3 background music tracks removed and replaced with 2 new tracks
-  - Track 1: faty-278997_1762087119221.mp3
-  - Track 2: finance-money-trading-investment-413270_1762087146097.mp3
-- **Music System:** Each track plays twice in a loop before shuffling to the next track (same behavior as before)
-- **Old Tracks Removed:** whip-afro-dancehall-music-110235, exciting-no-copyright-music-334839, fun-exciting-travel-background-music-350761
-
-### November 2, 2025 - All Cars Now Display as YouTube Videos
-- **Car Display Upgraded:** All 4 cars now render as embedded YouTube videos instead of static images
-  - Mercedes G-Wagon: https://youtu.be/wWyAQ1Ges1I
-  - Lamborghini Urus: https://youtu.be/igkMN2SvPGU
-  - Rolls Royce: https://youtu.be/Zg_aC8W6-n8
-  - Bugatti Chiron: https://youtu.be/FlxAk5-gei0
-- **Video Features:** Autoplay enabled, continuous loop, muted (for autoplay compliance), 720p HD quality, minimal YouTube branding (controls hidden)
-- **Display Locations:** Videos appear in both Store page and Portfolio page after purchase
-
-### November 1, 2025 - Item Removal & Balance Adjustment
-- **Items Removed:** Apple Vision Pro (₦19.5M) and Luxury Watch (₦75M) removed from Gadgets category
-- **Win Condition Updated:** Players now need to collect 18 luxury items to win (reduced from 20)
-- **Starting Balance Increased:** New and returning players now start with ₦60M (increased from ₦50M)
-- **Updated Item Count:** All UI references and documentation updated to reflect 18-item goal
-- **Store Default View:** Cars category now displays by default when entering the Store page (instead of "All")
-- **Routing Simplified:** App now lands directly on Store page (Welcome page removed from initial flow)
-
-### November 1, 2025 - Price Increases & Game Balance Overhaul
-- **All Item Prices Tripled (3×):**
-  - Gadgets: iPhone ₦7.5M, MacBook ₦14.4M
-  - Cars: Mercedes ₦360M, Lamborghini ₦750M, Rolls Royce ₦1.35B, Bugatti ₦2.55B
-  - Houses: Duplex ₦1.14B, Penthouse ₦1.95B, Villa ₦3.6B, Private Island ₦10.5B
-  - Jets: Cessna ₦5.4B, Bombardier ₦9.6B, Gulfstream ₦16.5B, Boeing ₦36B
-  - Yachts: Sport ₦7.5B, Luxury ₦14.4B, Mega ₦28.5B, Superyacht ₦54B
-- **Maintenance Costs Increased:** All items now have 20% maintenance (₦1.5M - ₦10.8B per 30 seconds)
-- **Profit Rate Reduction System Removed:** 
-  - Removed 7-minute decay timer (decayTimer state variable)
-  - Profit rate stays at 30% permanently - never drops to 0%
-  - Removed investment blocking modal that appeared at 0% profit
-  - Players can invest freely anytime without forced purchases
-  - returnRate no longer persisted to localStorage to prevent legacy saves from loading at 0%
-- **Car Video Display:** Cars now render as `<video>` elements (autoPlay, loop, muted, playsInline) in both Store and Portfolio
-- **Tutorial Updates:** Removed all references to 7-minute timer, simplified to permanent 30% profit rate system
-- **Legacy Save Compatibility:** Old saves with returnRate = 0 now correctly load with 30% profit rate
-
-### October 23, 2025 - Critical Bug Fixes & Vercel ERR_CONNECTION_REFUSED Fix
-- **Vercel ERR_CONNECTION_REFUSED Fix:** Fixed "site can't be reached" error after successful deployment. Root cause: old `vite.config.vercel.ts` file + server files being included in deployment confused Vercel. Solution: Deleted old config, created `.vercelignore` to exclude server code (only blocks server/, dist/index.js), simplified `vercel.json`. Build tested with production environment: 8.55s, 30MB total output including all 18 luxury items + 3 music files.
-- **White Screen Fix:** Fixed critical bug where Store page wouldn't render on game start. Root cause was screen state mismatch - initialized to 'store' but rendering condition checked for 'luxury'. Changed all references throughout the codebase to consistently use 'store' for the Store page navigation and rendering.
-- **Tutorial Restart Fix:** Fixed tutorial not restarting after game over. The handleTryAgain function now properly clears localStorage, resets tutorial state (tutorialActive = true, tutorialStep = 'click-invest'), clears completion flags, and resets screen to Store page for a complete fresh start.
-- **Game Over Balance Fix:** Game over screen now displays the actual remaining balance after expense deductions (can be negative or below ₦5M), instead of showing the clamped ₦5M minimum.
-- **Investment Return Bug Fix:** Fixed critical bug where investment returns weren't being credited to balance. Solution uses refs (tutorialActiveRef, tutorialStepRef, tutorialInvestmentIdRef) to maintain stable values across re-renders while allowing proper tutorial progression.
-- **Code Quality:** Removed debug console logging, cleaned up state management, verified no regressions through comprehensive E2E testing.
-
-## Deployment Configuration
-
-### Vercel Deployment (Static SPA)
-- **Build Config:** Uses existing `vite.config.ts` (works for both dev and production)
-- **Routing:** `vercel.json` - Simplified configuration with SPA routing
-- **Build Process:** Frontend-only build (no Express server) - all game state in localStorage
-- **Build Command:** `vite build` (outputs to `dist/public`)
-- **Output:** Static files in `dist/public` directory (30MB total with all assets)
-- **Instructions:** See `VERCEL_DEPLOYMENT.md` for step-by-step deployment guide
-- **Status:** ✅ Ready for deployment - simplified config, build tested (9.58s build time)
